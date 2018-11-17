@@ -1,0 +1,57 @@
+﻿{
+    "source_soundcard":{
+        "name":"soundcard",
+        "parameters":{
+            "sample_rate":{
+                "type":"int",
+                "tooltip":"sample rate of soundcard",
+                "default":44100,
+                "range":{"desc":"8000~192000"}
+            },
+            "device":{
+                "type":"string",
+                "tooltip":"device name",
+                "default":"default"
+            },
+            "channel":{
+                "type":"int",
+                "tooltip":"channels",
+                "default":2
+            },
+            "hide":{
+                "type":"int",
+                "tooltip":"hide window when start",
+                "default":0
+            },
+            "batch_size":{
+                "type":"int",
+                "tooltip":"channel batch size",
+                "default":0,
+                "range":{"0":"Immediate","Others":"frame points for each channel"}
+            },
+            "autostart":{
+                "type":"int",
+                "tooltip":"auto start",
+                "default":0
+            }
+        },
+        "input_subjects":
+        {
+            "timestamp_in":{
+                "type":"uint64",
+                "tooltip":"timestamp ref"
+            }
+        },
+        "output_subjects":{
+            "wav":{
+                "type":"bytes",
+                "tooltip":"Output Sample Points"
+            },
+            "timestamp":{
+                "type":"uint64",
+                "tooltip":"timestamp in total bytes"
+            }
+
+        }
+    }
+}

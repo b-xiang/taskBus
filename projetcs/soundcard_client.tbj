@@ -1,0 +1,159 @@
+{
+    "mod0": {
+        "network_p2p": {
+            "input_subjects": {
+                "in1": {
+                    "instance_value": 0,
+                    "tooltip": "入口1",
+                    "type": "byte"
+                },
+                "in2": {
+                    "instance_value": 0,
+                    "tooltip": "入口2",
+                    "type": "byte"
+                },
+                "in3": {
+                    "instance_value": "",
+                    "tooltip": "入口3",
+                    "type": "byte"
+                },
+                "in4": {
+                    "instance_value": "",
+                    "tooltip": "入口4",
+                    "type": "byte"
+                },
+                "in5": {
+                    "instance_value": "",
+                    "tooltip": "入口5",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/network_p2p.exe",
+                "instance_value": 22
+            },
+            "name": {
+                "name": "network_p2p"
+            },
+            "output_subjects": {
+                "out1": {
+                    "instance_value": 3,
+                    "tooltip": "出口1",
+                    "type": "byte"
+                },
+                "out2": {
+                    "instance_value": 7,
+                    "tooltip": "出口2",
+                    "type": "byte"
+                },
+                "out3": {
+                    "instance_value": "",
+                    "tooltip": "出口3",
+                    "type": "byte"
+                },
+                "out4": {
+                    "instance_value": "",
+                    "tooltip": "出口4",
+                    "type": "byte"
+                },
+                "out5": {
+                    "instance_value": "",
+                    "tooltip": "出口5",
+                    "type": "byte"
+                }
+            },
+            "parameters": {
+                "address": {
+                    "default": "192.168.1.100",
+                    "instance_value": "192.168.1.10",
+                    "tooltip": "地址",
+                    "type": "string"
+                },
+                "hide": {
+                    "default": "0",
+                    "instance_value": "1",
+                    "tooltip": "不显示窗口(0:显示,1:隐藏)",
+                    "type": "int"
+                },
+                "mod": {
+                    "default": "0",
+                    "instance_value": "1",
+                    "tooltip": "连接方式(0:监听,1:发起)",
+                    "type": "int"
+                },
+                "port": {
+                    "default": "9527",
+                    "instance_value": "9527",
+                    "tooltip": "端口",
+                    "type": "int"
+                }
+            },
+            "version": {
+                "version": "1,0,0"
+            }
+        }
+    },
+    "mod1": {
+        "sink_plots": {
+            "input_subjects": {
+                "plot0": {
+                    "instance_value": 3,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot1": {
+                    "instance_value": 7,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot2": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot3": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot4": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_plots.exe",
+                "instance_value": 23
+            },
+            "name": {
+                "name": "plots"
+            },
+            "parameters": {
+                "channels": {
+                    "default": "1,1,1,1,1,1",
+                    "instance_value": "1,2,1,1,1,1",
+                    "range": {
+                        "tip": "1 or 2"
+                    },
+                    "tooltip": "channels",
+                    "type": "string"
+                }
+            },
+            "version": {
+                "version": "1,1,0"
+            }
+        }
+    },
+    "pos0": {
+        "x": 1602,
+        "y": 1586
+    },
+    "pos1": {
+        "x": 1947,
+        "y": 1598
+    },
+    "total_mods": 2
+}

@@ -1,0 +1,3 @@
+Please copy wrapper_scripts.exe to this directory, and rename it to example_python2.exe
+
+请把编译后的wrapper_scripts.exe拷贝到这里，并更名为example_python2.exe

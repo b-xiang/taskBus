@@ -1,0 +1,19 @@
+﻿{
+    "example_python":{
+        "name":"Example_Py",
+        "parameters":{                         
+        },
+        "input_subjects":{
+            "input":{
+                "tooltip":"input",
+                "type":"byte"
+            }
+        },
+        "output_subjects":{
+            "output":{
+                "tooltip":"output",
+                "type":"byte"
+            }
+        }
+    }
+}

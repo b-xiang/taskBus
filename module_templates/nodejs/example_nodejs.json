@@ -1,0 +1,19 @@
+﻿{
+    "example_nodejs":{
+        "name":"Example_node",
+        "parameters":{                         
+        },
+        "input_subjects":{
+            "input":{
+                "tooltip":"input",
+                "type":"byte"
+            }
+        },
+        "output_subjects":{
+            "output":{
+                "tooltip":"output",
+                "type":"byte"
+            }
+        }
+    }
+}

@@ -1,0 +1,408 @@
+{
+    "mod0": {
+        "sink_plots": {
+            "input_subjects": {
+                "plot0": {
+                    "instance_value": 5,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot1": {
+                    "instance_value": 4,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot2": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot3": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot4": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_plots.exe",
+                "instance_value": 13
+            },
+            "name": {
+                "name": "plots"
+            },
+            "parameters": {
+                "channels": {
+                    "default": "1,1,1,1,1,1",
+                    "instance_value": "1,2,1,1,1,1",
+                    "range": {
+                        "tip": "1 or 2"
+                    },
+                    "tooltip": "channels",
+                    "type": "string"
+                }
+            },
+            "version": {
+                "version": "1,1,0"
+            }
+        }
+    },
+    "mod1": {
+        "source_soundcard": {
+            "instance": {
+                "additional_args": "OUTD=3;nice=2;",
+                "exec": "modules/source_soundcard.exe",
+                "instance_value": 14
+            },
+            "name": {
+                "name": "soundcard"
+            },
+            "output_subjects": {
+                "timestamp": {
+                    "instance_value": 2,
+                    "tooltip": "timestamp in total bytes",
+                    "type": "uint64"
+                },
+                "wav": {
+                    "instance_value": 1,
+                    "tooltip": "Output Sample Points",
+                    "type": "bytes"
+                }
+            },
+            "parameters": {
+                "autostart": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "auto start",
+                    "type": "int"
+                },
+                "batch_size": {
+                    "default": 0,
+                    "instance_value": 2048,
+                    "range": {
+                        "0": "Immediate",
+                        "Others": "frame points for each channel"
+                    },
+                    "tooltip": "channel batch size",
+                    "type": "int"
+                },
+                "channel": {
+                    "default": 2,
+                    "instance_value": 1,
+                    "tooltip": "channels",
+                    "type": "int"
+                },
+                "device": {
+                    "default": "default",
+                    "instance_value": "default",
+                    "tooltip": "device name",
+                    "type": "string"
+                },
+                "hide": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "hide window when start",
+                    "type": "int"
+                },
+                "sample_rate": {
+                    "default": 44100,
+                    "instance_value": 8000,
+                    "range": {
+                        "desc": "8000~192000"
+                    },
+                    "tooltip": "sample rate of soundcard",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "mod2": {
+        "sink_filebin": {
+            "input_subjects": {
+                "out1": {
+                    "instance_value": 1,
+                    "tooltip": "data1",
+                    "type": "byte"
+                },
+                "out2": {
+                    "instance_value": "",
+                    "tooltip": "data2",
+                    "type": "byte"
+                },
+                "out3": {
+                    "instance_value": "",
+                    "tooltip": "data3",
+                    "type": "byte"
+                },
+                "out4": {
+                    "instance_value": "",
+                    "tooltip": "data4",
+                    "type": "byte"
+                },
+                "out5": {
+                    "instance_value": "",
+                    "tooltip": "data5",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_file.exe",
+                "instance_value": 15
+            },
+            "name": {
+                "name": "BIN SINK"
+            },
+            "parameters": {
+                "folder": {
+                    "default": "./",
+                    "instance_value": "./log",
+                    "tooltip": "存储文件夹",
+                    "type": "string"
+                },
+                "maxsize": {
+                    "default": 16777216,
+                    "instance_value": 16777216,
+                    "tooltip": "单个文件大小(字节)",
+                    "type": "int"
+                },
+                "type1": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:raw 1:frame"
+                    },
+                    "tooltip": "第1路类型",
+                    "type": "int"
+                },
+                "type2": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:raw 1:frame"
+                    },
+                    "tooltip": "第2路类型",
+                    "type": "int"
+                },
+                "type3": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:raw 1:frame"
+                    },
+                    "tooltip": "第3路类型",
+                    "type": "int"
+                },
+                "type4": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:raw 1:frame"
+                    },
+                    "tooltip": "第4路类型",
+                    "type": "int"
+                },
+                "type5": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:raw 1:frame"
+                    },
+                    "tooltip": "第5路类型",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "mod3": {
+        "sink_filecsv": {
+            "input_subjects": {
+                "out1": {
+                    "instance_value": 6,
+                    "tooltip": "data1",
+                    "type": "byte"
+                },
+                "out2": {
+                    "instance_value": "",
+                    "tooltip": "data2",
+                    "type": "byte"
+                },
+                "out3": {
+                    "instance_value": "",
+                    "tooltip": "data3",
+                    "type": "byte"
+                },
+                "out4": {
+                    "instance_value": "",
+                    "tooltip": "data4",
+                    "type": "byte"
+                },
+                "out5": {
+                    "instance_value": "",
+                    "tooltip": "data5",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_file.exe",
+                "instance_value": 16
+            },
+            "name": {
+                "name": "CSV SINK"
+            },
+            "parameters": {
+                "folder": {
+                    "default": "./",
+                    "instance_value": "./log",
+                    "tooltip": "存储文件夹",
+                    "type": "string"
+                },
+                "maxsize": {
+                    "default": 16777216,
+                    "instance_value": 16777216,
+                    "tooltip": "单个文件大小(字节)",
+                    "type": "int"
+                },
+                "type1": {
+                    "default": "0",
+                    "instance_value": "6",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "第1路类型",
+                    "type": "int"
+                },
+                "type2": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "第2路类型",
+                    "type": "int"
+                },
+                "type3": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "第3路类型",
+                    "type": "int"
+                },
+                "type4": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "第4路类型",
+                    "type": "int"
+                },
+                "type5": {
+                    "default": "0",
+                    "instance_value": "0",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "第5路类型",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "mod4": {
+        "transform_fft": {
+            "input_subjects": {
+                "signal": {
+                    "instance_value": 1,
+                    "tooltip": "signal",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": 2,
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/transform_fft.exe",
+                "instance_value": 17
+            },
+            "name": {
+                "name": "libfftw"
+            },
+            "output_subjects": {
+                "FFT": {
+                    "instance_value": 5,
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "Spec": {
+                    "instance_value": 4,
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": 6,
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 1,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "fftsize": {
+                    "default": 1024,
+                    "instance_value": 1024,
+                    "tooltip": "fft size",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
+    "pos0": {
+        "x": 2200,
+        "y": 1754
+    },
+    "pos1": {
+        "x": 1427,
+        "y": 1637
+    },
+    "pos2": {
+        "x": 1882,
+        "y": 1742
+    },
+    "pos3": {
+        "x": 2211,
+        "y": 1506
+    },
+    "pos4": {
+        "x": 1864,
+        "y": 1520
+    },
+    "total_mods": 5
+}

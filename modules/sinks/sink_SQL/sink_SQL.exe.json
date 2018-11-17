@@ -1,0 +1,75 @@
+﻿{
+    "sink_sqlscripts":{
+        "name":"sql scripts",
+        "version":"1,1,0",
+        "parameters":{
+            "DRIVER":{
+                "type":"string",
+                "default":"QSQLITE",
+                "tooltip":"数据驱动"
+            },
+            "HOST":{
+                "type":"string",
+                "default":"127.0.0.1",
+                "tooltip":"服务器"
+            },
+            "PORT":{
+                "type":"string",
+                "default":1234,
+                "tooltip":"端口"
+            },
+            "DATABASE":{
+                "type":"string",
+                "default":".\\my.db",
+                "tooltip":"数据库"
+            },
+            "USER":{
+                "type":"string",
+                "default":"user",
+                "tooltip":"用户"
+            },
+            "PASS":{
+                "type":"string",
+                "default":"pass",
+                "tooltip":"口令"
+            },
+            "hide_window":{
+                "type":"int",
+                "default":"0",
+                "tooltip":"隐藏窗口"
+            },
+            "use_transaction":{
+                "type":"int",
+                "default":"0",
+                "tooltip":"使用事务"
+            },
+            "commit_time":{
+                "type":"int",
+                "default":"1",
+                "tooltip":"提交时间门限(秒)"
+            },
+            "encoding":{
+                "type":"int",
+                "default":"0",
+                "tooltip":"字符编码",
+                "range":{"tip":"0=936;1=UTF-8"}
+            },
+            "start_script":{
+                "type":"string",
+                "default":"",
+                "tooltip":"数据库开启脚本",
+                "range":{"tip":"会用start.exe 独立启动。"}
+            }
+
+
+        },
+        "input_subjects":{
+            "sql":{
+                "type":"byte",
+                "tooltip":"SQL输入"
+            }
+        },
+        "output_subjects":{
+        }
+    }
+}

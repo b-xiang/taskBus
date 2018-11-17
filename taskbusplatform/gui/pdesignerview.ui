@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PDesignerView</class>
+ <widget class="QWidget" name="PDesignerView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Designer</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <item>
+    <widget class="QGraphicsView" name="graphicsView_main">
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
+     <property name="backgroundBrush">
+      <brush brushstyle="NoBrush">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="renderHints">
+      <set>QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
+     </property>
+     <property name="dragMode">
+      <enum>QGraphicsView::ScrollHandDrag</enum>
+     </property>
+     <property name="transformationAnchor">
+      <enum>QGraphicsView::AnchorViewCenter</enum>
+     </property>
+     <property name="resizeAnchor">
+      <enum>QGraphicsView::AnchorViewCenter</enum>
+     </property>
+     <property name="viewportUpdateMode">
+      <enum>QGraphicsView::FullViewportUpdate</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionzoom_In">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/zoomIn.png</normaloff>:/taskBus/images/zoomIn.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom_In</string>
+   </property>
+   <property name="toolTip">
+    <string>zoom_In, Ctrl+=</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+=</string>
+   </property>
+  </action>
+  <action name="actionzoom_Out">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/zoomOut.png</normaloff>:/taskBus/images/zoomOut.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom_Out</string>
+   </property>
+   <property name="toolTip">
+    <string>zoom_Out, Ctrl+-</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionzoom_orgin">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/038-2.png</normaloff>:/taskBus/images/038-2.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom_orgin</string>
+   </property>
+  </action>
+  <action name="actionDelete_selected_node">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/delete_node.png</normaloff>:/taskBus/images/delete_node.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete selected node</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="actiondebug_on">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/ddimg_debug.png</normaloff>:/taskBus/images/ddimg_debug.png</iconset>
+   </property>
+   <property name="text">
+    <string>debug on</string>
+   </property>
+  </action>
+  <action name="actiondebug_off">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/ddimg_debugoff.png</normaloff>:/taskBus/images/ddimg_debugoff.png</iconset>
+   </property>
+   <property name="text">
+    <string>debug off</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/Copy.png</normaloff>:/taskBus/images/Copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy, Ctrl+C</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/Paste.png</normaloff>:/taskBus/images/Paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste,Ctrl+V</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/Cut-2.png</normaloff>:/taskBus/images/Cut-2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut,Ctrl+X</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionConnectLine">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/H. line.png</normaloff>:/taskBus/images/H. line.png</iconset>
+   </property>
+   <property name="text">
+    <string>ConnectLine</string>
+   </property>
+   <property name="toolTip">
+    <string>ConnectLine, Ctrl+L</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionDeleteLine">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/D. line.png</normaloff>:/taskBus/images/D. line.png</iconset>
+   </property>
+   <property name="text">
+    <string>DeleteLine</string>
+   </property>
+   <property name="toolTip">
+    <string>DeleteLine,Ctrl+D</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionPinUp">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/up.png</normaloff>:/taskBus/images/up.png</iconset>
+   </property>
+   <property name="text">
+    <string>PinUp</string>
+   </property>
+   <property name="toolTip">
+    <string>pins Up(^Up)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="actionPinDown">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/down.png</normaloff>:/taskBus/images/down.png</iconset>
+   </property>
+   <property name="text">
+    <string>PinDown</string>
+   </property>
+   <property name="toolTip">
+    <string>pins down(^Down)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
+   </property>
+  </action>
+  <action name="actionPinSide">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/side.png</normaloff>:/taskBus/images/side.png</iconset>
+   </property>
+   <property name="text">
+    <string>PinSide</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Pins to another side(^Left, ^Right)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left, Ctrl+Right</string>
+   </property>
+  </action>
+  <action name="actionNiceUp">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/Process busy.png</normaloff>:/taskBus/images/Process busy.png</iconset>
+   </property>
+   <property name="text">
+    <string>NiceUp</string>
+   </property>
+   <property name="toolTip">
+    <string>Process priority Up</string>
+   </property>
+  </action>
+  <action name="actionNiceDown">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/Process idle.png</normaloff>:/taskBus/images/Process idle.png</iconset>
+   </property>
+   <property name="text">
+    <string>NiceDown</string>
+   </property>
+   <property name="toolTip">
+    <string>Process priority Down</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../taskbusplatform.qrc"/>
+ </resources>
+ <connections/>
+</ui>

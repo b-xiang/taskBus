@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>taskbusplatform.ico</file>
+    </qresource>
+    <qresource prefix="/taskBus">
+        <file>images/ddimg_debug.png</file>
+        <file>images/ddimg_exit.png</file>
+        <file>images/load_module.png</file>
+        <file>images/start_project.png</file>
+        <file>images/new_project.png</file>
+        <file>images/open_project.png</file>
+        <file>images/save_project.png</file>
+        <file>images/delete_node.png</file>
+        <file>images/ddimg_debugoff.png</file>
+        <file>images/zoomIn.png</file>
+        <file>images/zoomOut.png</file>
+        <file>images/038-2.png</file>
+        <file>images/Copy.png</file>
+        <file>images/Cut-2.png</file>
+        <file>images/Paste.png</file>
+        <file>images/H. line.png</file>
+        <file>images/D. line.png</file>
+        <file>images/down.png</file>
+        <file>images/side.png</file>
+        <file>images/up.png</file>
+        <file>images/Process busy.png</file>
+        <file>images/Process idle.png</file>
+    </qresource>
+</RCC>

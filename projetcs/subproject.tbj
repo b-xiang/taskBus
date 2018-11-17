@@ -1,0 +1,88 @@
+{
+    "mod0": {
+        "sink_plots": {
+            "input_subjects": {
+                "plot0": {
+                    "instance_value": 1,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot1": {
+                    "instance_value": 2,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot2": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot3": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot4": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_plots.exe",
+                "instance_value": 32
+            },
+            "name": {
+                "name": "plots"
+            },
+            "parameters": {
+                "channels": {
+                    "default": "1,1,1,1,1,1",
+                    "instance_value": "1,2,1,1,1,1",
+                    "range": {
+                        "tip": "1 or 2"
+                    },
+                    "tooltip": "channels",
+                    "type": "string"
+                }
+            },
+            "version": {
+                "version": "1,1,0"
+            }
+        }
+    },
+    "mod1": {
+        "voice_spec": {
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "../../taskBus/projetcs/voice_spec.exe",
+                "instance_value": 33
+            },
+            "name": {
+                "name": "voice_spec"
+            },
+            "output_subjects": {
+                "transform_fft_FFTo1": {
+                    "instance_value": 1,
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "transform_fft_Speco1": {
+                    "instance_value": 2,
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                }
+            }
+        }
+    },
+    "pos0": {
+        "x": 2012,
+        "y": 1492
+    },
+    "pos1": {
+        "x": 1673,
+        "y": 1498
+    },
+    "total_mods": 2
+}

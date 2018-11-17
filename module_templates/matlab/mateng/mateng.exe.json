@@ -1,0 +1,45 @@
+﻿{
+    "example_matlab":{
+        "name":"MATLAB",
+        "parameters":{
+            "path":{
+                "type":"string",
+                "tooltip":"Engine Path",
+                "default":"C:\\Program Files\\MATLAB\\R2012b\\bin\\win64"                
+            },
+			"program":{
+				"type":"string",
+				"tooltip":"script function",
+				"default":"entry"                
+            }                       
+        },
+        "input_subjects":{
+            "isub1":{
+                "tooltip":"input1",
+                "type":"byte"
+            },
+            "isub2":{
+                "tooltip":"input2",
+                "type":"byte"
+            },
+            "isub3":{
+                "tooltip":"input3",
+                "type":"byte"
+            }
+        },
+        "output_subjects":{
+            "osub1":{
+                "tooltip":"out1",
+                "type":"byte"
+            },
+            "osub2":{
+                "tooltip":"out2",
+                "type":"byte"
+            },
+            "osub3":{
+                "tooltip":"out3",
+                "type":"byte"
+            }
+        }
+    }
+}

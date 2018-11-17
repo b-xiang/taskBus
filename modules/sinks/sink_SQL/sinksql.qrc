@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/json">
+        <file>sink_SQL.exe.json</file>
+    </qresource>
+</RCC>

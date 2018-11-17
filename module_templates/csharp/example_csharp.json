@@ -1,0 +1,30 @@
+{
+    "example_csharp":{
+        "name":"RANDOM",
+        "parameters":{
+            "total_path":{
+                "type":"int",
+                "default":2,
+                "tooltip":"Path Count"
+            },
+            "path_rate":{
+                "type":"int",
+                "default":1024,
+                "tooltip":"Bytes/Sec"
+            }
+        },
+        "input_subjects":{
+        },
+        "output_subjects":{
+            "rand":{
+                "type":"byte",
+                "tooltip":"RANDOM"
+            }
+        },
+		"info":
+		{
+			"version":"1,1,0",
+			"author":"goldenhawking@163.com",
+		}
+    }
+}

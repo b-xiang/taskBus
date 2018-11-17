@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>taskBus</class>
+ <widget class="QMainWindow" name="taskBus">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>taskBus</string>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonTextUnderIcon</enum>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Triangular</enum>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>2</number>
+    </property>
+    <item>
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="activationOrder">
+       <enum>QMdiArea::StackingOrder</enum>
+      </property>
+      <property name="viewMode">
+       <enum>QMdiArea::TabbedView</enum>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="tabsMovable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1024</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Application">
+    <property name="title">
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="action_New_Project"/>
+    <addaction name="action_Open_Project"/>
+    <addaction name="action_Save_Project"/>
+    <addaction name="separator"/>
+    <addaction name="action_Start_project"/>
+    <addaction name="action_stop_project"/>
+   </widget>
+   <widget class="QMenu" name="menu_Moudles">
+    <property name="title">
+     <string>&amp;Moudles</string>
+    </property>
+    <addaction name="action_Load_Module"/>
+    <addaction name="action_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Modules_Window"/>
+    <addaction name="actionMessages"/>
+    <addaction name="action_Properties_View"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_About"/>
+   </widget>
+   <addaction name="menu_Moudles"/>
+   <addaction name="menu_Application"/>
+   <addaction name="menu_View"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>General</string>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_Load_Module"/>
+   <addaction name="separator"/>
+   <addaction name="action_New_Project"/>
+   <addaction name="action_Open_Project"/>
+   <addaction name="action_Save_Project"/>
+   <addaction name="separator"/>
+   <addaction name="action_Start_project"/>
+   <addaction name="action_stop_project"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dockWidget_modules">
+   <property name="maximumSize">
+    <size>
+     <width>192</width>
+     <height>524287</height>
+    </size>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Mod&amp;ules</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+     <property name="leftMargin">
+      <number>1</number>
+     </property>
+     <property name="topMargin">
+      <number>1</number>
+     </property>
+     <property name="rightMargin">
+      <number>1</number>
+     </property>
+     <property name="bottomMargin">
+      <number>1</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="comboBox_class"/>
+     </item>
+     <item>
+      <widget class="QTableView" name="listView_modules">
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragOnly</enum>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="textElideMode">
+        <enum>Qt::ElideRight</enum>
+       </property>
+       <property name="gridStyle">
+        <enum>Qt::DashLine</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>84</number>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderHighlightSections">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_props">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>P&amp;roperties</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+     <property name="leftMargin">
+      <number>1</number>
+     </property>
+     <property name="topMargin">
+      <number>1</number>
+     </property>
+     <property name="rightMargin">
+      <number>1</number>
+     </property>
+     <property name="bottomMargin">
+      <number>1</number>
+     </property>
+     <item>
+      <widget class="QTreeView" name="treeView_props">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="uniformRowHeights">
+        <bool>false</bool>
+       </property>
+       <property name="animated">
+        <bool>false</bool>
+       </property>
+       <attribute name="headerDefaultSectionSize">
+        <number>144</number>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_message">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Messa&amp;ges</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+     <property name="leftMargin">
+      <number>1</number>
+     </property>
+     <property name="topMargin">
+      <number>1</number>
+     </property>
+     <property name="rightMargin">
+      <number>1</number>
+     </property>
+     <property name="bottomMargin">
+      <number>1</number>
+     </property>
+     <item>
+      <widget class="QListView" name="listView_messages"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="action_Exit">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/ddimg_exit.png</normaloff>:/taskBus/images/ddimg_exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit from this application.</string>
+   </property>
+  </action>
+  <action name="action_Load_Module">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/load_module.png</normaloff>:/taskBus/images/load_module.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Load Module</string>
+   </property>
+   <property name="toolTip">
+    <string>Load a module executable file from disk.</string>
+   </property>
+  </action>
+  <action name="action_Start_project">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/start_project.png</normaloff>:/taskBus/images/start_project.png</iconset>
+   </property>
+   <property name="text">
+    <string>Start &amp;project</string>
+   </property>
+   <property name="toolTip">
+    <string>Start current project.</string>
+   </property>
+  </action>
+  <action name="action_New_Project">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/new_project.png</normaloff>:/taskBus/images/new_project.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Create New Project</string>
+   </property>
+  </action>
+  <action name="action_Modules_Window">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Modules Window</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/Hide Modules</string>
+   </property>
+  </action>
+  <action name="action_Properties_View">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Properties View</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/Hide Prop window</string>
+   </property>
+  </action>
+  <action name="action_Open_Project">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/open_project.png</normaloff>:/taskBus/images/open_project.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open Project</string>
+   </property>
+  </action>
+  <action name="action_Save_Project">
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/save_project.png</normaloff>:/taskBus/images/save_project.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save Project</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_stop_project">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/ddimg_exit.png</normaloff>:/taskBus/images/ddimg_exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>S&amp;top project</string>
+   </property>
+   <property name="toolTip">
+    <string>stop current project</string>
+   </property>
+  </action>
+  <action name="actionMessages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>M&amp;essages</string>
+   </property>
+  </action>
+  <zorder>dockWidget_message</zorder>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../taskbusplatform.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>dockWidget_modules</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>action_Modules_Window</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>336</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Modules_Window</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>dockWidget_modules</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Exit</sender>
+   <signal>triggered()</signal>
+   <receiver>taskBus</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Properties_View</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>dockWidget_props</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>886</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dockWidget_props</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>action_Properties_View</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>886</x>
+     <y>336</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionMessages</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>dockWidget_message</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>894</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dockWidget_message</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionMessages</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>894</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

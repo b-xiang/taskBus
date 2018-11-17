@@ -1,0 +1,154 @@
+{
+    "mod0": {
+        "transform_fft": {
+            "input_subjects": {
+                "signal": {
+                    "instance_value": 1,
+                    "tooltip": "signal",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": 2,
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "IND=-3,-2;OUTD=1,2,-1;nice=2;",
+                "exec": "modules/transform_fft.exe",
+                "instance_value": 34
+            },
+            "name": {
+                "name": "libfftw"
+            },
+            "output_subjects": {
+                "FFT": {
+                    "instance_value": 0,
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "Spec": {
+                    "instance_value": 0,
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": 6,
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 2,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "fftsize": {
+                    "default": 1024,
+                    "instance_value": 4096,
+                    "tooltip": "fft size",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
+    "mod1": {
+        "source_soundcard": {
+            "input_subjects": {
+                "timestamp_in": {
+                    "instance_value": 6,
+                    "tooltip": "timestamp ref",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "IND=1;nice=2;",
+                "exec": "modules/source_soundcard.exe",
+                "instance_value": 35
+            },
+            "name": {
+                "name": "soundcard"
+            },
+            "output_subjects": {
+                "timestamp": {
+                    "instance_value": 2,
+                    "tooltip": "timestamp in total bytes",
+                    "type": "uint64"
+                },
+                "wav": {
+                    "instance_value": 1,
+                    "tooltip": "Output Sample Points",
+                    "type": "bytes"
+                }
+            },
+            "parameters": {
+                "autostart": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "auto start",
+                    "type": "int"
+                },
+                "batch_size": {
+                    "default": 0,
+                    "instance_value": 4096,
+                    "range": {
+                        "0": "Immediate",
+                        "Others": "frame points for each channel"
+                    },
+                    "tooltip": "channel batch size",
+                    "type": "int"
+                },
+                "channel": {
+                    "default": 2,
+                    "instance_value": 2,
+                    "tooltip": "channels",
+                    "type": "int"
+                },
+                "device": {
+                    "default": "default",
+                    "instance_value": "default",
+                    "tooltip": "device name",
+                    "type": "string"
+                },
+                "hide": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "hide window when start",
+                    "type": "int"
+                },
+                "sample_rate": {
+                    "default": 44100,
+                    "instance_value": 48000,
+                    "range": {
+                        "desc": "8000~192000"
+                    },
+                    "tooltip": "sample rate of soundcard",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "pos0": {
+        "x": 1894,
+        "y": 1636
+    },
+    "pos1": {
+        "x": 1444,
+        "y": 1600
+    },
+    "total_mods": 2
+}

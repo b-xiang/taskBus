@@ -1,0 +1,241 @@
+{
+    "mod0": {
+        "source_soundcard": {
+            "input_subjects": {
+                "timestamp_in": {
+                    "instance_value": "",
+                    "tooltip": "timestamp ref",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/source_soundcard.exe",
+                "instance_value": 5
+            },
+            "name": {
+                "name": "soundcard"
+            },
+            "output_subjects": {
+                "timestamp": {
+                    "instance_value": "",
+                    "tooltip": "timestamp in total bytes",
+                    "type": "uint64"
+                },
+                "wav": {
+                    "instance_value": 1,
+                    "tooltip": "Output Sample Points",
+                    "type": "bytes"
+                }
+            },
+            "parameters": {
+                "autostart": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "auto start",
+                    "type": "int"
+                },
+                "batch_size": {
+                    "default": 0,
+                    "instance_value": 2048,
+                    "range": {
+                        "0": "Immediate",
+                        "Others": "frame points for each channel"
+                    },
+                    "tooltip": "channel batch size",
+                    "type": "int"
+                },
+                "channel": {
+                    "default": 2,
+                    "instance_value": 1,
+                    "tooltip": "channels",
+                    "type": "int"
+                },
+                "device": {
+                    "default": "default",
+                    "instance_value": "default",
+                    "tooltip": "device name",
+                    "type": "string"
+                },
+                "hide": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "hide window when start",
+                    "type": "int"
+                },
+                "sample_rate": {
+                    "default": 44100,
+                    "instance_value": 8000,
+                    "range": {
+                        "desc": "8000~192000"
+                    },
+                    "tooltip": "sample rate of soundcard",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "mod1": {
+        "example_python": {
+            "input_subjects": {
+                "input": {
+                    "instance_value": 1,
+                    "tooltip": "input",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "../../taskBus/module_templates/python/example_python.exe",
+                "instance_value": 6
+            },
+            "name": {
+                "name": "Example_Py"
+            },
+            "output_subjects": {
+                "output": {
+                    "instance_value": 2,
+                    "tooltip": "output",
+                    "type": "byte"
+                }
+            }
+        }
+    },
+    "mod2": {
+        "transform_fft": {
+            "input_subjects": {
+                "signal": {
+                    "instance_value": 2,
+                    "tooltip": "signal",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/transform_fft.exe",
+                "instance_value": 7
+            },
+            "name": {
+                "name": "libfftw"
+            },
+            "output_subjects": {
+                "FFT": {
+                    "instance_value": 3,
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "Spec": {
+                    "instance_value": "",
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 1,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "fftsize": {
+                    "default": 1024,
+                    "instance_value": 1024,
+                    "tooltip": "fft size",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
+    "mod3": {
+        "sink_plots": {
+            "input_subjects": {
+                "plot0": {
+                    "instance_value": 3,
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot1": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot2": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot3": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                },
+                "plot4": {
+                    "instance_value": "",
+                    "tooltip": "double input",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=2;",
+                "exec": "modules/sink_plots.exe",
+                "instance_value": 8
+            },
+            "name": {
+                "name": "plots"
+            },
+            "parameters": {
+                "channels": {
+                    "default": "1,1,1,1,1,1",
+                    "instance_value": "1,1,1,1,1,1",
+                    "range": {
+                        "tip": "1 or 2"
+                    },
+                    "tooltip": "channels",
+                    "type": "string"
+                }
+            },
+            "version": {
+                "version": "1,1,0"
+            }
+        }
+    },
+    "pos0": {
+        "x": 1511,
+        "y": 1534
+    },
+    "pos1": {
+        "x": 1802,
+        "y": 1609
+    },
+    "pos2": {
+        "x": 2045,
+        "y": 1463
+    },
+    "pos3": {
+        "x": 2399,
+        "y": 1493
+    },
+    "total_mods": 4
+}
