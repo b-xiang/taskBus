@@ -2,7 +2,7 @@
 
 [TOC]
 
-##1. What is TaskBus
+## 1. What is TaskBus
 
 Taskbus is a cross-platform multi-process cooperation framework for non-professional developers, with four features of **process based, language independent, compiler independent, and architecture Independent**.
 
@@ -12,7 +12,7 @@ Taskbus provides a modular drag-and-drop interface like Simulink or gnu-radio th
 
 ![taskBus UI](images/main_ui_en.png)
 
-##2. Key Features
+## 2. Key Features
 The core idea of Taskbus is “Define IO Standard instead of toolchain to be used, define connection structure instead of architecture or algorithm. ”
 
 1. Taskbus only defines the method and format of data exchange, and does not require the implementation of language and operation environment. This brings a very high level of flexibility.
@@ -28,12 +28,12 @@ Key Features：
 
 ![taskBus UI](images/features_en.png)
 
-##3. Basic Principle
+## 3. Basic Principle
 Many of the classic programming language cookbooks are  started from the console. The console program receives user input through the keyboard and prints the result of the operation to the screen. In fact, the process starts with three special file handles available, whether in Linux or Windows. They are standard output (stdout), standard input (stdin), standard error (STDERR). 
 
 Most modern languages support the creation of child processes, and can take over  child processes' standard pipelines through "pipeline redirection" technology. Taskbus technology, which is based on this feature, reads data from the stdout of each child process and forwards it to the required subprocess (stdin).
 
-###3.1 Input and Output
+### 3.1 Input and Output
 
 A textbook C program that implements XOR operations is generally similar to this:
 
@@ -66,10 +66,10 @@ The input and output of the Taskbus module is very similar to the above program.
 	fwrite(a,sizeof(int),4,stdout);
 ```
 
-###3.2 Subjects and Paths
+### 3.2 Subjects and Paths
 A child process has only one pair of input and output pipelines. By introducing the concept of *Subjects and Paths*, multiple content can be transmited through one channel .
 
-####3.2.1 Subjects
+#### 3.2.1 Subjects
 
 *Subject* indicates a class of data. such as the waveform collected by the sound card, and the stream of bytes read from the file.
 
@@ -80,7 +80,7 @@ On the graphical interface, the Subjects is shown as a pin. Each Subjects has a 
 A Subject producer generates data and gives it to the platform. The platform gives the data to all consumers connected to the Subjects.
 **NOTE:** Different pins can produce the same Subject ID, and can also listen to a same ID. For the Producers, the act of doing so is consistent. For consumers, how to deal with the same subject ID, depending on the module implementation.
 
-####3.2.2 Paths
+#### 3.2.2 Paths
 
 Path distinguishes an independent natural sequence in a class of topics. In the example below, the data collected by the two sound cards are remitted into the same FFT converter. For converters, it is necessary to distinguish between two natural timing sequences in order not to cause confusion.
 
@@ -88,7 +88,7 @@ Path distinguishes an independent natural sequence in a class of topics. In the 
 
 The sound card module in the image above uses its own process ID (2, 6) as the path number, which makes it very convenient to calibrate the source of the data.
 
-###3.3 IO with Subjects and Paths
+### 3.3 IO with Subjects and Paths
 
 Given the above, we can implement stdio-based communication with a slight modification in the preceding code.
 ```cpp
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 
 The above code lacks context, but clearly illustrates the most basic communication principle of taskbus. Between the different modules, it is through this method of communication.
 
-###3.4 Function publish
+### 3.4 Function publish
 taskBus modules are developed independently by the developer. A JSON file is required to publish its own functionality to platform. In this way, the platform knows the types of topics supported by the module, parameter options.
 A typical function description file must consist of three parts, namely:
 1. Parameter table
@@ -216,7 +216,7 @@ Within each function, the four sub-items (name, parameters, Input_subject, Outpu
 
 ![example_module UI](images/example_module.png)
 
-###3.5 Command-line arguments
+### 3.5 Command-line arguments
 
 The Taskbus platform initiates the process based on the JSON file. When you start each function module, Taskbus feeds all the information through the command line parameters. There are several types of command-line arguments.
 
@@ -235,7 +235,7 @@ user@local$ example_helloworld.exe --instance=6 --function=example_bitxor --mask
 ```
 ![Paths UI](images/commandline_en.png)
 
-###3.6 First Hello-world module
+### 3.6 First Hello-world module
 
 We paste the code of the Hellowold module here, using C + +, it is very convenient to implement the above functions.
 - The code does not use any features other than the standard C + +
@@ -367,11 +367,11 @@ int main(int argc, char * argv[])
 
 ```
 
-##4. Development Guide
+## 4. Development Guide
 
 We will take FFTW as an example of how to create a Taskbus module from 0 onwards.
 
-###4.1 Design functions and writing JSON file
+### 4.1 Design functions and writing JSON file
 
 The first step in creating a module is to design the function and determine the interface, properties, and composition of the JSON file. The quickest way to compose a JSON file is to modify it from an example and save it as a JSON file with the same name as the executable. Writing Asian characters with UTF-8 encoding facilitates loading speed. As long as there is a JSON file, even if the module is not fully implemented, you can see the effect on the platform. The FFT module that we want to design should have the following structure:
 
@@ -444,11 +444,11 @@ The feature description file with the above features is as follows:
 
 Once you have the JSON file, you can load and edit it on the platform as long as you have a blank executable file (with the same file name and extension). Of course it does not work unless we go on with following chapters.
 
-###4.2 Accelerate development progress with toolcodes
+### 4.2 Accelerate development progress with toolcodes
 
 If you use feature-rich languages such as C #, it is easier to do operations such as command-line parsing. For C++, taskBus platform provides source code that can directly accelerate development speed. Using these source codes will significantly improve development efficiency and simplify the amount of code.
 
-####4.2.1 Command Line Interpretation
+#### 4.2.1 Command Line Interpretation
 
 The first step in implementing module functionality is to get command-line arguments. You can use HelloWorld code to implement command-line parsing, but that makes it more complicated. Using the provided classes, command-line parsing and extraction becomes very simple. Whether it is QT, C++ or MFC, you can take similar measures.
 
@@ -483,7 +483,7 @@ int main(int argc , char * argv[])
 
 For examples of QT, MFC, C#, you can refer to sample projects.
 
-####4.2.2 Data sending and receiving
+#### 4.2.2 Data sending and receiving
 
 The data throughput format for Taskbus is fixed. It strictly follows the following order:
 
@@ -560,13 +560,13 @@ The sending and receiving code snippet using the tool functions described above 
 		}
 ```
 
-####4.2.3 Debugging
+#### 4.2.3 Debugging
 
 Tracking debugging from a platform process is very complex. Even for a simple module, you must roam through the binary machine code developed by the compiler in different languages. Fortunately, Taskbus offers a very clever and simple offline debugging solution that allows you to debug the module itself individually and connect to the platform at any time.
 
 The core idea of debugging is the overloading of the input and output pipeline. taskBus platform can record all the input and output data, command-line startup parameters and other features of a module to disk as needed. Then, when you debug the platform, you can implement scene playback whenever you specify a recording folder.
 
-#####(1)Turn on debug and recording data
+##### (1)Turn on debug and recording data
 
 Selecting the module in the main interface and clicking the Start Debugging button will turn on the recording.
 
@@ -576,7 +576,7 @@ Once the entire project starts running, the recorded data is continuously record
 
 ![turnon_debug](images/debug_folder.png)
 
-#####(2)Playback and debugging
+##### (2)Playback and debugging
 
 The key technology is based on "freopen()". This feature redirects the actual source to the file while keeping the file handle unchanged. The user can implement it himself through a statement, and once the following statement is executed, the data throughput section of the above will automatically use the data recorded in the file:
 
@@ -607,11 +607,11 @@ int main(int argc , char * argv[])
 
 In the code above, the previously recorded command-line arguments and input data are read from the debug/pid21580 folder. This way, you can debug it independently. Don't forget to set the debug switch OFFLINEDEBUG to 0 after you finish debugging.
 
-###4.3 Data Processing
+### 4.3 Data Processing
 
 In the preceding example, data is Immediately processed, that is the simplest case. In many scenarios we need to deal with data cache and multiplex processing problems. Load control is also an issue to consider for a large data flow or time-consuming operation.
 
-####4.3.1 Data Caching recommendations
+#### 4.3.1 Data Caching recommendations
 
 It is recommended to use the STL library.
 
@@ -620,7 +620,7 @@ It is recommended to use the STL library.
 - use nested map, vector, list to implement very complex dynamic data structures.
 - It's also a good idea to use the smart pointer "shared_ptr".
 
-####4.3.2 Load control
+#### 4.3.2 Load control
 
 Unlike Gnuradio’s pulling, Taskbus producers push the data. When computing resources are abundant, designers do not need to consider the problem of load control. However, in time-consuming processing, if there is no measure to protect, the bottleneck module may result in increasing memory overhead across the platform. Producers continue to write to stdout, the platform output to the consumer's stdin, seemingly no problem. In fact, under Windows, the platform writes the cache of the operating system. If consumers are unable to consume the cache in a timely manner, the cache will continue to grow.
 
@@ -634,11 +634,11 @@ Strategy 2 is used for the following example project.Technical details Reference
 
 ![antiblocking](images/antiblocking.png)
 
-###4.4 Runtime and deploy
+### 4.4 Runtime and deploy
 
 The Taskbus runtime provides a traversal for Green Publishing (Copy-deployment), and developers can adjust the path settings by referring to the following sections.
 
-####4.4.1 Path Policy
+#### 4.4.1 Path Policy
 
 The current path will be changed to the path where the Taskbusplatform executable file is located when the platform started. Taskbusplatform reads all known modules that are listed in Default_mods.text . In this file, each row stores the executable file location of a module, and an example looks like this:
 
@@ -657,11 +657,11 @@ modules/sink_plots.exe
 
 Taskbusplatform will try to use relative path unless the character length of the absolute path is less than the relative path. Therefore, for a system that needs to be published, you can place all modules in the path where the Taskbusplatform executable file is located. Managed with subfolders such as folder modules or subs is a good way. Once you've done this, copy it to a new computer and run it without setting it up.
 
-####4.4.2 Sub-Projects and nesting
+#### 4.4.2 Sub-Projects and nesting
 
 a taskBus project can be referenced by other projects. All suspended pins are assigned temporary IDs and exposed for external engineering links. Taking the FFT of the sound card as an example, we can combine the sound card and FFT into a "sound spectrum" module.
 
-#####(1) Create a sub project
+##### (1) Create a sub project
 
 Create a new subproject with the following structure:
 
@@ -673,14 +673,14 @@ Create a new subproject with the following structure:
 
 Save this subproject as a TBJ file, such as "VOICE_SPEC.TBJ".
 
-#####(2) Attach a wrapper file
+##### (2) Attach a wrapper file
 
 Copy the wrapper "Subtask_warpper.exe" that comes with the platform to the same folder as "Voice_spec.tbj", named "Voice_spec.exe"
 
 - Voice_spec.exe will automatically read VOICE_SPEC.TBJ and tell the platform its own interface.
 - Under Linux, there is no exe extension.
 
-#####(3) Attach default module load script
+##### (3) Attach default module load script
 
 Since voice_spec needs to load the module itself, it is necessary to copy the Default_mods.text under the TaskBusPlatform.exe folder to the same folder as "voice_spec.tbj", named "voice_spec.text"
 
@@ -700,7 +700,7 @@ modules/source_soundcard.exe
 modules/transform_fft.exe
 ```
 
-#####(4) Load Subproject into taskBusPlatform
+##### (4) Load Subproject into taskBusPlatform
 
 After you load the subproject module "Voice_spec.exe" in the platform, you can drag the module into the design area as a whole:
 
@@ -708,14 +708,14 @@ After you load the subproject module "Voice_spec.exe" in the platform, you can d
 
 - Double-click the Voice_spec icon can open the subproject.
 
-###4.5 Multi-platform, distributed and scalable
+### 4.5 Multi-platform, distributed and scalable
 The Taskbus core uses Qt development and is a cross-platform structural framework that can run on all platforms that support Qt. At the same time, through the introduction of the corresponding modules, Taskbus can be more convenient to achieve distributed computing. In the code example, a TCP-based point-to-point transport module and a database logging module that accepts SQL scripts are included.
 
 In addition to supporting the use of C + +, C #, VB and other compiled languages, Taskbus can also be directly referenced by the wrapper Python,lua,perl,ruby,matlab as a module, very flexible.
 
 Specific examples refer to the accompanying code.
 
-##5 About Taskbus
+## 5 About Taskbus
 
 **Copyright protection and commercial use**
 
