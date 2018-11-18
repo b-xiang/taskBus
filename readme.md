@@ -15,17 +15,17 @@ Taskbus 从感官上提供一种类似Simulink或GNU-Radio的模块化拖拽界�
 
 Taskbus provides a modular drag-and-drop interface like Simulink or gnu-radio that can be used to implement (quasi-)real-time processing logic on a general-purpose computer. However, structurally, it is completely different from the two. It provides a process management platform by defining a feature release and data exchange standard to combine processes developed in different languages.
 
-[更多信息参看说明](./documents/taskbus_zh_CN.md)
+[更多信息参看说明（简体中文）](./documents/taskbus_zh_CN.md)
 
-[For detailed information, please follow this link.](./documents/taskbus_en.md)
+[For detailed information, please follow this link.(Eng)](./documents/taskbus_en.md)
 
-#Demo Videos
+# 演示视频 Demo Videos
 
-[zh_CN](http://www.goldenhawking.org:8088/publish/taskbus_zh_cn.mp4)
+[简体中文 zh_CN](http://www.goldenhawking.org:8088/publish/taskbus_zh_cn.mp4)
 
-[en_US](http://www.goldenhawking.org:8088/publish/taskbus_en.mp4)
+[英语     en_US](http://www.goldenhawking.org:8088/publish/taskbus_en.mp4)
 
-# 发布包 releases
+# 发布包 Releases
 
 | version | address |
 |--------|--------|
