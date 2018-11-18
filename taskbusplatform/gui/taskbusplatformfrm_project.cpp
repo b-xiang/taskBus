@@ -1,6 +1,5 @@
 #include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
-#include "pdesignerview.h"
 #include <QDebug>
 #include <QMdiSubWindow>
 #include <QFileDialog>
@@ -9,6 +8,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QThread>
+#include "pdesignerview.h"
+
 void taskBusPlatformFrm::on_action_New_Project_triggered()
 {
 	PDesignerView * v = new PDesignerView();
@@ -56,14 +57,16 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 void taskBusPlatformFrm::slot_openprj(QString newfm)
 {
 	QFile fo(newfm);
-	if (fo.open(QIODevice::ReadOnly))
+	if (m_activePagesFileName.contains(newfm)==true)
+		ui->mdiArea->setActiveSubWindow(m_activePagesFileName[newfm]);
+	else if (fo.open(QIODevice::ReadOnly))
 	{
 		QByteArray ar = fo.readAll();
 		QFileInfo info(newfm);
 		PDesignerView * dv = new PDesignerView();
 		if (dv)
 		{
-			ui->mdiArea->addSubWindow(dv);
+			QMdiSubWindow * wnd =  ui->mdiArea->addSubWindow(dv);
 			dv->project()->fromJson(ar,this->m_toolModules[tr("All")]);
 			dv->setWindowTitle(info.completeBaseName());
 			dv->show();
@@ -72,11 +75,13 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 			connect (dv,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
-
+			connect (dv,&PDesignerView::sig_closed,this,&taskBusPlatformFrm::slot_projclosed,Qt::QueuedConnection);
 			QCoreApplication::processEvents();
 			dv->project()->refresh_idxes();
 			QCoreApplication::processEvents();
 			dv->drawAll();
+			m_activePagesFileName[newfm] = wnd;
+			dv->setFullFileName(newfm);
 		}
 
 		fo.close();
@@ -154,4 +159,10 @@ void taskBusPlatformFrm::slot_projstopped()
 			dv->setEnabled(!dv->is_running());
 		}
 	}
+}
+
+void taskBusPlatformFrm::slot_projclosed(QString fm)
+{
+	qDebug()<<fm<<" closed.";
+	m_activePagesFileName.remove(fm);
 }

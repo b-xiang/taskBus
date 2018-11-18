@@ -54,6 +54,7 @@ signals:
 	void sig_updatePaths();
 	void sig_projstarted();
 	void sig_projstopped();
+	void sig_closed(QString proFile);
 signals:
 	void cmd_start_project();
 	void cmd_stop_project(QThread * th);
@@ -75,6 +76,7 @@ private:
 	//工程,the Project
 	taskProject * m_project = nullptr;
 	QThread * m_pRunThread = nullptr;
+	QString m_strFullFilename;
 	static int m_nextCV ;
 public:
 	taskProject * project(){return m_project;}
@@ -84,6 +86,8 @@ public:
 	bool is_debug_node(int node);
 	bool is_running();
 	void open_project(QString fm);
+	QString fullFileName() const {return m_strFullFilename;}
+	void setFullFileName(const QString n){m_strFullFilename = n;}
 protected:
 	void callbk_instanceAppended(taskCell * pmod, taskNode * pnod,QPointF pt);
 	taskCell * callbk_newcell();

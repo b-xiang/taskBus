@@ -1,6 +1,7 @@
 #include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
 #include <QDir>
+#include <QDebug>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
@@ -216,3 +217,4 @@ void taskBusPlatformFrm::on_comboBox_class_currentIndexChanged(int index)
 			ui->listView_modules->setModel(m_toolModules[name]);
 	}
 }
+

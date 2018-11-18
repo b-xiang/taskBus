@@ -217,6 +217,7 @@ void PDesignerView::dropEvent(QDropEvent * event)
 
 void PDesignerView::closeEvent(QCloseEvent * e)
 {
+	emit sig_closed(fullFileName());
 	this->stop();
 	e->accept();
 }

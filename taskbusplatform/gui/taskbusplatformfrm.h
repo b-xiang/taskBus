@@ -5,6 +5,7 @@
 #include <QMdiSubWindow>
 #include <QStandardItemModel>
 #include <QLabel>
+#include <QMap>
 namespace Ui {
 	class taskBus;
 }
@@ -22,6 +23,7 @@ private slots:
 	void slot_openprj(QString);
 	void slot_projstarted();
 	void slot_projstopped();
+	void slot_projclosed(QString fm);
 	void on_action_Load_Module_triggered();
 	void on_action_New_Project_triggered();
 	void on_action_About_triggered();
@@ -33,7 +35,7 @@ private slots:
 	void on_comboBox_class_currentIndexChanged(int index);
 
 protected:
-	void timerEvent(QTimerEvent *event);
+	void timerEvent(QTimerEvent *event) override;	
 	void load_modules(QStringList lstNames);
 	void load_default_modules();
 	void save_default_modules();
@@ -42,6 +44,7 @@ private:
 	QLabel * m_pStatus;
 	int m_nTmid = -1;
 	QMap<QString,taskModule *> m_toolModules;
+	QMap<QString,QMdiSubWindow *> m_activePagesFileName;	
 	QStandardItemModel * m_pMsgModel;
 	QStandardItemModel * m_pClassModel;
 	QString inifile();
