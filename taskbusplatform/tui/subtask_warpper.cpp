@@ -24,10 +24,6 @@
 #include <QProcess>
 #include <QAtomicInt>
 #include <stdio.h>
-#ifdef WIN32
-#include <io.h>
-#include <fcntl.h>
-#endif
 #include "core/taskcell.h"
 #include "core/taskproject.h"
 #include "cmdlineparser.h"
@@ -43,11 +39,7 @@ using namespace TASKBUS;
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
-
-#ifdef WIN32
-	setmode(fileno(stdout),O_BINARY);
-	setmode(fileno(stdin),O_BINARY);
-#endif
+	init_client();
 
 	//接收线程 Receive thread
 	reciv_thread * th_reciv = new reciv_thread(&a);

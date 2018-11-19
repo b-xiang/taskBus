@@ -16,7 +16,8 @@ void taskBusPlatformFrm::on_action_New_Project_triggered()
 	QString fm = QString("Untitled %1").arg(++m_doc_ins);
 	v->setWindowTitle(fm);
 	v->setFullFileName(fm);
-	ui->mdiArea->addSubWindow(v);
+	QMdiSubWindow * wnd = ui->mdiArea->addSubWindow(v);
+	m_activePagesFileName[fm] = wnd;
 	v->show();
 	connect (v,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg,Qt::QueuedConnection);
@@ -31,6 +32,7 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 	if (sub)
 	{
 		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		QString oldfm = dv->fullFileName();
 		if (dv)
 		{
 			QSettings settings(inifile(),QSettings::IniFormat);
@@ -53,7 +55,8 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 				fo.close();
 				dv->setFullFileName(newfm);
 				dv->set_modified(false);
-
+				m_activePagesFileName.remove(oldfm);
+				m_activePagesFileName[newfm] = sub;
 			}
 		}
 	}
