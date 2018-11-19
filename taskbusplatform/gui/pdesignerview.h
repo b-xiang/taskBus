@@ -32,6 +32,8 @@ public:
 	explicit PDesignerView(QWidget *parent = 0);
 	~PDesignerView();
 	void show_prop_page(QObject * model);
+	bool modified() const {return m_bModified;}
+	void set_modified(bool bmod = true);
 	//拖放事件
 	//Drag and drop events
 protected:
@@ -78,6 +80,7 @@ private:
 	QThread * m_pRunThread = nullptr;
 	QString m_strFullFilename;
 	static int m_nextCV ;
+	bool m_bModified = false;
 public:
 	taskProject * project(){return m_project;}
 	int selectedNode();

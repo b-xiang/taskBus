@@ -1,5 +1,6 @@
 #include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
+#include <QCloseEvent>
 #include <QDir>
 #include <QDebug>
 #include <QFile>
@@ -218,3 +219,39 @@ void taskBusPlatformFrm::on_comboBox_class_currentIndexChanged(int index)
 	}
 }
 
+void taskBusPlatformFrm::closeEvent(QCloseEvent * event)
+{
+	bool bModified = false;
+	bool bRunning = false;
+	QStringList lsN = m_activePagesFileName.keys();
+	foreach (QString k, lsN)
+	{
+		QWidget * w = m_activePagesFileName[k]->widget();
+		if (w)
+		{
+			PDesignerView * v = qobject_cast<PDesignerView*>(w);
+			if(v)
+			{
+				bModified = bModified || v->modified();
+				bRunning = bRunning || v->project()->isRunning();
+			}
+		}
+	}
+	if (bRunning)
+	{
+		QMessageBox::information(this,tr("Still running"),tr("Project is still running, please stop all projects first."),QMessageBox::Ok);
+		event->ignore();
+		return;
+	}
+	if (bModified)
+	{
+		if (QMessageBox::information(this,tr("Save?"),tr("Project has been modified, Close it?"),
+									 QMessageBox::Ok,
+									 QMessageBox::Cancel)!=QMessageBox::Ok)
+		{
+			event->ignore();
+			return;
+		}
+	}
+	event->accept();
+}

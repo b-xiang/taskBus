@@ -13,7 +13,9 @@
 void taskBusPlatformFrm::on_action_New_Project_triggered()
 {
 	PDesignerView * v = new PDesignerView();
-	v->setWindowTitle(QString("Untitled %1").arg(++m_doc_ins));
+	QString fm = QString("Untitled %1").arg(++m_doc_ins);
+	v->setWindowTitle(fm);
+	v->setFullFileName(fm);
 	ui->mdiArea->addSubWindow(v);
 	v->show();
 	connect (v,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
@@ -49,6 +51,9 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 				dv->setWindowTitle(info.completeBaseName());
 				fo.write(json);
 				fo.close();
+				dv->setFullFileName(newfm);
+				dv->set_modified(false);
+
 			}
 		}
 	}

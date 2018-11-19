@@ -36,6 +36,7 @@ private slots:
 
 protected:
 	void timerEvent(QTimerEvent *event) override;	
+	void closeEvent(QCloseEvent * event) override;
 	void load_modules(QStringList lstNames);
 	void load_default_modules();
 	void save_default_modules();

@@ -9,204 +9,204 @@
         <translation>设计师</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="73"/>
+        <location filename="gui/pdesignerview.ui" line="76"/>
         <source>zoom_In</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="76"/>
+        <location filename="gui/pdesignerview.ui" line="79"/>
         <source>zoom_In, Ctrl+=</source>
         <translation>放大(^=)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="79"/>
+        <location filename="gui/pdesignerview.ui" line="82"/>
         <source>Ctrl+=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="88"/>
+        <location filename="gui/pdesignerview.ui" line="91"/>
         <source>zoom_Out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="91"/>
+        <location filename="gui/pdesignerview.ui" line="94"/>
         <source>zoom_Out, Ctrl+-</source>
         <translation>缩小,Ctrl+-</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="94"/>
+        <location filename="gui/pdesignerview.ui" line="97"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="103"/>
+        <location filename="gui/pdesignerview.ui" line="106"/>
         <source>zoom_orgin</source>
         <translatorcomment>原始大小</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="112"/>
+        <location filename="gui/pdesignerview.ui" line="115"/>
         <source>Delete selected node</source>
         <translatorcomment>删除选中</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="115"/>
+        <location filename="gui/pdesignerview.ui" line="118"/>
         <source>Del</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="124"/>
+        <location filename="gui/pdesignerview.ui" line="127"/>
         <source>debug on</source>
         <translatorcomment>调试开</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="133"/>
+        <location filename="gui/pdesignerview.ui" line="136"/>
         <source>debug off</source>
         <translatorcomment>调试关</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="142"/>
+        <location filename="gui/pdesignerview.ui" line="145"/>
         <source>Copy</source>
         <translatorcomment>复制</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="145"/>
+        <location filename="gui/pdesignerview.ui" line="148"/>
         <source>Copy, Ctrl+C</source>
         <translation>复制(^C)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="148"/>
+        <location filename="gui/pdesignerview.ui" line="151"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="157"/>
+        <location filename="gui/pdesignerview.ui" line="160"/>
         <source>Paste</source>
         <translatorcomment>粘贴</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="160"/>
+        <location filename="gui/pdesignerview.ui" line="163"/>
         <source>Paste,Ctrl+V</source>
         <translation>粘贴(^V)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="163"/>
+        <location filename="gui/pdesignerview.ui" line="166"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="172"/>
+        <location filename="gui/pdesignerview.ui" line="175"/>
         <source>Cut</source>
         <translatorcomment>剪贴</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="175"/>
+        <location filename="gui/pdesignerview.ui" line="178"/>
         <source>Cut,Ctrl+X</source>
         <translation>剪切(^X)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="178"/>
+        <location filename="gui/pdesignerview.ui" line="181"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="187"/>
+        <location filename="gui/pdesignerview.ui" line="190"/>
         <source>ConnectLine</source>
         <translation>连线(^L)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="190"/>
+        <location filename="gui/pdesignerview.ui" line="193"/>
         <source>ConnectLine, Ctrl+L</source>
         <translation>连接选中的管脚（Ctrl+L）</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="193"/>
+        <location filename="gui/pdesignerview.ui" line="196"/>
         <source>Ctrl+L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="202"/>
+        <location filename="gui/pdesignerview.ui" line="205"/>
         <source>DeleteLine</source>
         <translation>删除连接</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="205"/>
+        <location filename="gui/pdesignerview.ui" line="208"/>
         <source>DeleteLine,Ctrl+D</source>
         <translation>断开连接的管脚(Ctrl+D)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="208"/>
+        <location filename="gui/pdesignerview.ui" line="211"/>
         <source>Ctrl+D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="217"/>
+        <location filename="gui/pdesignerview.ui" line="220"/>
         <source>PinUp</source>
         <translation>管脚上移</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="220"/>
+        <location filename="gui/pdesignerview.ui" line="223"/>
         <source>pins Up(^Up)</source>
         <translation>管脚向上移动(^Up)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="223"/>
+        <location filename="gui/pdesignerview.ui" line="226"/>
         <source>Ctrl+Up</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="232"/>
+        <location filename="gui/pdesignerview.ui" line="235"/>
         <source>PinDown</source>
         <translation>管脚下移</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="235"/>
+        <location filename="gui/pdesignerview.ui" line="238"/>
         <source>pins down(^Down)</source>
         <translation>管脚向下移动(^Down)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="238"/>
+        <location filename="gui/pdesignerview.ui" line="241"/>
         <source>Ctrl+Down</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="247"/>
+        <location filename="gui/pdesignerview.ui" line="250"/>
         <source>PinSide</source>
         <translation>管脚交换方向</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="250"/>
+        <location filename="gui/pdesignerview.ui" line="253"/>
         <source>Move Pins to another side(^Left, ^Right)</source>
         <translation>将管脚翻转到模块图标的另一边(^Left,^Right)</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="253"/>
+        <location filename="gui/pdesignerview.ui" line="256"/>
         <source>Ctrl+Left, Ctrl+Right</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="262"/>
+        <location filename="gui/pdesignerview.ui" line="265"/>
         <source>NiceUp</source>
         <translation>提高进程优先级</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="265"/>
+        <location filename="gui/pdesignerview.ui" line="268"/>
         <source>Process priority Up</source>
         <translation>提高选中模块的进程优先级</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="274"/>
+        <location filename="gui/pdesignerview.ui" line="277"/>
         <source>NiceDown</source>
         <translation>降低进程优先级</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.ui" line="277"/>
+        <location filename="gui/pdesignerview.ui" line="280"/>
         <source>Process priority Down</source>
         <translation>降低所给模块的进程优先级</translation>
     </message>
@@ -219,24 +219,34 @@
         <translation type="vanished">模块 %1 尚未在平台注册。</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="52"/>
+        <location filename="gui/pdesignerview.cpp" line="57"/>
         <source>zoom</source>
         <translatorcomment>操作</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="567"/>
-        <location filename="gui/pdesignerview.cpp" line="577"/>
-        <location filename="gui/pdesignerview.cpp" line="592"/>
-        <location filename="gui/pdesignerview.cpp" line="602"/>
+        <location filename="gui/pdesignerview.cpp" line="227"/>
+        <source>Save?</source>
+        <translation>保存？</translation>
+    </message>
+    <message>
+        <location filename="gui/pdesignerview.cpp" line="227"/>
+        <source>Project has been modified, Close it?</source>
+        <translation>项目已经被编辑，是否保存？</translation>
+    </message>
+    <message>
+        <location filename="gui/pdesignerview.cpp" line="603"/>
+        <location filename="gui/pdesignerview.cpp" line="613"/>
+        <location filename="gui/pdesignerview.cpp" line="628"/>
+        <location filename="gui/pdesignerview.cpp" line="638"/>
         <source>Already at min</source>
         <translation>已经抵达底部</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="567"/>
-        <location filename="gui/pdesignerview.cpp" line="577"/>
-        <location filename="gui/pdesignerview.cpp" line="592"/>
-        <location filename="gui/pdesignerview.cpp" line="602"/>
+        <location filename="gui/pdesignerview.cpp" line="603"/>
+        <location filename="gui/pdesignerview.cpp" line="613"/>
+        <location filename="gui/pdesignerview.cpp" line="628"/>
+        <location filename="gui/pdesignerview.cpp" line="638"/>
         <source>Pin order value already at min, you can move other pins UP</source>
         <translation>管脚优先级已经最小。您可以增大其他管脚优先级来达到同样目的</translation>
     </message>
@@ -356,7 +366,7 @@
         <location filename="gui/taskbusplatformfrm.ui" line="379"/>
         <source>&amp;Properties View</source>
         <oldsource>Properties View</oldsource>
-        <translation>属性窗口</translation>
+        <translation>属性窗口(&amp;P)</translation>
     </message>
     <message>
         <location filename="gui/taskbusplatformfrm.ui" line="382"/>
@@ -389,6 +399,11 @@
         <translation>停止执行当前工程</translation>
     </message>
     <message>
+        <location filename="gui/taskbusplatformfrm.ui" line="431"/>
+        <source>M&amp;essages</source>
+        <translation>消息(&amp;G)</translation>
+    </message>
+    <message>
         <source>D&amp;elete node</source>
         <translation type="vanished">删除模块(&amp;E)</translation>
     </message>
@@ -396,33 +411,53 @@
 <context>
     <name>taskBusPlatformFrm</name>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="21"/>
-        <location filename="gui/taskbusplatformfrm.cpp" line="22"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="24"/>
         <location filename="gui/taskbusplatformfrm.cpp" line="25"/>
-        <location filename="gui/taskbusplatformfrm.cpp" line="141"/>
-        <location filename="gui/taskbusplatformfrm_modules.cpp" line="77"/>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="67"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="28"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="144"/>
+        <location filename="gui/taskbusplatformfrm_modules.cpp" line="91"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="75"/>
         <source>All</source>
         <translation>所有</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="89"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="92"/>
         <source>taskBus</source>
         <translation>进程总线工作室</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="89"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="92"/>
         <source>Used to orgnize process-based modules. by goldenhawking, 2018 for opensource usage.</source>
         <translation>本程序用于设计、管理进程任务总线相关的模块工程。goldenhawking@163.com。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm_modules.cpp" line="97"/>
-        <location filename="gui/taskbusplatformfrm_modules.cpp" line="101"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="242"/>
+        <source>Still running</source>
+        <translation>项目仍在运行中</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm.cpp" line="242"/>
+        <source>Project is still running, please stop all projects first.</source>
+        <translation>项目仍在运行，请先关闭后再退出。</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm.cpp" line="248"/>
+        <source>Save?</source>
+        <translation>保存？</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm.cpp" line="248"/>
+        <source>Project has been modified, Close it?</source>
+        <translation>项目已经被编辑，是否保存？</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm_modules.cpp" line="111"/>
+        <location filename="gui/taskbusplatformfrm_modules.cpp" line="115"/>
         <source>load modules</source>
         <translation>载入模块</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="35"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="38"/>
         <source>Save project</source>
         <translation>保存工程</translation>
     </message>
@@ -430,7 +465,7 @@
 <context>
     <name>taskBusPlatformFrm::taskBusPlatformFrm</name>
     <message>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="89"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="99"/>
         <source>Open project</source>
         <translation>打开工程</translation>
     </message>
@@ -438,37 +473,37 @@
 <context>
     <name>taskModule</name>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>Module Name</source>
         <translation>模块名</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>Class</source>
         <translation>类别</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>DefaultValue</source>
         <translation>默认值</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>Range</source>
         <translation>范围</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>Key</source>
         <translation>配置键</translation>
     </message>
     <message>
-        <location filename="gui/taskmodule.cpp" line="23"/>
+        <location filename="gui/taskmodule.cpp" line="24"/>
         <source>InstanceValue</source>
         <translation>实例值</translation>
     </message>
@@ -480,36 +515,36 @@
 <context>
     <name>taskProject</name>
     <message>
-        <location filename="core/taskproject.cpp" line="348"/>
+        <location filename="core/taskproject.cpp" line="392"/>
         <source>Mod %1 does not exists.</source>
         <translation>模块 %1 尚未在平台注册。</translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="454"/>
+        <location filename="core/taskproject.cpp" line="507"/>
         <source>source instance %1 is not a valid producer for subject %2.</source>
         <translatorcomment>来源实例%1不是专题%2的生产者。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="460"/>
+        <location filename="core/taskproject.cpp" line="514"/>
         <source>input subject %1 has no valid recievers.</source>
         <translatorcomment>专题%1没有已登记的接收者。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="506"/>
+        <location filename="core/taskproject.cpp" line="561"/>
         <source>output subject &quot;%1&quot; does not exits.</source>
         <translatorcomment>专题%1不存在。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="720"/>
+        <location filename="core/taskproject.cpp" line="793"/>
         <source>No valid inside maps for inid %1 .</source>
         <translatorcomment>输入专题%1没有备选的内部映射。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="737"/>
+        <location filename="core/taskproject.cpp" line="810"/>
         <source>outside input subject &quot;%1&quot; does not exits.</source>
         <translatorcomment>输出专题%1不存在。</translatorcomment>
         <translation></translation>

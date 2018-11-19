@@ -4,19 +4,22 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <QDebug>
+#include <QFileInfo>
+#include <QMdiSubWindow>
 #include <QDataStream>
-#include "core/tasknode.h"
-#include "taskmodule.h"
-#include "tgraphicstaskitem.h"
-#include "tb_interface.h"
-#include "core/process_prctl.h"
-#include  <QClipboard>
+#include <QClipboard>
 #include <QGraphicsScene>
 #include <QGraphicsLineItem>
 #include <QMessageBox>
 #include <QJsonObject>
 #include <QEasingCurve>
 #include <QToolBar>
+#include "core/tasknode.h"
+#include "taskmodule.h"
+#include "tgraphicstaskitem.h"
+#include "tb_interface.h"
+#include "core/process_prctl.h"
+
 
 int PDesignerView::m_nextCV = 1;
 
@@ -116,6 +119,7 @@ void PDesignerView::callbk_instanceAppended(taskCell * pmod, taskNode * node,QPo
 		m_scene->addItem(git);
 		m_vec_gitems.push_back(git);
 		connect (mod, &QAbstractItemModel::dataChanged, this->m_project, &taskProject::refresh_idxes,Qt::QueuedConnection);
+		set_modified();
 	}
 }
 
@@ -210,6 +214,7 @@ void PDesignerView::dropEvent(QDropEvent * event)
 			QPoint pt2 = ui->graphicsView_main->mapFromParent(pt);
 			QPointF pt3 = ui->graphicsView_main->mapToScene(pt2);
 			m_project->add_node(md,pt3);
+			set_modified();
 		}
 	}
 
@@ -217,6 +222,16 @@ void PDesignerView::dropEvent(QDropEvent * event)
 
 void PDesignerView::closeEvent(QCloseEvent * e)
 {
+	if (modified())
+	{
+		if (QMessageBox::information(this,tr("Save?"),tr("Project has been modified, Close it?"),
+									 QMessageBox::Ok,
+									 QMessageBox::Cancel)!=QMessageBox::Ok)
+		{
+			e->ignore();
+			return;
+		}
+	}
 	emit sig_closed(fullFileName());
 	this->stop();
 	e->accept();
@@ -349,6 +364,7 @@ void PDesignerView::deleteNode(int node)
 		m_vec_gitems.remove(node);
 		//删除运行时 delete the runtime cell and node
 		m_project->del_node(node);
+		set_modified();
 	}
 }
 
@@ -453,6 +469,7 @@ void PDesignerView::on_actionPaste_triggered()
 
 	QPointF pt = ui->graphicsView_main->sceneRect().center();
 	m_project->add_node(text,pt);
+	set_modified();
 }
 
 void PDesignerView::on_actionCut_triggered()
@@ -503,6 +520,7 @@ void PDesignerView::on_actionConnectLine_triggered()
 				p.pModule->set_in_subject_instance(p.pModule->function_firstname(),p.sName,gIns);
 			else
 				p.pModule->set_out_subject_instance(p.pModule->function_firstname(),p.sName,gIns);
+			set_modified();
 		}
 	}
 
@@ -523,6 +541,7 @@ void PDesignerView::on_actionDeleteLine_triggered()
 			else
 				p.pModule->set_out_subject_instance(p.pModule->function_firstname(),p.sName,0);
 		}
+		set_modified();
 	}
 	TGraphicsTaskItem::m_pinList.clear();
 	m_project->refresh_idxes();
@@ -561,6 +580,7 @@ void PDesignerView::on_actionPinUp_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	set_modified();
 
 }
 
@@ -628,6 +648,7 @@ void PDesignerView::on_actionPinDown_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	set_modified();
 }
 
 void PDesignerView::on_actionPinSide_triggered()
@@ -657,6 +678,7 @@ void PDesignerView::on_actionPinSide_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	set_modified();
 }
 
 void PDesignerView::on_actionNiceUp_triggered()
@@ -673,6 +695,7 @@ void PDesignerView::on_actionNiceUp_triggered()
 	}
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	set_modified();
 }
 
 void PDesignerView::on_actionNiceDown_triggered()
@@ -689,5 +712,23 @@ void PDesignerView::on_actionNiceDown_triggered()
 	}
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	set_modified();
+}
+
+void PDesignerView::set_modified(bool bmod /*= true*/)
+{
+	if (m_bModified!=bmod && m_strFullFilename.length())
+	{
+		QObject * wig = parent();
+		QFileInfo info(m_strFullFilename);
+		QString baseName = info.completeBaseName();
+		if (wig)
+		{
+			QMdiSubWindow * wnd =  qobject_cast<QMdiSubWindow*>(wig);
+			if (wnd)
+				wnd->setWindowTitle(baseName + (bmod?"*":""));
+		}
+		m_bModified = bmod;
+	}
 
 }
