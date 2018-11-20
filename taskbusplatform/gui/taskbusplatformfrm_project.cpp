@@ -37,9 +37,16 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 		{
 			QSettings settings(inifile(),QSettings::IniFormat);
 			QString strLastModuleDir = settings.value("history/strLastSaveDir","./").toString();
-			QString newfm = QFileDialog::getSaveFileName(this,tr("Save project"),strLastModuleDir,
+			QString dirstr = strLastModuleDir;
+			QFileInfo infofm(dv->fullFileName());
+			if (infofm.exists())
+				dirstr = infofm.absoluteFilePath();
+			QString newfm = QFileDialog::getSaveFileName(this,
+														 tr("Save project"),
+														 dirstr,
 														 "tbj files (*.tbj);;All files(*.*)"
 														 );
+
 			if (newfm.size()>2)
 			{
 				QFileInfo info(newfm);

@@ -16,7 +16,8 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::taskBus),
 	m_pMsgModel(new QStandardItemModel(this)),
-	m_pClassModel(new QStandardItemModel(this))
+	m_pClassModel(new QStandardItemModel(this)),
+	m_pTrayIcon(new QSystemTrayIcon(this))
 {
 	ui->setupUi(this);
 	setCentralWidget(ui->mdiArea);
@@ -254,4 +255,9 @@ void taskBusPlatformFrm::closeEvent(QCloseEvent * event)
 		}
 	}
 	event->accept();
+}
+
+void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
+{
+
 }

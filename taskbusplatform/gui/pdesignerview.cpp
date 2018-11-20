@@ -96,6 +96,7 @@ PDesignerView::~PDesignerView()
 void PDesignerView::callbk_refreshIdx()
 {
 	emit sig_updatePaths();
+	set_modified();
 }
 
 void PDesignerView::zoomIn()
@@ -141,6 +142,16 @@ taskCell * PDesignerView::callbk_newcell()
  */
 void PDesignerView::run()
 {
+	if (modified())
+	{
+		if (QMessageBox::information(this,tr("Save?"),tr("Project has been modified, continue without saving ?"),
+									 QMessageBox::Ok,
+									 QMessageBox::Cancel)!=QMessageBox::Ok)
+		{
+			return;
+		}
+	}
+
 	m_project->moveToThread(m_pRunThread);
 	emit cmd_start_project();
 }
