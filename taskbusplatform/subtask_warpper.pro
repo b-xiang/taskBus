@@ -22,7 +22,8 @@ HEADERS += \
     core/tasknode.h \
     core/taskproject.h \
     tui/listen_thread.h \
-    core/process_prctl.h
+    core/process_prctl.h \
+    watchdog/tbwatchdog.h
 
 SOURCES += \
     core/taskcell.cpp \
@@ -30,5 +31,6 @@ SOURCES += \
     core/taskproject.cpp \
     tui/subtask_warpper.cpp \
     tui/listen_thread.cpp \
-    core/process_prctl.cpp
+    core/process_prctl.cpp \
+    watchdog/tbwatchdog.cpp
 CONFIG(release, debug|release): QMAKE_CXXFLAGS +=  -march=core2  -O3 -fexpensive-optimizations

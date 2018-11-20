@@ -38,7 +38,8 @@ SOURCES += \
     gui/pdesignerview.cpp \
     gui/taskmodule.cpp \
     gui/tgraphicstaskitem.cpp \
-    core/process_prctl.cpp
+    core/process_prctl.cpp \
+    watchdog/tbwatchdog.cpp
 
 HEADERS += \
     core/tasknode.h \
@@ -53,7 +54,8 @@ HEADERS += \
     tb_datastruct.h \
     core/process_prctl.h \
     ../tb_interface/cmdlineparser.h \
-    ../tb_interface/tb_interface.h
+    ../tb_interface/tb_interface.h \
+    watchdog/tbwatchdog.h
 
 FORMS += \
     gui/taskbusplatformfrm.ui \
