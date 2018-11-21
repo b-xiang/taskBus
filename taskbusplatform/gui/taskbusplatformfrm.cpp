@@ -37,9 +37,26 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	m_nTmid = startTimer(1000);
 	tabifyDockWidget(ui->dockWidget_message,ui->dockWidget_props);
 
+	m_iconTray[0].addFile(":/taskBus/images/ticon1.png");
+	m_iconTray[1].addFile(":/taskBus/images/ticon2.png");
+	m_pTrayIcon->setIcon(m_iconTray[0]);
+	m_pTrayIcon->show();
+
+	QMenu * me = new QMenu(this);
+	me->addAction(ui->actionhideWindow);
+	me->addAction(ui->action_Exit);
+
+	m_pTrayIcon->setContextMenu(me);
+	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"));
+
+	QCoreApplication::processEvents();
 
 	//加载模块 load default modules
 	load_default_modules();
+
+	m_pTrayIcon->hide();
+	m_pTrayIcon->show();
+
 }
 
 taskBusPlatformFrm::~taskBusPlatformFrm()
@@ -55,6 +72,7 @@ taskBusPlatformFrm::~taskBusPlatformFrm()
 }
 void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 {
+	static int pp = 0;
 	if (m_nTmid==event->timerId())
 	{
 		extern QAtomicInt  g_totalrev, g_totalsent;
@@ -63,6 +81,16 @@ void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 									  g_totalsent * 8.0 / 1024 / 1024
 									  );
 		m_pStatus->setText(s);
+		if (g_totalrev>0 || g_totalrev>0)
+		{
+			++pp;
+			m_pTrayIcon->setIcon(m_iconTray[pp%2]);
+		}
+		else if (pp)
+		{
+			pp = 0;
+			m_pTrayIcon->setIcon(m_iconTray[0]);
+		}
 		g_totalsent = 0;
 		g_totalrev = 0;
 
@@ -259,5 +287,8 @@ void taskBusPlatformFrm::closeEvent(QCloseEvent * event)
 
 void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
 {
-
+	if (arg1)
+		hide();
+	else
+		show();
 }

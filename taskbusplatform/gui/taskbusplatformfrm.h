@@ -46,6 +46,7 @@ protected:
 private:
 	Ui::taskBus *ui;
 	QSystemTrayIcon * m_pTrayIcon = nullptr;
+	QIcon m_iconTray[2];
 	QLabel * m_pStatus;
 	int m_nTmid = -1;
 	QMap<QString,taskModule *> m_toolModules;
