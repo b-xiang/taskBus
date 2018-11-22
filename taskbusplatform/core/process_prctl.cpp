@@ -78,6 +78,7 @@ namespace TASKBUS {
 	bool get_memory (Q_PID p ,tagMemoryInfo * info)
 	{
 #ifdef linux
+		info->pid = p;
 		QString strFm;
 		strFm.sprintf("/proc/%lld/status",p);
 		QFile fin(strFm);
@@ -99,7 +100,7 @@ namespace TASKBUS {
 					info->m_name = v;
 					++hit;
 				}
-				if (keystr=="VmSize")
+				if (keystr=="VmRSS")
 				{
 					v = v.toUpper();
 					++hit;

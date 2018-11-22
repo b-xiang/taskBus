@@ -13,8 +13,10 @@ namespace TASKBUS {
 	Q_PID get_procid(QProcess * p);
 
 	struct tagMemoryInfo{
+		qint64 pid;
 		QString m_name;
 		double m_memsize;
+
 	};
 
 	bool get_memory (Q_PID p ,tagMemoryInfo * info);
