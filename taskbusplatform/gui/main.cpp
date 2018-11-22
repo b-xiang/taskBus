@@ -11,13 +11,14 @@
 #include <QProcess>
 #include <QSettings>
 #include <QDir>
+#include "watchdog/tbwatchdog.h"
 //全局吞吐量 global IO speed recorder
 QAtomicInt  g_totalrev (0), g_totalsent (0);
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
-
+	tb_watch_dog()->watch();
 	QDir dir("/");
 	dir.setCurrent(app.applicationDirPath());
 

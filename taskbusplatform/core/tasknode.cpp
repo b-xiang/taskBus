@@ -7,6 +7,7 @@
 #include <QAtomicInt>
 #include "tb_interface.h"
 #include "process_prctl.h"
+#include "../watchdog/tbwatchdog.h"
 taskNode::taskNode(QObject *parent)
 	: QObject(parent)
 	,m_process(new QProcess(this))
@@ -136,6 +137,8 @@ void taskNode::slot_started()
 			TASKBUS::set_proc_nice(m_process,nic);
 		}
 	}
+
+	tb_watch_dog()->watch(m_process);
 
 }
 
