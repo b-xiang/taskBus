@@ -1,3 +1,7 @@
+/*!
+  @author goldenhawking@163.com
+  @date 2016-09-12
+  */
 #include "tasknode.h"
 #include <QMutex>
 #include <QThread>

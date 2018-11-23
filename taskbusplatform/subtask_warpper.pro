@@ -35,4 +35,3 @@ SOURCES += \
     watchdog/tbwatchdog.cpp
 CONFIG(release, debug|release): QMAKE_CXXFLAGS +=  -march=core2  -O3 -fexpensive-optimizations
 
-FORMS +=

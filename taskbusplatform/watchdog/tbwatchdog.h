@@ -1,3 +1,8 @@
+/*!
+ * Watchdog for memory size monitor.
+  @author goldenhawking@163.com
+  @date 2016-09-12
+*/
 #ifndef TBWATCHDOG_H
 #define TBWATCHDOG_H
 

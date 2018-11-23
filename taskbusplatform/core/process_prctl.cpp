@@ -1,3 +1,7 @@
+/*!
+  @author goldenhawking@163.com
+  @date 2017-02-11
+  */
 #include "process_prctl.h"
 #include <QFile>
 #include <QTextStream>
@@ -177,8 +181,10 @@ namespace TASKBUS {
 	qint64 get_procid(QProcess * p)
 	{
 #ifdef linux
-		Q_PID id = getpid();
-		return id;
+		if (p)
+			return p->pid();
+		else
+			return getpid();
 #endif
 #ifdef WIN32
 		if (p)
