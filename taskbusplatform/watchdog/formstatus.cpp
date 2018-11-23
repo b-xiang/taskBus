@@ -56,6 +56,8 @@ void FormStatus::update_charts()
 			else
 				ps = m_chart_serials[pid];			
 			ps->append(dtm.toMSecsSinceEpoch(),mem);
+			while (ps->count()>=1200)
+				ps->remove(0);
 		}
 		//delete
 		QList<qint64> oldV = m_chart_serials.keys();

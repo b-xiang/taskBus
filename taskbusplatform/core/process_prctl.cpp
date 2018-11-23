@@ -3,6 +3,7 @@
 #include <QTextStream>
 #ifdef WIN32
 #include <windows.h>
+#include <psapi.h>
 #endif
 #ifdef linux
 #include <sys/resource.h>
@@ -75,7 +76,7 @@ namespace TASKBUS {
 #endif
 	}
 
-	bool get_memory (Q_PID p ,tagMemoryInfo * info)
+	bool get_memory (qint64 p ,tagMemoryInfo * info)
 	{
 #ifdef linux
 		info->pid = p;
@@ -88,7 +89,7 @@ namespace TASKBUS {
 		int hit = 0;
 		QString l = s.readLine();
 		while (l.size() && hit<2)
-		{			
+		{
 			QStringList lst = l.split(":",QString::SkipEmptyParts);
 			if (lst.size()>=2)
 			{
@@ -137,19 +138,53 @@ namespace TASKBUS {
 		if (hit>=2)
 			return true;
 #endif
+
+#ifdef WIN32
+		char ch_module[MAX_PATH] = {0,0,0,0};
+		if (p==-1)
+		{
+			GetModuleFileNameA(0,ch_module,MAX_PATH);
+			PROCESS_MEMORY_COUNTERS pmc;
+			GetProcessMemoryInfo(GetCurrentProcess(),&pmc,sizeof(pmc));
+			info->m_memsize  = pmc.WorkingSetSize;
+			info->pid = GetProcessId(GetCurrentProcess());
+		}
+		else if (p)
+		{
+			GetModuleFileNameExA((HMODULE)p,0,ch_module,MAX_PATH);
+			info->pid = GetProcessId((HMODULE)p);
+			if (info->pid==0)
+				return false;
+			PROCESS_MEMORY_COUNTERS pmc;
+			GetProcessMemoryInfo((HMODULE)p,&pmc,sizeof(pmc));
+			info->m_memsize  = pmc.WorkingSetSize;
+		}
+		char * pt =ch_module + strlen(ch_module)-1;
+		while (pt > ch_module)
+		{
+			if (*pt == '\\' || *pt=='/'  || *pt==':')
+				break;
+			--pt;
+		}
+		++pt;
+		info->m_name = QString::fromLocal8Bit(pt);
+
+		return true;
+#endif
 		return false;
 	}
 
-	Q_PID get_procid(QProcess * p)
+	qint64 get_procid(QProcess * p)
 	{
-		if (p)
-			return p->pid();
 #ifdef linux
 		Q_PID id = getpid();
 		return id;
 #endif
 #ifdef WIN32
-
+		if (p)
+			return (qint64)p->pid()->hProcess;
+		else
+			return (qint64)GetCurrentProcess();
 #endif
 		return 0;
 	}

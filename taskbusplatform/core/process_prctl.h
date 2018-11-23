@@ -10,7 +10,7 @@ namespace TASKBUS {
 	void set_proc_nice (QProcess * p, int nice);
 	void set_proc_nice (int nice);
 
-	Q_PID get_procid(QProcess * p);
+	qint64 get_procid(QProcess * p);
 
 	struct tagMemoryInfo{
 		qint64 pid;
@@ -19,7 +19,7 @@ namespace TASKBUS {
 
 	};
 
-	bool get_memory (Q_PID p ,tagMemoryInfo * info);
+	bool get_memory (qint64 p ,tagMemoryInfo * info);
 
 	extern const int pnice_min;
 	extern const int pnice_max;

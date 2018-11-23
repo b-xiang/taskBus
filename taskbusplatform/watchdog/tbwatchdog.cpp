@@ -14,7 +14,7 @@ tbWatchDog::tbWatchDog()
 void tbWatchDog::watch(QProcess * proc)
 {
 	m_mutex.lock();
-	Q_PID id = TASKBUS::get_procid(proc);
+	qint64 id = TASKBUS::get_procid(proc);
 	if (id)
 	{
 		TASKBUS::tagMemoryInfo info;
@@ -28,8 +28,8 @@ void tbWatchDog::watch(QProcess * proc)
 void tbWatchDog::update_table()
 {
 	m_mutex.lock();
-	QList<Q_PID> ids = m_map_pid.keys();
-	foreach(Q_PID id, ids)
+	QList<qint64> ids = m_map_pid.keys();
+	foreach(qint64 id, ids)
 	{
 		TASKBUS::tagMemoryInfo info;
 		if (TASKBUS::get_memory(id,&info))
@@ -45,8 +45,8 @@ QVector<TASKBUS::tagMemoryInfo> tbWatchDog::get_info()
 {
 	QVector<TASKBUS::tagMemoryInfo> lstInfo;
 	m_mutex.lock();
-	QList<Q_PID> ids = m_map_pid.keys();
-	foreach(Q_PID id, ids)
+	QList<qint64> ids = m_map_pid.keys();
+	foreach(qint64 id, ids)
 	{
 		lstInfo << m_map_pid[id];
 	}
