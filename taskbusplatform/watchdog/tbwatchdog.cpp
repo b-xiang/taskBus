@@ -4,7 +4,7 @@
 #include <QTimerEvent>
 #include <QVector>
 
-static tbWatchDog * g_tb_watch_dog_ = nullptr;
+static tbWatchDog g_tb_watch_dog_;
 
 tbWatchDog::tbWatchDog()
 {
@@ -54,12 +54,8 @@ QVector<TASKBUS::tagMemoryInfo> tbWatchDog::get_info()
 	return  lstInfo;
 }
 
-tbWatchDog * tb_watch_dog()
+tbWatchDog & tb_watch_dog()
 {
-	if (g_tb_watch_dog_==nullptr)
-	{
-		g_tb_watch_dog_ = new tbWatchDog();
-	}
 	return g_tb_watch_dog_;
 }
 

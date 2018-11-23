@@ -7,8 +7,6 @@
 #include <QLabel>
 #include <QMap>
 #include <QSystemTrayIcon>
-#include <QLineSeries>
-#include "watchdog/watchmemmodule.h"
 namespace Ui {
 	class taskBus;
 }
@@ -58,11 +56,6 @@ private:
 	QString inifile();
 	static int m_doc_ins;
 
-	//Memory Charts
-private:
-	WatchMemModule * m_watchModule = nullptr;
-	QMap<qint64, QtCharts::QLineSeries *> m_chart_serials;
-	void update_charts();
 };
 
 #endif // PROGRESSBUSPLATFORMFRM_H

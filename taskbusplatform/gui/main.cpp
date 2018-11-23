@@ -18,7 +18,7 @@ QAtomicInt  g_totalrev (0), g_totalsent (0);
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
-	tb_watch_dog()->watch();
+	tb_watch_dog().watch();
 	QDir dir("/");
 	dir.setCurrent(app.applicationDirPath());
 
@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
 	setmode(fileno(stdin),O_BINARY);
 #endif
 
-
+	g_totalrev = 0;
+	g_totalsent = 0;
 
 	return app.exec();
 }

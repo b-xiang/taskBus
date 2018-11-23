@@ -20,6 +20,6 @@ private:
 	QMutex m_mutex;
 };
 
-tbWatchDog * tb_watch_dog();
+tbWatchDog & tb_watch_dog();
 
 #endif // TBWATCHDOG_H

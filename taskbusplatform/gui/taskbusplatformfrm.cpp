@@ -18,7 +18,6 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	ui(new Ui::taskBus),
 	m_pMsgModel(new QStandardItemModel(this)),
 	m_pClassModel(new QStandardItemModel(this)),
-	m_watchModule(new WatchMemModule(this)),
 	m_pTrayIcon(new QSystemTrayIcon(this))
 {
 	ui->setupUi(this);
@@ -60,8 +59,6 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	m_pTrayIcon->hide();
 	m_pTrayIcon->show();
 
-	//Mem watch
-	ui->tableView_memstatus->setModel(m_watchModule);
 }
 
 taskBusPlatformFrm::~taskBusPlatformFrm()
@@ -78,10 +75,8 @@ taskBusPlatformFrm::~taskBusPlatformFrm()
 void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 {
 	static int pp = 0;
-	static int ct = 0;
 	if (m_nTmid==event->timerId())
 	{
-		++ct;
 		extern QAtomicInt  g_totalrev, g_totalsent;
 		QString s = QString().sprintf("down %.2lf Mbps, up %.2lf Mbps",
 									  g_totalrev * 8.0 / 1024 / 1024,
@@ -99,9 +94,7 @@ void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 			m_pTrayIcon->setIcon(m_iconTray[0]);
 		}
 		g_totalsent = 0;
-		g_totalrev = 0;
-		if (ct%5==0)
-			update_charts();
+		g_totalrev = 0;	
 	}
 }
 
@@ -301,8 +294,3 @@ void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
 		show();
 }
 
-void taskBusPlatformFrm::update_charts()
-{
-	if (m_watchModule)
-		m_watchModule->update_items();
-}

@@ -40,7 +40,8 @@ SOURCES += \
     gui/tgraphicstaskitem.cpp \
     core/process_prctl.cpp \
     watchdog/tbwatchdog.cpp \
-    watchdog/watchmemmodule.cpp
+    watchdog/watchmemmodule.cpp \
+    watchdog/formstatus.cpp
 
 HEADERS += \
     core/tasknode.h \
@@ -57,11 +58,13 @@ HEADERS += \
     ../tb_interface/cmdlineparser.h \
     ../tb_interface/tb_interface.h \
     watchdog/tbwatchdog.h \
-    watchdog/watchmemmodule.h
+    watchdog/watchmemmodule.h \
+    watchdog/formstatus.h
 
 FORMS += \
     gui/taskbusplatformfrm.ui \
-    gui/pdesignerview.ui
+    gui/pdesignerview.ui \
+    watchdog/formstatus.ui
 
 TRANSLATIONS +=\
 	taskBusPlatform_zh_CN.ts

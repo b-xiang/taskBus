@@ -67,7 +67,7 @@ QVariant WatchMemModule::data(const QModelIndex &index, int role ) const
 void WatchMemModule::update_items()
 {
 	beginResetModel();
-	tb_watch_dog()->update_table();
-	m_info = tb_watch_dog()->get_info();
+	tb_watch_dog().update_table();
+	m_info = tb_watch_dog().get_info();
 	endResetModel();
 }

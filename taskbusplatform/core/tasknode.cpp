@@ -138,7 +138,7 @@ void taskNode::slot_started()
 		}
 	}
 
-	tb_watch_dog()->watch(m_process);
+	tb_watch_dog().watch(m_process);
 
 }
 
