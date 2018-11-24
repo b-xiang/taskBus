@@ -20,7 +20,7 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	m_pClassModel(new QStandardItemModel(this)),
 	m_pTrayIcon(new QSystemTrayIcon(this))
 {
-	ui->setupUi(this);
+	ui->setupUi(this);	
 	setCentralWidget(ui->mdiArea);
 	//全部模块 Create Module for All taskModules
 	m_toolModules[tr("All")] = new taskModule(true,this);

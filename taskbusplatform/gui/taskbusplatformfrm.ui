@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Application">
@@ -98,9 +98,6 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="action_Modules_Window"/>
-    <addaction name="actionMessages"/>
-    <addaction name="action_Properties_View"/>
     <addaction name="separator"/>
     <addaction name="actionhideWindow"/>
    </widget>
@@ -155,7 +152,7 @@
     </size>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Mod&amp;ules</string>
@@ -229,12 +226,12 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>58</width>
-     <height>75</height>
+     <width>72</width>
+     <height>91</height>
     </size>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>P&amp;roperties</string>
@@ -292,15 +289,15 @@
   <widget class="QDockWidget" name="dockWidget_message">
    <property name="minimumSize">
     <size>
-     <width>58</width>
-     <height>75</height>
+     <width>72</width>
+     <height>91</height>
     </size>
    </property>
    <property name="floating">
     <bool>false</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Messa&amp;ges</string>
@@ -425,34 +422,6 @@
     <string>Create New Project</string>
    </property>
   </action>
-  <action name="action_Modules_Window">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Modules Window</string>
-   </property>
-   <property name="toolTip">
-    <string>Show/Hide Modules</string>
-   </property>
-  </action>
-  <action name="action_Properties_View">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Properties View</string>
-   </property>
-   <property name="toolTip">
-    <string>Show/Hide Prop window</string>
-   </property>
-  </action>
   <action name="action_Open_Project">
    <property name="icon">
     <iconset resource="../taskbusplatform.qrc">
@@ -491,17 +460,6 @@
     <string>stop current project</string>
    </property>
   </action>
-  <action name="actionMessages">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>M&amp;essages</string>
-   </property>
-  </action>
   <action name="actionhideWindow">
    <property name="checkable">
     <bool>true</bool>
@@ -530,38 +488,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>dockWidget_modules</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>action_Modules_Window</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>336</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_Modules_Window</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_modules</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>136</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>action_Exit</sender>
    <signal>triggered()</signal>
    <receiver>taskBus</receiver>
@@ -574,70 +500,6 @@
     <hint type="destinationlabel">
      <x>511</x>
      <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_Properties_View</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_props</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>886</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dockWidget_props</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>action_Properties_View</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>886</x>
-     <y>336</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionMessages</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_message</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>894</x>
-     <y>240</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dockWidget_message</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>actionMessages</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>894</x>
-     <y>240</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
    </hints>
   </connection>
