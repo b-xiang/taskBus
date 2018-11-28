@@ -26,8 +26,13 @@ UINT __cdecl ListenFunction( LPVOID pParam )
 			std::vector<unsigned char> packagedta = pull_subject(&header);
 			if (is_control_subject(header))
 			{
-				if (strstr((const char *)packagedta.data(),"\"quit\":")>0)
+				
+				if (strstr((const char *)packagedta.data(), "\"quit\":") > 0)
+				{
+					fprintf(stderr, "Recieved Quit Cmd!");
 					bfinished = true;
+				}
+					
 			}
 			else if (header.subject_id==insplot)
 			{

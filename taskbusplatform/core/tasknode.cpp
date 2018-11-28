@@ -82,7 +82,7 @@ bool taskNode::cmd_stop(QObject * node)
 	if (m_process->state()!=QProcess::Running)
 		return false;
 	//发送信令，终止
-	char cmd[] = "\"quit\":{ret = 0}";
+	char cmd[] = "\"quit\":{ret = 0}\n";
 	subject_package_header header;
 	header.prefix[0] = 0x3C;
 	header.prefix[1] = 0x5A;
