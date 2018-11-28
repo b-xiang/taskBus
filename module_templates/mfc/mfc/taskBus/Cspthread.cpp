@@ -29,7 +29,7 @@ UINT __cdecl ListenFunction( LPVOID pParam )
 				
 				if (strstr((const char *)packagedta.data(), "\"quit\":") > 0)
 				{
-					fprintf(stderr, "Recieved Quit Cmd!");
+					fprintf(stderr, "Recieved Quit Cmd!");					
 					bfinished = true;
 				}
 					
@@ -63,6 +63,9 @@ UINT __cdecl ListenFunction( LPVOID pParam )
 				fflush (stderr);
 			}
 		}
+		PostMessage(pDlg->m_hWnd, MSG_QUIT_APP,
+			(WPARAM)0,
+			(LPARAM)0);
 	}
 	catch (const char * errMessage)
 	{

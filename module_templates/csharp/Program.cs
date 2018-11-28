@@ -7,13 +7,15 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace RandomSource
 {
     class Program
     {
-        /*!
-         * 
-         * 
+        /*! C# example demos how to read and write stdin, out in C#
+         *  We will output a random sig for stdout, and listen for stdin with nothing to do except for
+         *  package building.
          */
         static void Main(string[] args)
         {
@@ -86,7 +88,13 @@ namespace RandomSource
             
         }
     }
-
+    /*
+     *  我们在一个独立的线程中进行阻塞读取 stdin
+     *  C#对stdin的处理比起其他语言要复杂很多。
+     *  We will read data from stdin with this thread.
+     *  Reading data from redirected stdin is surprisingly challenging.
+     *  @author goldenhawking
+     */
     class ThreadRead
     {
         private bool m_bQuit = false;
@@ -106,43 +114,75 @@ namespace RandomSource
 
         public void deal_package(int sub, int path, int len, byte[] package)
         {
-            string str = System.Text.Encoding.Default.GetString(bytes: package);
-            if (str.IndexOf("quit") > 0 && sub<=0)
+            if (sub==-1)
             {
-                prmsg("Quit!\n");
-                m_bQuit = true;
+                if (len >= 5)
+                {
+                    if (package[1] == 'q' && package[2] == 'u' && package[3] == 'i' && package[4] == 't')
+                    {
+                        m_bQuit = true;
+                        prmsg("Quit!\n");
+                    }
+                }
             }
-                
+            //prmsg("Sub "+sub.ToString()+ ",Path " + path.ToString()+ ",Length " + len.ToString());
+        }
+        /** 从C#读取重定向的控制台真的是一个有挑战性的工作。感谢Dave Glick的尝试。
+         *  Thks for this blog, that reading stdin from c# is a quite difficult work.
+         *@ref https://daveaglick.com/posts/capturing-standard-input-in-csharp
+         */
+        public byte[] read_from_stdin(int size)
+        {
+            byte[] buffer = new byte[size];
+            int red = 0;
+            System.IO.Stream stream = Console.OpenStandardInput();
+            int read = -1;
+            AutoResetEvent gotInput = new AutoResetEvent(false);
+            while (read< size)
+            {
+                Thread inputThread = new Thread(() =>
+                {
+                    try
+                    {
+                        read = stream.Read(buffer, red, buffer.Length - red);
+                        red += read;
+                        gotInput.Set();
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        Thread.ResetAbort();
+                    }
+                })
+                {
+                    IsBackground = true
+                };
+                inputThread.Start();
+                // Timeout expired?
+                if (!gotInput.WaitOne(100))
+                    inputThread.Abort();                    
+            }
+            return buffer;
         }
 
         public void ReadStdin()
         {
-            System.IO.Stream std_in = Console.OpenStandardInput();
-            
-            if (std_in.CanRead == false)
-                return;
-            prmsg("Start Thread.");
             do
             {
-                byte[] bf_red = new byte[4];
-                std_in.Read(bf_red,0,4);
-                prmsg("Reading.");
+                byte[] bf_red = read_from_stdin(4);
                 if (bf_red[0] != 0x3C || bf_red[1] != 0x5A || bf_red[2] != 0x7E || bf_red[3] != 0x69)
                     continue;
                 int subject = 0, path = 0, length = 0;
-                std_in.Read(bf_red, 0, 4);
+                bf_red = read_from_stdin(4);
                 subject += (bf_red[0] << 0); subject += (bf_red[1] << 8);
                 subject += (bf_red[2] << 16); subject += (bf_red[3] << 24);
-                std_in.Read(bf_red, 0, 4);
+                bf_red = read_from_stdin(4);
                 path += (bf_red[0] << 0); path += (bf_red[1] << 8);
                 path += (bf_red[2] << 16); path += (bf_red[3] << 24);
-                std_in.Read(bf_red, 0, 4);
+                bf_red = read_from_stdin(4);
                 length += (bf_red[0] << 0); length += (bf_red[1] << 8);
-                length += (bf_red[2] << 16); length += (bf_red[3] << 24);
-
-                byte[] buf_package = new byte[length];
-                std_in.Read(buf_package, 0, length);
-                deal_package(subject, path, length, buf_package);
+                length += (bf_red[2] << 16); length += (bf_red[3] << 24);              
+                bf_red = read_from_stdin(length);
+                deal_package(subject, path, length, bf_red);
                 
             } while (m_bQuit == false);           
         }        
