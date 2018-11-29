@@ -2,6 +2,7 @@
 #include "ui_taskbusplatformfrm.h"
 #include <QDebug>
 #include <QMdiSubWindow>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QSettings>
@@ -39,6 +40,59 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 			QString strLastModuleDir = settings.value("history/strLastSaveDir","./").toString();
 			QString dirstr = strLastModuleDir;
 			QFileInfo infofm(dv->fullFileName());
+			QString newfm;
+			if (infofm.exists())
+			{
+				dirstr = infofm.absoluteFilePath();
+				newfm = infofm.absoluteFilePath();
+			}
+			else
+			{
+				newfm = QFileDialog::getSaveFileName(this,
+													 tr("Save project"),
+													 dirstr,
+													 "tbj files (*.tbj);;All files(*.*)"
+													 );
+			}
+
+			if (newfm.size()>2)
+			{
+				QFileInfo info(newfm);
+				settings.setValue("history/strLastSaveDir",info.absolutePath());
+				QByteArray json = dv->project()->toJson();
+				QFile fo(newfm);
+				if (fo.open(QIODevice::WriteOnly))
+				{
+					QFileInfo info(newfm);
+					dv->setWindowTitle(info.completeBaseName());
+					fo.write(json);
+					fo.close();
+					dv->setFullFileName(newfm);
+					dv->set_modified(false);
+					m_activePagesFileName.remove(oldfm);
+					m_activePagesFileName[newfm] = sub;
+				}
+				else
+					QMessageBox::warning(this,tr("Save Failed"),fo.errorString());
+			}
+		}
+	}
+
+}
+
+void taskBusPlatformFrm::on_action_Save_Project_As_triggered()
+{
+	QMdiSubWindow * sub = ui->mdiArea->activeSubWindow();
+	if (sub)
+	{
+		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		QString oldfm = dv->fullFileName();
+		if (dv)
+		{
+			QSettings settings(inifile(),QSettings::IniFormat);
+			QString strLastModuleDir = settings.value("history/strLastSaveDir","./").toString();
+			QString dirstr = strLastModuleDir;
+			QFileInfo infofm(dv->fullFileName());
 			if (infofm.exists())
 				dirstr = infofm.absoluteFilePath();
 			QString newfm = QFileDialog::getSaveFileName(this,
@@ -51,24 +105,27 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 			{
 				QFileInfo info(newfm);
 				settings.setValue("history/strLastSaveDir",info.absolutePath());
-			}
-			QByteArray json = dv->project()->toJson();
-			QFile fo(newfm);
-			if (fo.open(QIODevice::WriteOnly))
-			{
-				QFileInfo info(newfm);
-				dv->setWindowTitle(info.completeBaseName());
-				fo.write(json);
-				fo.close();
-				dv->setFullFileName(newfm);
-				dv->set_modified(false);
-				m_activePagesFileName.remove(oldfm);
-				m_activePagesFileName[newfm] = sub;
+				QByteArray json = dv->project()->toJson();
+				QFile fo(newfm);
+				if (fo.open(QIODevice::WriteOnly))
+				{
+					QFileInfo info(newfm);
+					dv->setWindowTitle(info.completeBaseName());
+					fo.write(json);
+					fo.close();
+					dv->setFullFileName(newfm);
+					dv->set_modified(false);
+					m_activePagesFileName.remove(oldfm);
+					m_activePagesFileName[newfm] = sub;
+				}
+				else
+					QMessageBox::warning(this,tr("Save Failed"),fo.errorString());
 			}
 		}
 	}
-
 }
+
+
 void taskBusPlatformFrm::slot_openprj(QString newfm)
 {
 	QFile fo(newfm);

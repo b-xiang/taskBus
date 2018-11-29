@@ -235,7 +235,7 @@ void PDesignerView::closeEvent(QCloseEvent * e)
 {
 	if (modified())
 	{
-		if (QMessageBox::information(this,tr("Save?"),tr("Project has been modified, Close it?"),
+		if (QMessageBox::information(this,tr("Close without Saving?"),tr("Project has been modified, Close it anyway?"),
 									 QMessageBox::Ok,
 									 QMessageBox::Cancel)!=QMessageBox::Ok)
 		{

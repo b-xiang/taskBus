@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Application">
@@ -83,6 +83,7 @@
     <addaction name="action_New_Project"/>
     <addaction name="action_Open_Project"/>
     <addaction name="action_Save_Project"/>
+    <addaction name="action_Save_Project_As"/>
     <addaction name="separator"/>
     <addaction name="action_Start_project"/>
     <addaction name="action_stop_project"/>
@@ -469,6 +470,11 @@
    </property>
    <property name="toolTip">
     <string>hide window and show tray icon</string>
+   </property>
+  </action>
+  <action name="action_Save_Project_As">
+   <property name="text">
+    <string>Save Project As...</string>
    </property>
   </action>
   <zorder>dockWidget_message</zorder>
