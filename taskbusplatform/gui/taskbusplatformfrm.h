@@ -37,6 +37,8 @@ private slots:
 
 	void on_actionhideWindow_toggled(bool arg1);
 
+	void on_action_Save_Project_As_triggered();
+
 protected:
 	void timerEvent(QTimerEvent *event) override;	
 	void closeEvent(QCloseEvent * event) override;

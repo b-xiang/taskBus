@@ -226,3 +226,4 @@ build-*-Release
 *.db
 .vs
 *.pyc
+/module_templates/csharp/app.config

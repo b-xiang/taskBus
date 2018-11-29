@@ -234,7 +234,6 @@
     </message>
     <message>
         <location filename="gui/pdesignerview.cpp" line="147"/>
-        <location filename="gui/pdesignerview.cpp" line="238"/>
         <source>Save?</source>
         <translation>保存？</translation>
     </message>
@@ -245,8 +244,17 @@
     </message>
     <message>
         <location filename="gui/pdesignerview.cpp" line="238"/>
+        <source>Close without Saving?</source>
+        <translation>不保存就关闭吗？</translation>
+    </message>
+    <message>
+        <location filename="gui/pdesignerview.cpp" line="238"/>
+        <source>Project has been modified, Close it anyway?</source>
+        <translation>项目已经编辑了，是否不保存就继续关闭？</translation>
+    </message>
+    <message>
         <source>Project has been modified, Close it?</source>
-        <translation>项目已经被编辑，是否保存？</translation>
+        <translation type="vanished">项目已经被编辑，是否保存？</translation>
     </message>
     <message>
         <location filename="gui/pdesignerview.cpp" line="614"/>
@@ -306,89 +314,94 @@
         <translation>工程(&amp;P)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="92"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="93"/>
         <source>&amp;Moudles</source>
         <translation>模块(&amp;M)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="99"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="100"/>
         <source>&amp;View</source>
         <translation>视图(&amp;V)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="106"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="107"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="117"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="118"/>
         <source>General</source>
         <translatorcomment>通用</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="158"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="159"/>
         <source>Mod&amp;ules</source>
         <oldsource>Modules</oldsource>
         <translation>模块(&amp;u)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="237"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="238"/>
         <source>P&amp;roperties</source>
         <oldsource>Properties</oldsource>
         <translation>属性(&amp;R)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="303"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="304"/>
         <source>Messa&amp;ges</source>
         <oldsource>Messages</oldsource>
         <translation>消息(&amp;G)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="346"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="347"/>
         <source>Status</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="380"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="381"/>
         <source>&amp;Exit</source>
         <translation>退出(&amp;e)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="383"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="384"/>
         <source>Exit from this application.</source>
         <translation>退出当前程序。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="392"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="393"/>
         <source>&amp;Load Module</source>
         <translation>载入模块(&amp;L)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="395"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="396"/>
         <source>Load a module executable file from disk.</source>
         <translation>从磁盘的可执行文件模块载入元数据。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="407"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="408"/>
         <source>Start &amp;project</source>
         <oldsource>&amp;Start project</oldsource>
         <translation>执行(&amp;P)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="410"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="411"/>
         <source>Start current project.</source>
         <translation>执行当前工程。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="419"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="420"/>
         <source>&amp;New Project</source>
         <translation>新建工程(&amp;N)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="422"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="423"/>
         <source>Create New Project</source>
         <translation>建立新工程</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm.ui" line="477"/>
+        <source>Save Project As...</source>
+        <translation>项目另存为...</translation>
     </message>
     <message>
         <source>&amp;Modules Window</source>
@@ -408,27 +421,27 @@
         <translation type="vanished">显示/隐藏属性窗口</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="431"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="432"/>
         <source>&amp;Open Project</source>
         <translation>打开工程(&amp;O)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="440"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="441"/>
         <source>&amp;Save Project</source>
         <translation>保存工程(&amp;S)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="445"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="446"/>
         <source>&amp;About</source>
         <translation>关于(&amp;A)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="457"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="458"/>
         <source>S&amp;top project</source>
         <translation>终止运行(&amp;T)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="460"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="461"/>
         <source>stop current project</source>
         <translation>停止执行当前工程</translation>
     </message>
@@ -437,12 +450,12 @@
         <translation type="vanished">消息(&amp;G)</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="468"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="469"/>
         <source>&amp;hideWindow</source>
         <translation>隐藏至任务栏图标（&amp;h）</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.ui" line="471"/>
+        <location filename="gui/taskbusplatformfrm.ui" line="472"/>
         <source>hide window and show tray icon</source>
         <translation>把主界面隐藏起来，到状态栏图标里</translation>
     </message>
@@ -457,51 +470,59 @@
         <location filename="gui/taskbusplatformfrm.cpp" line="26"/>
         <location filename="gui/taskbusplatformfrm.cpp" line="27"/>
         <location filename="gui/taskbusplatformfrm.cpp" line="30"/>
-        <location filename="gui/taskbusplatformfrm.cpp" line="174"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="179"/>
         <location filename="gui/taskbusplatformfrm_modules.cpp" line="91"/>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="85"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="142"/>
         <source>All</source>
         <translation>所有</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="52"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="57"/>
         <source>Init Modules...</source>
         <translation>初始化...</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="52"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="57"/>
         <source>Init modules from default_mods.text</source>
         <translation>正在从 default_mods.text 加载模块</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="122"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="127"/>
         <source>taskBus</source>
         <translation>进程总线工作室</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="122"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="127"/>
         <source>Used to orgnize process-based modules. by goldenhawking, 2018 for opensource usage.</source>
         <translation>本程序用于设计、管理进程任务总线相关的模块工程。goldenhawking@163.com。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="272"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="277"/>
         <source>Still running</source>
         <translation>项目仍在运行中</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="272"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="277"/>
         <source>Project is still running, please stop all projects first.</source>
         <translation>项目仍在运行，请先关闭后再退出。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="278"/>
-        <source>Save?</source>
-        <translation>保存？</translation>
+        <location filename="gui/taskbusplatformfrm.cpp" line="283"/>
+        <source>Close without saving?</source>
+        <translation>不保存就关闭吗？</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="278"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="283"/>
+        <source>Project has been modified, Close it anyway?</source>
+        <translation>项目已经编辑了，是否不保存就继续关闭？</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="vanished">保存？</translation>
+    </message>
+    <message>
         <source>Project has been modified, Close it?</source>
-        <translation>项目已经被编辑，是否保存？</translation>
+        <translation type="vanished">项目已经被编辑，是否保存？</translation>
     </message>
     <message>
         <location filename="gui/taskbusplatformfrm_modules.cpp" line="111"/>
@@ -510,15 +531,22 @@
         <translation>载入模块</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="45"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="52"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="99"/>
         <source>Save project</source>
         <translation>保存工程</translation>
+    </message>
+    <message>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="76"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="122"/>
+        <source>Save Failed</source>
+        <translation>保存失败</translation>
     </message>
 </context>
 <context>
     <name>taskBusPlatformFrm::taskBusPlatformFrm</name>
     <message>
-        <location filename="gui/taskbusplatformfrm_project.cpp" line="109"/>
+        <location filename="gui/taskbusplatformfrm_project.cpp" line="166"/>
         <source>Open project</source>
         <translation>打开工程</translation>
     </message>

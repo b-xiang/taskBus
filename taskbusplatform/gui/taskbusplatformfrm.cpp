@@ -47,6 +47,11 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	QMenu * me = new QMenu(this);
 	me->addAction(ui->actionhideWindow);
 	me->addAction(ui->action_Exit);
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_message->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_modules->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_props->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_watch->toggleViewAction());
+
 
 	m_pTrayIcon->setContextMenu(me);
 	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"));
@@ -275,7 +280,7 @@ void taskBusPlatformFrm::closeEvent(QCloseEvent * event)
 	}
 	if (bModified)
 	{
-		if (QMessageBox::information(this,tr("Save?"),tr("Project has been modified, Close it?"),
+		if (QMessageBox::information(this,tr("Close without saving?"),tr("Project has been modified, Close it anyway?"),
 									 QMessageBox::Ok,
 									 QMessageBox::Cancel)!=QMessageBox::Ok)
 		{
@@ -293,4 +298,5 @@ void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
 	else
 		show();
 }
+
 
