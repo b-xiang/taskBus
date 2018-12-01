@@ -27,7 +27,7 @@ UINT __cdecl ListenFunction( LPVOID pParam )
 			if (is_control_subject(header))
 			{
 				
-				if (strstr((const char *)packagedta.data(), "\"quit\":") > 0)
+				if (strstr((const char *)packagedta.data(), "function=quit;") !=0)
 				{
 					fprintf(stderr, "Recieved Quit Cmd!");					
 					bfinished = true;

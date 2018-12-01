@@ -176,7 +176,7 @@ int do_matlab(const  int argc,   const char * const   argv[])
 			else if (is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")>0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")>0)
 					bfinished = true;
 			}		
 			else

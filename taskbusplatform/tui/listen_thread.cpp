@@ -29,7 +29,7 @@ void reciv_thread::run()
 		{
 			//收到命令进程退出的广播消息,退出
 			//quit command Recieved
-			if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")!=nullptr)
+			if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 			{
 				bfinished = true;
 				qDebug()<<"Quit!";

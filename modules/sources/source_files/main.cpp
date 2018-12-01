@@ -145,7 +145,7 @@ int do_source(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		set<QString> history;
 		vector<unsigned char> data;
 		for (int i=0;i<frame_len;++i)

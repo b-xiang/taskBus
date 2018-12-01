@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 #push
                 tb.taskBus_push(id_output,v_path,v_bytea)
             elif v_subject == 0xffffffff:
-                if v_bytea.find(b'quit')>=0:
+		if v_bytea.find(b'function=quit;')>=0:
                     print >>sys.stderr,'Python Script will quit!'
                     finished = True
 

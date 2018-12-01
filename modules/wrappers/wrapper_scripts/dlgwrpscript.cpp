@@ -100,7 +100,7 @@ bool DlgWrpScript::cmd_stop()
 	if (m_process->state()!=QProcess::Running)
 		return false;
 	//发送信令，终止
-	char cmd[] = "\"quit\":{ret = 0}";
+	char cmd[] = "function=quit;{ret = 0}";
 	subject_package_header header;
 	header.prefix[0] = 0x3C;
 	header.prefix[1] = 0x5A;

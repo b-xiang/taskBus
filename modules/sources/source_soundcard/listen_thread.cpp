@@ -35,7 +35,7 @@ void listen_thread::run()
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr((const char *)packagedta.data(),"\"quit\":")!=nullptr)
+				if (strstr((const char *)packagedta.data(),"function=quit;")!=nullptr)
 				{
 					fprintf(stderr,"Recived Quit Command.");
 					fflush(stderr);

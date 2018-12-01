@@ -116,9 +116,9 @@ namespace RandomSource
         {
             if (sub==-1)
             {
-                if (len >= 5)
+		if (len >= 13)
                 {
-                    if (package[1] == 'q' && package[2] == 'u' && package[3] == 'i' && package[4] == 't')
+		    if (package[9] == 'q' && package[10] == 'u' && package[11] == 'i' && package[12] == 't')
                     {
                         m_bQuit = true;
                         prmsg("Quit!\n");

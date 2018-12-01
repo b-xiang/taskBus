@@ -113,7 +113,7 @@ int do_sink_txt(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		int failed_header = 0;
 		while (false==bfinished)
 		{
@@ -134,7 +134,7 @@ int do_sink_txt(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")>=0)
 					bfinished = true;
 				continue;
 			}
@@ -261,7 +261,7 @@ int do_sink_bin(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		int failed_header = 0;
 		while (false==bfinished)
 		{
@@ -282,7 +282,7 @@ int do_sink_bin(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")>=0)
 					bfinished = true;
 				continue;
 			}
