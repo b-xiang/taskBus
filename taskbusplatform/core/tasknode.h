@@ -35,6 +35,7 @@ signals:
 	void sig_pro_started();
 	void sig_pro_stopped(int exitCode, QProcess::ExitStatus exitStatus);
 	void sig_new_package(QByteArray);
+	void sig_new_command(QMap<QString, QVariant> cmd);
 	void sig_new_errmsg(QByteArray);
 	void private_sig_nextcab();
 	void private_sig_nextwrite();

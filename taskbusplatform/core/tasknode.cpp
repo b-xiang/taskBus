@@ -185,10 +185,24 @@ void taskNode::slot_readyReadStandardOutput()
 			{
 				QByteArray arr(m_array_stdout.constData(),
 							   sizeof(TASKBUS::subject_package_header)
-							   +header->data_length);
+							   +header->data_length);				
 				m_array_stdout.remove(0,sizeof(TASKBUS::subject_package_header)
 									  +header->data_length);
-				emit sig_new_package(arr);
+				//Analyse cab.
+				const TASKBUS::subject_package_header * header_package =
+						reinterpret_cast<const TASKBUS::subject_package_header *>(arr.constData());
+				//Command
+				if (header_package->subject_id == 0xffffffff)
+				{
+					//Command must endwith \0
+					const char * pCmd = arr.constData()+sizeof(TASKBUS::subject_package_header);
+					QString cmd = QString::fromUtf8(pCmd,header_package->data_length);
+					QMap<QString, QVariant> map_z
+							= taskCell::string_to_map(cmd);
+					emit sig_new_command(map_z);
+				}
+				else
+					emit sig_new_package(arr);
 				if (m_bDebug)
 					log_package(true,arr);
 			}

@@ -106,6 +106,7 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 
 		//关联各个事件 Associating individual events
 		connect (node, &taskNode::sig_new_package, this, &taskProject::slot_new_package,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_new_command, this, &taskProject::slot_new_command,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_new_errmsg, this, &taskProject::slot_new_errmsg,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_started, this, &taskProject::slot_pro_started,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_stopped, this, &taskProject::slot_pro_stopped,Qt::QueuedConnection);
@@ -494,7 +495,7 @@ void taskProject::slot_new_package(QByteArray pkg)
 		if (srcfuns.size()==0)
 			throw "srcfuns.size() is 0";
 		//看看是否合法 See if it's legal.
-		if (header->subject_id>0)
+		if (header->subject_id!=0xffffffff)
 		{
 			quint32 src_inst = mod->function_instance(srcfuns.first());
 			//专题是否被登记为内部专题
@@ -564,7 +565,8 @@ void taskProject::slot_new_package(QByteArray pkg)
 		else
 		{
 			//指令处理 Instruction processing
-
+			//! It will be dealed in each nodes' thread.
+			Q_ASSERT(false);
 		}
 	}
 	catch(QString msg)
@@ -579,6 +581,14 @@ void taskProject::slot_new_package(QByteArray pkg)
 	if (blocked)
 		slot_new_errmsg(QByteArray(QString("Blocked by later process.").toStdString().c_str()));
 
+}
+
+void taskProject::slot_new_command(QMap<QString,QVariant> cmd)
+{
+	if (cmd.size())
+	{
+
+	}
 }
 
 /*!
@@ -786,7 +796,7 @@ void taskProject::slot_outside_recieved(QByteArray pkg)
 	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
 		return;
 	try {
-		if (header->subject_id>0)
+		if (header->subject_id!=0xffffffff)
 		{
 			//进行解析、转发 To parse, forward
 			if (m_iface_outside2inside_in.contains(header->subject_id)==false)
@@ -813,6 +823,10 @@ void taskProject::slot_outside_recieved(QByteArray pkg)
 		else
 		{
 			//信令
+			const char * cmd = pkg.constData() + sizeof( TASKBUS::subject_package_header);
+			QString dac = QString::fromUtf8(cmd,header->data_length);
+			QMap<QString,QVariant> vt_map = taskCell::string_to_map(dac);
+			slot_new_command(vt_map);
 		}
 	}
 	catch(QString msg)

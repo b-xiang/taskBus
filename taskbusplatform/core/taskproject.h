@@ -13,6 +13,7 @@
 #include <QThread>
 #include <QVector>
 #include <QObject>
+#include <QVariant>
 #include <functional>
 class taskCell;
 class taskNode;
@@ -151,6 +152,7 @@ signals:
 	void sig_stopped();
 private slots:
 	void slot_new_package(QByteArray);
+	void slot_new_command(QMap<QString,QVariant> cmd);
 	void slot_new_errmsg(QByteArray);
 	void slot_pro_started();
 	void slot_pro_stopped();
