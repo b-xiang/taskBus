@@ -4,8 +4,10 @@
 #include <assert.h>
 #include <vector>
 #include <string>
+#include <map>
 #include <iterator>
 #include <algorithm>
+#include <regex>
 #ifdef WIN32
 #include <io.h>
 #include <fcntl.h>
@@ -300,5 +302,72 @@ namespace TASKBUS{
 		return cmdline;
 
 	}
+
+#if  _MSC_VER >=1200 || __cplusplus >= 201103L
+	/*!
+	 * \brief trim_elems trim all spaces of  a string.
+	 * \param text string to be trimmed.
+	 * \return trimmed result
+	 */
+	inline std::string trim_elems(const std::string &  text)
+	{
+		std::string result(text);
+		if(!result.empty())
+		{
+			result.erase(0, result.find_first_not_of(" \n\r\t"));
+			result.erase(result.find_last_not_of(" \n\r\t") + 1);
+		}
+		return result;
+	}
+
+	/*!
+	 * \brief string_to_map convert string cmd to map
+	 * \param s string cmd, key=value paires splitted by ';'
+	 * \return map
+	 */
+	inline std::map<std::string, std::string> string_to_map(const std::string & s)
+	{
+		using namespace std;
+		std::map<std::string, std::string> res;
+		regex regex_set{"([;])"};
+		regex regex_sep{"([=])"};
+		sregex_token_iterator it{s.begin(), s.end(), regex_set, -1};
+		list<string> words{it, {}};
+
+		for_each(words.begin(),words.end(),[&regex_sep,&res](string v){
+			sregex_token_iterator itp {v.begin(), v.end(), regex_sep, -1};
+			list<string> paras{itp, {}};
+			string key , value;
+			if (paras.size())
+				key = trim_elems(*paras.begin());
+			else
+				return;
+			paras.pop_front();
+			if (paras.size())
+				value = trim_elems(*paras.begin());
+			res[key] = value;
+		});
+		return res;
+	}
+
+	/*!
+	 * \brief map_to_string convert map to key=value paires
+	 * \param s map
+	 * \return string cmd, key=value paires splitted by ';'
+	 */
+	inline std::string map_to_string(const std::map<std::string, std::string> & s)
+	{
+		using namespace std;
+		string strv;
+		for (auto p = s.begin(); p != s.end(); ++p)
+		{
+			strv+=(*p).first;
+			strv+="=";
+			strv+=(*p).second;
+			strv+=";";
+		}
+		return strv;
+	}
+#endif
 }
 
