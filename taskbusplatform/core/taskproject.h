@@ -145,7 +145,8 @@ signals:
 	void sig_message(QString str);
 	void sig_cmd_start(QObject * node, QString cmd, QStringList paras);
 	void sig_cmd_stop(QObject * node);
-	void sig_cmd_write(QObject * node, QByteArray arr);
+	void sig_cmd_write(QObject * node, QByteArray arr);	
+	void sig_cmd_sendcmd(QMap<QString,QVariant> cmd,QSet<QString> destions);
 	//外部通信 External communication
 	void sig_outside_new_package(QByteArray);
 	void sig_started();

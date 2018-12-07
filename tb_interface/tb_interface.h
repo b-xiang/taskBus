@@ -1,8 +1,9 @@
 #pragma once
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstring>
+#include <cassert>
 #include <vector>
+#include <list>
 #include <string>
 #include <map>
 #include <iterator>
@@ -350,6 +351,15 @@ namespace TASKBUS{
 		return res;
 	}
 
+	inline std::map<std::string, std::string> ctrlpackage_to_map(const std::vector<unsigned char> & s)
+	{
+		using namespace std;
+		std::string str;
+		copy(s.begin(),s.end(),back_inserter(str));
+		return string_to_map(str);
+	}
+
+
 	/*!
 	 * \brief map_to_string convert map to key=value paires
 	 * \param s map
@@ -368,6 +378,16 @@ namespace TASKBUS{
 		}
 		return strv;
 	}
+
+	inline std::vector<unsigned char> map_to_ctrlpackage(const std::map<std::string, std::string> & s)
+	{
+		std::string str = map_to_string(s);
+		std::vector<unsigned char> v;
+		copy(str.begin(),str.end(),std::back_inserter(v));
+		v.push_back(0);
+		return v;
+	}
+
 #endif
 }
 

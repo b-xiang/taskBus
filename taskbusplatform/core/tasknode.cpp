@@ -82,7 +82,7 @@ bool taskNode::cmd_stop(QObject * node)
 	if (m_process->state()!=QProcess::Running)
 		return false;
 	//发送信令，终止
-	char cmd[] = "function=quit;ret=0;source=taskbus;destion=all;";
+	char cmd[] = "function=quit;ret=0;source=taskbus;destin=all;";
 	subject_package_header header;
 	header.prefix[0] = 0x3C;
 	header.prefix[1] = 0x5A;
@@ -199,7 +199,14 @@ void taskNode::slot_readyReadStandardOutput()
 					QString cmd = QString::fromUtf8(pCmd,header_package->data_length);
 					QMap<QString, QVariant> map_z
 							= taskCell::string_to_map(cmd);
-					emit sig_new_command(map_z);
+					//remember uuid
+					if (map_z.contains("source"))
+					{
+						if(m_uuid.size()==0 )
+							m_uuid = map_z["source"].toString();
+						if (map_z.contains("destin"))
+							emit sig_new_command(map_z);
+					}
 				}
 				else
 					emit sig_new_package(arr);
@@ -302,6 +309,27 @@ bool taskNode::cmd_write(QObject * node,QByteArray arr)
 	m_nBp_QueueSz = m_outputBuf.size();
 	return  true;
 }
+
+bool taskNode::cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins)
+{
+	if (destins.contains(m_uuid)==false)
+		return false;
+	QString strv = taskCell::map_to_string(cmd);
+	QByteArray utf8 = strv.toUtf8();
+	QByteArray arr;
+	arr.append(0x3C);	arr.append(0x5A);
+	arr.append(0x7E);	arr.append(0x69);
+	arr.append(4,0xFF); arr.append(4,0x00);
+	utf8.append('\0');
+	const int sz = utf8.size();
+	arr.append((sz>> 0) & 0xff);
+	arr.append((sz>> 8) & 0xff);
+	arr.append((sz>> 16) & 0xff);
+	arr.append((sz>> 24) & 0xff);
+	arr.append(utf8);
+	return cmd_write(this,arr);
+}
+
 void taskNode::slot_sended(qint64 b)
 {
 	extern QAtomicInt g_totalsent ;

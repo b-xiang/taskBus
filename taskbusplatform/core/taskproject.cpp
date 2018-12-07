@@ -11,6 +11,7 @@
 #include <QPointF>
 #include <QDebug>
 #include <QSettings>
+#include <algorithm>
 #include "process_prctl.h"
 
 int taskProject::instance_count = 0;
@@ -113,6 +114,7 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 		connect (this, &taskProject::sig_cmd_start, node, &taskNode::cmd_start,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_stop, node, &taskNode::cmd_stop,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_write, node, &taskNode::cmd_write,Qt::QueuedConnection);
+		connect (this, &taskProject::sig_cmd_sendcmd, node, &taskNode::cmd_sendcmd,Qt::QueuedConnection);
 
 		//回调额外的索引创建事件 Callback for additional index creation events
 		m_fInsAppended(mod,node,pt);
@@ -582,12 +584,54 @@ void taskProject::slot_new_package(QByteArray pkg)
 		slot_new_errmsg(QByteArray(QString("Blocked by later process.").toStdString().c_str()));
 
 }
-
+/*!
+ * \brief taskProject::slot_new_command commands is another way to handover messages.
+ * \param cmd message.
+ * \details
+ * taskbus支持跨模块的消息。消息由分号分割的键-值序列组成。以下三个保留的键名包括：
+ * 1.source 来源模块的标识。标识的值由模块自身定义并在手册中声明。建议采用UUID或者全域名。
+ * 2.destin 目的模块的标识。可以有多组。ALL表示向所有模块发送。
+ * 3.function 功能名。
+ * 其他参数任意指定。
+ * taskBus support messages over modules. messages is a set of key-value pairs,
+ * which is splitted by ";". Key-value are connected with "=".
+ * There are 3 reserved keywords:
+ * 1.source: ID of source module. ID is given by each module designer, UUID or
+ * full domain name is strongly recommanded.
+ * 2.destin: ID of destin modules. ALL means all modules. module names are seperated by ","
+ * 3.function: function name.
+ *
+ * eg:
+ * soucre=fft.ghstudio.org;destin=detector.clip.wav,plots.3dshow;function=spec_append;size=1024;
+ * means:
+ * source is from  fft.ghstudio.org
+ * destin is to detector.clip.wav and plots.3dshow
+ * function is spec_append
+ * other parameters: size=1024
+ */
 void taskProject::slot_new_command(QMap<QString,QVariant> cmd)
 {
 	if (cmd.size())
-	{
-
+	{		
+		QString source;
+		if (cmd.contains("source"))
+			source = cmd["source"].toString().trimmed();
+		else
+			return;
+		if (cmd.contains("destin"))
+		{
+			const QStringList destins = cmd["destin"].toString().split(",");
+			QSet<QString> notified;
+			foreach (QString destinstr, destins)
+			{
+				const QString des = destinstr.trimmed();
+				if (des!=source)
+					notified.insert(des);
+			}
+			emit sig_cmd_sendcmd(cmd,notified);
+		}
+		else
+			return;
 	}
 }
 

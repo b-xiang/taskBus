@@ -44,6 +44,7 @@ public slots:
 	bool cmd_start(QObject * node,QString cmd, QStringList paras);
 	bool cmd_stop(QObject * node);
 	bool cmd_write(QObject * node,QByteArray arr);
+	bool cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins);
 private slots:
 	void slot_readyReadStandardOutput();
 	void slot_readyReadStandardError();
@@ -61,6 +62,7 @@ private:
 	QFile m_dbgfile_stdin;
 	QFile m_dbgfile_stdout;
 	QFile m_dbgfile_stderr;
+	QString m_uuid;
 	QString dbgdir();
 public:
 	int outputQueueSize();
@@ -74,6 +76,7 @@ protected:
 	void timerEvent(QTimerEvent *event);
 public:
 	bool		isRunning ();
+	QString		uuid()const {return m_uuid;}
 	bool		isDebug() const {return m_bDebug;}
 	QProcess *	proc(){return m_process;}
 	void		bindCell(taskCell * t){m_pCell = t;}
