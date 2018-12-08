@@ -5,11 +5,12 @@
 #include <QSettings>
 #include <QTextStream>
 #include "tb_interface.h"
-DialogNetP2P::DialogNetP2P(QWidget *parent)
+DialogNetP2P::DialogNetP2P(const int ins,QWidget *parent)
 	:QDialog(parent)
 	,ui(new Ui::DialogNetP2P)
 	,m_svr( new QTcpServer(this))
 	,m_pRevThd(new reciv_thread(this))
+	,m_n_instance(ins)
 {
 	ui->setupUi(this);
 	connect(m_svr,&QTcpServer::newConnection,this,&DialogNetP2P::slot_new_connection);
@@ -59,6 +60,16 @@ void  DialogNetP2P::timerEvent(QTimerEvent * e)
 				{
 					fprintf(stderr,"Listening on port %d\n",m_n_port);
 					fflush(stderr);
+					TASKBUS::push_subject(0xffffffff,0,
+										  QString("source=%1.netowrkp2p.taskbus;"
+										  "destin=all;"
+										  "function=listening;"
+										  "hostaddr=%2;"
+										  "port=%3;"
+										  )
+										  .arg(m_n_instance)
+										  .arg(m_str_addr)
+										  .arg(m_n_port).toStdString().c_str());
 				}
 				else
 				{
@@ -67,9 +78,15 @@ void  DialogNetP2P::timerEvent(QTimerEvent * e)
 				}
 
 			}
-
-
 		}
+		static int cc = 0;
+		if ((++cc)%10==0)
+			TASKBUS::push_subject(0xffffffff,0,
+								  QString("source=%1.netowrkp2p.taskbus;"
+										  "destin=all;"
+										  "function=aloha;"
+										  )
+								  .arg(m_n_instance).toStdString().c_str());
 	}
 	return QDialog::timerEvent(e);
 }

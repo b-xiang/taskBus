@@ -9,32 +9,20 @@
 #include <iterator>
 #include <algorithm>
 #include <regex>
+#include <thread>
+#include <mutex>
 #ifdef WIN32
 #include <io.h>
 #include <fcntl.h>
 #endif
-/*----------------win32/win64-------------------
- *
- * 注意！windows下请对标准输入输出开启二进制模式。
- *
- *
- #ifdef WIN32
-   #include <io.h>
-   #include <fcntl.h>
- #endif
- #ifdef WIN32
-   setmode(fileno(stdout),O_BINARY);
-   setmode(fileno(stdin),O_BINARY);
- #endif
-*/
-
+//Comments:
+//Next feature: Multithread-push protect.
 namespace TASKBUS{
 	//数据专题包头结构体，1字节序对齐
+	//Datahead structure with pack = 1
 #pragma pack(push,1)
 	struct subject_package_header{
-		//头部调试字段，永远是 0x3C,0x5A,0x7E,0x69。
-		//前三字节用于同步，与bit order无关。
-		//后1字节用于大小端对齐。在0x69时，顺序对，0x96反。
+		//Always be 0x3C,0x5A,0x7E,0x69。
 		unsigned char  prefix[4];
 		unsigned int subject_id;
 		unsigned int path_id;
@@ -42,6 +30,59 @@ namespace TASKBUS{
 	};
 #pragma pack(pop)
 
+	/*!
+	 * \brief init_client A application should call initclient first.
+	 */
+	inline void init_client();
+	//是否为控制指令 Whether to be a control instruction or a normal subject
+	inline bool is_control_subject(const subject_package_header & header);
+	inline bool is_valid_header(const subject_package_header & header);
+	//返回控制信令专题 0xffffffff
+	inline unsigned int control_subect_id();
+	//用于方便连线模式的函数, line connect mod(subject) functions
+	inline void push_subject(
+			const unsigned int subject_id,
+			const unsigned int path_id,
+			const unsigned int data_length,
+			const unsigned char   *dataptr
+			);
+	inline void push_subject(
+			const unsigned int subject_id,
+			const unsigned int path_id,
+			const char   *dataptr
+			);
+	inline void push_subject(
+			const unsigned char   *allptr,
+			const unsigned int totalLength
+			);
+	inline void push_subject(
+			const subject_package_header header,
+			const unsigned char   *dataptr
+			);
+	//接收专题数据,push subject to stdout
+	inline std::vector<unsigned char> pull_subject(
+			subject_package_header * header
+			);
+
+	//调试，利用记录的打桩进程的stdin和命令行调试。会返回命令行
+	inline std::vector<std::string> debug(const char * logpath, FILE ** old_stdin, FILE ** old_stdout);
+
+	//用于方便操作指令的函数, text command mod functions
+	//--------------------------------------------------------------------
+#if  _MSC_VER >=1200 || __cplusplus >= 201103L
+	inline std::string trim_elems(const std::string &  text);
+	inline std::map<std::string, std::string> string_to_map(const std::string & s);
+	inline std::map<std::string, std::string> ctrlpackage_to_map(const std::vector<unsigned char> & s);
+	inline std::string map_to_string(const std::map<std::string, std::string> & s);
+	inline std::vector<unsigned char> map_to_ctrlpackage(const std::map<std::string, std::string> & s);
+#endif
+	/**
+	  *以下部分为具体实现。The following sections are the implementation
+	  * -----------------------------------------------------------------------
+	  * */
+	/*!
+	 * \brief init_client A application should call initclient first.
+	 */
 	inline void init_client()
 	{
 #ifdef WIN32
@@ -54,49 +95,6 @@ namespace TASKBUS{
 #endif
 #endif
 	}
-
-	//推送专题数据
-	void push_subject(
-			const unsigned int subject_id,
-			const unsigned int path_id,
-			const unsigned int data_length,
-			const unsigned char   *dataptr
-			);
-	//推送专题数据
-	void push_subject(
-			const unsigned int subject_id,
-			const unsigned int path_id,
-			const char   *dataptr
-			);
-	void push_subject(
-			const unsigned char   *allptr,
-			const unsigned int totalLength
-			);
-	//推送专题数据
-	void push_subject(
-			const subject_package_header header,
-			const unsigned char   *dataptr
-			);
-	//接收专题数据
-	std::vector<unsigned char> pull_subject(
-			subject_package_header * header
-			);
-	//用于方便操作指令的函数
-	//是否为控制指令
-	bool is_control_subject(const subject_package_header & header);
-
-	bool is_valid_header(const subject_package_header & header);
-	//返回控制信令专题
-	unsigned int control_subect_id();
-
-	//调试，利用记录的打桩进程的stdin和命令行调试。会返回命令行
-	inline std::vector<std::string> debug(const char * logpath, FILE ** old_stdin, FILE ** old_stdout);
-
-	/**
-	  *以下部分为具体实现。
-	  * -----------------------------------------------------------------------
-	  * */
-
 
 	//推送专题数据
 	inline void push_subject(

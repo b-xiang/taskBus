@@ -250,6 +250,13 @@ int do_source(const cmdlineParser & args)
 									start = clock();
 									finish = clock();
 									total_frames = 0;
+									TASKBUS::push_subject(0xffffffff,0,
+														  QString("source=%1.source_files.taskus;"
+																  "destin=all;"
+																  "function=aloha;"
+																  )
+														  .arg(instance).toStdString().c_str());
+
 								}
 
 								curr_size = 0;

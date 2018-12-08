@@ -18,7 +18,7 @@ class DialogNetP2P : public QDialog
 	Q_OBJECT
 
 public:
-	explicit DialogNetP2P(QWidget *parent = 0);
+	explicit DialogNetP2P(const int ins,QWidget *parent = 0);
 	~DialogNetP2P();
 	void setNetPara(const QString addr, const int port, const int mod);
 	void setMap(const QMap<int,int> mpi, const QVector<int> mpo);
@@ -35,7 +35,7 @@ private:
 	QString m_str_addr = "127.0.0.1";
 	int	m_n_port = 9527;
 	int m_n_mod = 0;
-
+	int m_n_instance = 0;
 	QMap<int,int> m_map_ins2inport;
 	QVector<int> m_vec_outport2ins;
 

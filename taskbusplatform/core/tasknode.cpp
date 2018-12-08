@@ -312,8 +312,12 @@ bool taskNode::cmd_write(QObject * node,QByteArray arr)
 
 bool taskNode::cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins)
 {
-	if (destins.contains(m_uuid)==false)
+	if (destins.contains(m_uuid)==false
+			&&destins.contains("all")==false)
 		return false;
+	if (cmd.contains("source"))
+		if (cmd["source"]==m_uuid)
+			return false;
 	QString strv = taskCell::map_to_string(cmd);
 	QByteArray utf8 = strv.toUtf8();
 	QByteArray arr;

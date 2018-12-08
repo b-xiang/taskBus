@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 		const int para_port = args.toInt("port",9527);
 		const int para_mod = args.toInt("mod",0);
 		const int para_hide = args.toInt("hide",0);
+		const int instance = args.toInt("instance",0);
 		QVector<int> paravec_outpts;
 		QMap<int,int> paramap_inputs;
 		for (int i = 0; i < 256;++i)
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
 				paravec_outpts.push_back(-1);
 		}
 
-		DialogNetP2P w;
+		DialogNetP2P w(instance);
 		if (!para_hide)
 			w.show();
 

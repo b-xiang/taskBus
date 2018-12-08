@@ -598,7 +598,7 @@ void taskProject::slot_new_package(QByteArray pkg)
  * There are 3 reserved keywords:
  * 1.source: ID of source module. ID is given by each module designer, UUID or
  * full domain name is strongly recommanded.
- * 2.destin: ID of destin modules. ALL means all modules. module names are seperated by ","
+ * 2.destin: ID of destin modules. "all" means all modules. module names are seperated by ","
  * 3.function: function name.
  *
  * eg:
