@@ -10,7 +10,8 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 {
 	ui->setupUi(this);
 	connect(m_rthread,&reciv_thread::sig_quit,this,&DialogPlots::close);
-	connect(m_rthread,&reciv_thread::new_package,this,&DialogPlots::deal_package,Qt::QueuedConnection);
+	connect(m_rthread,&reciv_thread::new_package,this,&DialogPlots::deal_package);
+	connect(m_rthread,&reciv_thread::new_textcmd,ui->lineEdit_messages,&QLineEdit::setText);
 	Qt::WindowFlags flg = windowFlags();
 	flg |= Qt::WindowMinMaxButtonsHint;
 	setWindowFlags(flg);

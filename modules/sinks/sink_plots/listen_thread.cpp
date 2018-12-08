@@ -37,6 +37,10 @@ void reciv_thread::run()
 				qDebug()<<"Quit!";
 				emit sig_quit();
 			}
+			packagedta.push_back(0);
+			QString text = QString::fromUtf8((char *)packagedta.data());
+			emit new_textcmd(text);
+
 		}
 		else
 		{
