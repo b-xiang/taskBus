@@ -54,15 +54,6 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 
 
 	m_pTrayIcon->setContextMenu(me);
-	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"));
-
-	QCoreApplication::processEvents();
-
-	//加载模块 load default modules
-	load_default_modules();
-
-	m_pTrayIcon->hide();
-	m_pTrayIcon->show();
 
 }
 
@@ -171,8 +162,12 @@ void taskBusPlatformFrm::load_default_modules()
 		lstNames<< st.readLine();
 	}
 	fin.close();
+	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"));
 	load_modules(lstNames);
-
+	m_pTrayIcon->hide();
+	m_pTrayIcon->show();
+	QThread::msleep(2000);
+	emit hideSplash();
 }
 void taskBusPlatformFrm::save_default_modules()
 {

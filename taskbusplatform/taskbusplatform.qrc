@@ -27,5 +27,7 @@
         <file>images/Process idle.png</file>
         <file>images/ticon1.png</file>
         <file>images/ticon2.png</file>
+        <file>images/taskBus.svg</file>
+        <file>images/taskBus.png</file>
     </qresource>
 </RCC>
