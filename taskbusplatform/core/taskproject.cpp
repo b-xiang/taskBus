@@ -115,6 +115,7 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 		connect (this, &taskProject::sig_cmd_stop, node, &taskNode::cmd_stop,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_write, node, &taskNode::cmd_write,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_sendcmd, node, &taskNode::cmd_sendcmd,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_iostat, this, &taskProject::sig_iostat);
 
 		//回调额外的索引创建事件 Callback for additional index creation events
 		m_fInsAppended(mod,node,pt);

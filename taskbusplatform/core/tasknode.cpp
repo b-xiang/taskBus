@@ -70,6 +70,10 @@ bool taskNode::cmd_start(QObject * node,QString cmd, QStringList paras)
 
 	emit sig_new_errmsg(QByteArray(cmdlinestr.toStdString().c_str()));
 
+	m_sbytes_sent = 0;
+	m_spackage_sent= 0;
+	m_sbytes_recieved = 0;
+	m_spackage_recieved = 0;
 	return true;
 }
 
@@ -100,6 +104,7 @@ bool taskNode::cmd_stop(QObject * node)
 		QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 	m_process->kill();
+
 	return true;
 }
 
@@ -212,6 +217,8 @@ void taskNode::slot_readyReadStandardOutput()
 					emit sig_new_package(arr);
 				if (m_bDebug)
 					log_package(true,arr);
+				++m_spackage_sent;
+				m_sbytes_sent += sizeof(TASKBUS::subject_package_header)+header->data_length;
 			}
 			//处理了一个包之后，若还存在后续的包，则继续处理。
 			//After processing a package, continue processing if a subsequent
@@ -243,10 +250,16 @@ void taskNode::timerEvent(QTimerEvent *event)
 {
 	if (event->timerId()==m_nBp_TimerID)
 	{
+		static int ct = 0;
 		if (m_bBp_Recovered)
 		{
 			if (m_process->bytesAvailable())
 				slot_readyReadStandardOutput();
+		}
+		if (++ct % 5 ==0)
+		{
+			if (isRunning())
+				emit sig_iostat(TASKBUS::get_procid(m_process),	m_spackage_recieved,m_spackage_sent,m_sbytes_recieved,	m_sbytes_sent);
 		}
 	}
 }
@@ -307,6 +320,8 @@ bool taskNode::cmd_write(QObject * node,QByteArray arr)
 	else
 		m_outputBuf.push_back(arr);
 	m_nBp_QueueSz = m_outputBuf.size();
+	++m_spackage_recieved;
+	m_sbytes_recieved += arr.size();
 	return  true;
 }
 

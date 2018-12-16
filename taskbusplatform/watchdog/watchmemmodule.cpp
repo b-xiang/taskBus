@@ -17,7 +17,7 @@ int WatchMemModule::columnCount(const QModelIndex &idx ) const
 		return 0;
 	if (idx.parent().isValid()==true)
 		return 0;
-	return 3;
+	return 7;
 }
 
 QVariant WatchMemModule::headerData(int section, Qt::Orientation orientation, int role) const
@@ -26,9 +26,11 @@ QVariant WatchMemModule::headerData(int section, Qt::Orientation orientation, in
 	{
 		if (orientation==Qt::Horizontal)
 		{
-			if (section==0)	return tr("PID");
-			else if (section==1)	return tr("Name");
-			else if (section==2)	return tr("Memory");
+			static const QString cnames[7] = {tr("PID"),tr("Name"),tr("Memory"),
+									 tr("pack_reci"),tr("pack_sent"),tr("bytes_reci"),tr("bytes_sent")
+									 };
+			if (section && section<7)
+				return cnames[section];
 		}
 		else if (orientation==Qt::Vertical)
 		{
@@ -51,14 +53,29 @@ QVariant WatchMemModule::data(const QModelIndex &index, int role ) const
 	{
 		int r = index.row();
 		int c = index.column();
-		if (r<0 || r>m_info.size() || c>=3 || c<0)
+
+		if (r<0 || r>m_info.size())
 			return QVariant();
-		if (c==0)
+		qint64 id = m_info[r].pid;
+		switch (c)
+		{
+		case 0:
 			return m_info[r].pid;
-		else if (c==1)
+		case 1:
 			return m_info[r].m_name;
-		else
+		case 2:
 			return m_info[r].m_memsize/1024.0/1024.0;
+		case 3:
+			return m_map_ps[id].pr;
+		case 4:
+			return m_map_ps[id].ps;
+		case 5:
+			return m_map_ps[id].br;
+		case 6:
+			return m_map_ps[id].bs;
+		default:
+			break;
+		}
 	}
 	return QVariant();
 }
@@ -70,4 +87,11 @@ void WatchMemModule::update_items()
 	tb_watch_dog().update_table();
 	m_info = tb_watch_dog().get_info();
 	endResetModel();
+}
+void WatchMemModule::slot_packio(qint64 pid, quint64 pr, quint64 ps, quint64 br, quint64 bs)
+{
+	m_map_ps[pid].pr = pr;
+	m_map_ps[pid].br = br;
+	m_map_ps[pid].ps = ps;
+	m_map_ps[pid].bs = bs;
 }

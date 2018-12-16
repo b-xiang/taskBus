@@ -151,6 +151,8 @@ signals:
 	void sig_outside_new_package(QByteArray);
 	void sig_started();
 	void sig_stopped();
+	//IO Status
+	void sig_iostat(qint64 pid,quint64 pr,quint64 ps,quint64 br, quint64 bs);
 private slots:
 	void slot_new_package(QByteArray);
 	void slot_new_command(QMap<QString,QVariant> cmd);
