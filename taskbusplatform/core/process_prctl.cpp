@@ -5,6 +5,7 @@
 #include "process_prctl.h"
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 #ifdef WIN32
 #include <windows.h>
 #include <psapi.h>
@@ -84,6 +85,7 @@ namespace TASKBUS {
 	{
 #ifdef linux
 		info->pid = p;
+		info->phandle = p;
 		QString strFm;
 		strFm.sprintf("/proc/%lld/status",p);
 		QFile fin(strFm);
@@ -152,6 +154,7 @@ namespace TASKBUS {
 			GetProcessMemoryInfo(GetCurrentProcess(),&pmc,sizeof(pmc));
 			info->m_memsize  = pmc.WorkingSetSize;
 			info->pid = GetProcessId(GetCurrentProcess());
+			info->phandle = (qint64)GetCurrentProcess();
 		}
 		else if (p)
 		{
@@ -159,6 +162,7 @@ namespace TASKBUS {
 			info->pid = GetProcessId((HMODULE)p);
 			if (info->pid==0)
 				return false;
+			info->phandle = (qint64)p;
 			PROCESS_MEMORY_COUNTERS pmc;
 			GetProcessMemoryInfo((HMODULE)p,&pmc,sizeof(pmc));
 			info->m_memsize  = pmc.WorkingSetSize;

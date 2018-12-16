@@ -1,5 +1,5 @@
 #include "watchmemmodule.h"
-
+#include <QDebug>
 WatchMemModule::WatchMemModule(QObject *parent) : QAbstractTableModel(parent)
 {
 
@@ -56,7 +56,7 @@ QVariant WatchMemModule::data(const QModelIndex &index, int role ) const
 
 		if (r<0 || r>m_info.size())
 			return QVariant();
-		qint64 id = m_info[r].pid;
+		qint64 id = m_info[r].phandle;
 		switch (c)
 		{
 		case 0:
@@ -90,6 +90,7 @@ void WatchMemModule::update_items()
 }
 void WatchMemModule::slot_packio(qint64 pid, quint64 pr, quint64 ps, quint64 br, quint64 bs)
 {
+	qDebug()<<pid<<","<<pr<<","<<ps<<","<<br<<","<<bs;
 	m_map_ps[pid].pr = pr;
 	m_map_ps[pid].br = br;
 	m_map_ps[pid].ps = ps;

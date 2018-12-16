@@ -256,10 +256,13 @@ void taskNode::timerEvent(QTimerEvent *event)
 			if (m_process->bytesAvailable())
 				slot_readyReadStandardOutput();
 		}
-		if (++ct % 5 ==0)
+		if (++ct % 3 ==0)
 		{
 			if (isRunning())
-				emit sig_iostat(TASKBUS::get_procid(m_process),	m_spackage_recieved,m_spackage_sent,m_sbytes_recieved,	m_sbytes_sent);
+			{
+				qint64 pid = TASKBUS::get_procid(m_process);
+				emit sig_iostat(pid,m_spackage_recieved,m_spackage_sent,m_sbytes_recieved,	m_sbytes_sent);
+			}
 		}
 	}
 }
