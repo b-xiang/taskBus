@@ -90,7 +90,7 @@ void WatchMemModule::update_items()
 }
 void WatchMemModule::slot_packio(qint64 pid, quint64 pr, quint64 ps, quint64 br, quint64 bs)
 {
-	qDebug()<<pid<<","<<pr<<","<<ps<<","<<br<<","<<bs;
+	//qDebug()<<pid<<","<<pr<<","<<ps<<","<<br<<","<<bs;
 	m_map_ps[pid].pr = pr;
 	m_map_ps[pid].br = br;
 	m_map_ps[pid].ps = ps;
