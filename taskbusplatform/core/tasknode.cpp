@@ -188,6 +188,9 @@ void taskNode::slot_readyReadStandardOutput()
 			if (m_array_stdout.size()>=
 					sizeof(TASKBUS::subject_package_header)+header->data_length)
 			{
+				++m_spackage_sent;
+				m_sbytes_sent += sizeof(TASKBUS::subject_package_header)+header->data_length;
+
 				QByteArray arr(m_array_stdout.constData(),
 							   sizeof(TASKBUS::subject_package_header)
 							   +header->data_length);				
@@ -217,8 +220,6 @@ void taskNode::slot_readyReadStandardOutput()
 					emit sig_new_package(arr);
 				if (m_bDebug)
 					log_package(true,arr);
-				++m_spackage_sent;
-				m_sbytes_sent += sizeof(TASKBUS::subject_package_header)+header->data_length;
 			}
 			//处理了一个包之后，若还存在后续的包，则继续处理。
 			//After processing a package, continue processing if a subsequent
