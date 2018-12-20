@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "core/taskcell.h"
 #include "core/taskproject.h"
+#include "watchdog/consolewatchdog.h"
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 #include "listen_thread.h"
@@ -118,11 +119,15 @@ int main(int argc, char *argv[])
 		a.connect (th_reciv, &reciv_thread::sig_quit,prj,
 				   static_cast<void (taskProject::*)()>(&taskProject::stop_project),Qt::QueuedConnection);
 		a.connect (prj, &taskProject::sig_stopped,&a,&QCoreApplication::quit,Qt::QueuedConnection);
+
+		//run watch dog
+		consoleWatchDog * dog = new consoleWatchDog(&a);
+		a.connect (dog, &consoleWatchDog::sig_shutdown,&a,&QCoreApplication::quit,Qt::QueuedConnection);
 		th_reciv->start();
 		prj->start_project();
 		ret = a.exec();
 		prj->stop_project();
-
+		dog->deleteLater();
 	}
 
 	QCoreApplication::processEvents();
