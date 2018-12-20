@@ -2,10 +2,9 @@
 #include <QDebug>
 #include <QTimerEvent>
 #include <QVector>
-
+static bool g_tb_break = false;
 #ifdef WIN32
 #include <windows.h>
-static bool g_tb_break = false;
 BOOL HandlerRoutine(DWORD dwCtrlType)
 {
 	switch (dwCtrlType)
@@ -22,6 +21,15 @@ BOOL HandlerRoutine(DWORD dwCtrlType)
 	}
 }
 #endif
+#ifdef linux
+#include <unistd.h>
+#include <signal.h>
+void my_handler(int s){
+	fprintf(stderr,"Caught signal %d\n",s);
+	fflush(stderr);
+	g_tb_break = true;
+}
+#endif
 
 static tbWatchDog g_tb_watch_dog_;
 
@@ -34,6 +42,15 @@ tbWatchDog::tbWatchDog()
 		SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine,TRUE);
 		handle_installed = true;
 	}
+#endif
+
+#ifdef linux
+	struct sigaction sigIntHandler;
+
+	sigIntHandler.sa_handler = my_handler;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
 #endif
 }
 
@@ -52,10 +69,7 @@ void tbWatchDog::watch(QProcess * proc)
 
 bool tbWatchDog::break_hit()
 {
-#ifdef WIN32
 	return g_tb_break;
-#endif
-	return false;
 }
 
 void tbWatchDog::update_table()
