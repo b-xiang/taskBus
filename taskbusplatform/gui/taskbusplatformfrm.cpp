@@ -162,11 +162,12 @@ void taskBusPlatformFrm::load_default_modules()
 		lstNames<< st.readLine();
 	}
 	fin.close();
-	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"));
+	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"),QSystemTrayIcon::Information, 1000);
 	load_modules(lstNames);
-	m_pTrayIcon->hide();
-	m_pTrayIcon->show();
-	QThread::msleep(2000);
+	//m_pTrayIcon->hide();
+	//m_pTrayIcon->show();
+	//QThread::msleep(2000);
+	m_pTrayIcon->showMessage(tr("Succeed."),tr("Init modules from default_mods.text succeed!"),QSystemTrayIcon::Information, 2000);
 	emit hideSplash();
 }
 void taskBusPlatformFrm::save_default_modules()

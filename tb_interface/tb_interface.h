@@ -96,6 +96,28 @@ namespace TASKBUS{
 #endif
 	}
 
+	inline bool lendian()
+	{
+		static const short testv = 0x0102;
+		static const unsigned char * testp = reinterpret_cast<const unsigned char *>(&testv);
+		static const bool littled = (testp[0]==0x02)?true:false;
+		return littled;
+	}
+
+	template <typename T>
+	inline T cvendian(const T & v, bool tolittle)
+	{
+		if (lendian()==tolittle)
+			return v;
+		const size_t sz_len = sizeof(T);
+		const unsigned char * p = reinterpret_cast<const unsigned char *>(&v);
+		T res;
+		unsigned char * q = reinterpret_cast<unsigned char *>(&res);
+		for (size_t i=0;i<sz_len;++i)
+			q[i] = p[sz_len-1-i];
+		return res;
+	}
+
 	//推送专题数据
 	inline void push_subject(
 			const unsigned int subject_id,
@@ -169,7 +191,7 @@ namespace TASKBUS{
 		{
 			//数据
 			const size_t groups = header->data_length / batchdeal;
-			unsigned char * buf =(unsigned char *) malloc(batchdeal);
+			unsigned char buf[batchdeal];
 			for (size_t i=0;i<groups;++i)
 			{
 				fread(buf,1,batchdeal,stdin);
@@ -179,11 +201,9 @@ namespace TASKBUS{
 			{
 				fread(buf,1,header->data_length % batchdeal,stdin);
 				std::copy(buf,buf+header->data_length % batchdeal, std::back_inserter( buf_data ));
-			}
-			free (buf);
-			buf = 0;
+			}			
 		}
-		return std::move(buf_data);
+		return buf_data;
 	}
 	//用于方便操作指令的函数
 	//是否为控制指令

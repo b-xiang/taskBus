@@ -207,27 +207,31 @@ void DialogNetP2P::slot_read_sock()
 		Q_ASSERT(m_package_array[0+goodoff]==0x3c && m_package_array[1+goodoff]==0x5A
 				&&m_package_array[2+goodoff]==0x7E  &&m_package_array[3+goodoff]==0x69 );
 
+		const unsigned int datalen =
+				cvendian(pheader->data_length,false);
 
-		if (pheader->data_length>256*1024*1024)
+		if ( datalen>256*1024*1024)
 		{
-			fprintf(stderr,"package too big: %d\n", pheader->data_length);
+			fprintf(stderr,"package too big: %d\n", datalen);
 			fflush(stderr);
 			m_package_array.clear();
 			break;
 		}
-		if (m_package_array.size()<pheader->data_length+sizeof(subject_package_header))
+		if (m_package_array.size()<datalen+sizeof(subject_package_header))
 			break;
-		if (pheader->subject_id>=0 && pheader->subject_id<m_vec_outport2ins.size())
+		const unsigned int sub_num = cvendian(pheader->subject_id,false);
+		if (sub_num<m_vec_outport2ins.size())
 		{
-			if (m_vec_outport2ins[pheader->subject_id]>0)
+			if (m_vec_outport2ins[sub_num]>0)
 			{
 				const char * dptr = m_package_array.constData()+sizeof(subject_package_header);
-				push_subject(m_vec_outport2ins[pheader->subject_id],pheader->path_id,
-						pheader->data_length,(const unsigned char *)dptr
+				push_subject(
+							m_vec_outport2ins[sub_num],cvendian(pheader->path_id,false),
+						datalen,(const unsigned char *)dptr
 						);
 			}
 		}
-		m_package_array.remove(0,sizeof(subject_package_header)+pheader->data_length);
+		m_package_array.remove(0,sizeof(subject_package_header)+datalen);
 	}
 }
 
@@ -250,7 +254,13 @@ void DialogNetP2P::slot_new_taskpack(QByteArray package)
 		{
 			if (m_sock->state()==QTcpSocket::ConnectedState)
 			{
-				m_sock->write((const char *)&header,sizeof(subject_package_header));
+				const unsigned int wr_sub = cvendian(header.subject_id,false);
+				const unsigned int wr_path = cvendian(header.path_id,false);
+				const unsigned int wr_dtalen = cvendian(header.data_length,false);
+				m_sock->write((const char *)header.prefix,4);
+				m_sock->write((const char *)&wr_sub,sizeof(wr_sub));
+				m_sock->write((const char *)&wr_path,sizeof(wr_path));
+				m_sock->write((const char *)&wr_dtalen,sizeof(wr_dtalen));
 				m_sock->write((const char *)fdata,header.data_length);
 			}
 		}
