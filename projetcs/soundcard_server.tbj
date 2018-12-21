@@ -3,8 +3,8 @@
         "source_soundcard": {
             "instance": {
                 "additional_args": "OUTD=3;nice=2;",
-                "exec": "modules/source_soundcard",
-                "instance_value": 5
+                "exec": "modules/source_soundcard.exe",
+                "instance_value": 3
             },
             "name": {
                 "name": "soundcard"
@@ -84,8 +84,8 @@
             },
             "instance": {
                 "additional_args": "nice=2;",
-                "exec": "modules/transform_fft",
-                "instance_value": 6
+                "exec": "modules/transform_fft.exe",
+                "instance_value": 4
             },
             "name": {
                 "name": "libfftw"
@@ -166,8 +166,8 @@
             },
             "instance": {
                 "additional_args": "nice=2;",
-                "exec": "modules/network_p2p",
-                "instance_value": 7
+                "exec": "modules/network_p2p.exe",
+                "instance_value": 5
             },
             "name": {
                 "name": "network_p2p"
@@ -202,7 +202,7 @@
             "parameters": {
                 "address": {
                     "default": "192.168.1.100",
-                    "instance_value": "192.168.1.10",
+                    "instance_value": "0.0.0.0",
                     "tooltip": "地址",
                     "type": "string"
                 },
@@ -214,7 +214,7 @@
                 },
                 "mod": {
                     "default": "0",
-                    "instance_value": "1",
+                    "instance_value": "0",
                     "tooltip": "连接方式(0:监听,1:发起)",
                     "type": "int"
                 },
