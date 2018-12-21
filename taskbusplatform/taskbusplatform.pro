@@ -4,10 +4,27 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts
+QT       += core gui
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+#Judge whether qtcharts is supported.
+qtHaveModule(charts){
+    QT += charts
+    HEADERS += watchdog/status_charts/formstatus.h
+    SOURCES += watchdog/status_charts/formstatus.cpp
+    FORMS += watchdog/status_charts/formstatus.ui
+    message("Qt with charts!");
+    INCLUDEPATH += watchdog/status_charts
+} else {
+    HEADERS += watchdog/status_nocharts/formstatus.h
+    SOURCES += watchdog/status_nocharts/formstatus.cpp
+    FORMS += watchdog/status_nocharts/formstatus.ui
+    message("Qt without charts!");
+    INCLUDEPATH += watchdog/status_nocharts
+}
+
 
 DESTDIR = $$OUT_PWD/../bin
 
@@ -40,8 +57,7 @@ SOURCES += \
     gui/tgraphicstaskitem.cpp \
     core/process_prctl.cpp \
     watchdog/tbwatchdog.cpp \
-    watchdog/watchmemmodule.cpp \
-    watchdog/formstatus.cpp
+    watchdog/watchmemmodule.cpp
 
 HEADERS += \
     core/tasknode.h \
@@ -58,13 +74,11 @@ HEADERS += \
     ../tb_interface/cmdlineparser.h \
     ../tb_interface/tb_interface.h \
     watchdog/tbwatchdog.h \
-    watchdog/watchmemmodule.h \
-    watchdog/formstatus.h
+    watchdog/watchmemmodule.h
 
 FORMS += \
     gui/taskbusplatformfrm.ui \
-    gui/pdesignerview.ui \
-    watchdog/formstatus.ui
+    gui/pdesignerview.ui
 
 TRANSLATIONS +=\
 	taskBusPlatform_zh_CN.ts
@@ -73,13 +87,13 @@ OTHER_FILES += \
 	taskBusPlatform_zh_CN.ts
 
 win32{
-VERSION = 1.0.0.0 # major.minor.patch.build
-VERSION_PE_HEADER = 1.0
-RC_ICONS += taskbusplatform.ico
+    VERSION = 1.0.0.0 # major.minor.patch.build
+    VERSION_PE_HEADER = 1.0
+    RC_ICONS += taskbusplatform.ico
 }
 else
 {
-VERSION = 1.0.0    # major.minor.patch
+    VERSION = 1.0.0    # major.minor.patch
 }
 
 RESOURCES += \
