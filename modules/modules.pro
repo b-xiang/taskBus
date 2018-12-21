@@ -4,7 +4,6 @@ TEMPLATE = subdirs
 SUBDIRS  += \ 
     sources/source_soundcard \
     transforms/transform_fft \
-    sinks/sink_plots \
     sources/source_files \
     sinks/sink_file \
     network/network_p2p \
@@ -12,4 +11,7 @@ SUBDIRS  += \
     wrappers/wrapper_scripts
 
 
-
+qtHaveModule(charts){
+SUBDIRS  += \
+    sinks/sink_plots
+}
