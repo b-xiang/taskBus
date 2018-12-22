@@ -31,12 +31,16 @@ void reciv_thread::run()
 		if ( is_control_subject(header) && packagedta.size())
 		{
 			//收到命令进程退出的广播消息,退出
-			if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":"))
+			if (strstr(control_subject(header,packagedta).c_str(),"function=quit;"))
 			{
 				bfinished = true;
 				qDebug()<<"Quit!";
 				emit sig_quit();
 			}
+			packagedta.push_back(0);
+			QString text = QString::fromUtf8((char *)packagedta.data());
+			emit new_textcmd(text);
+
 		}
 		else
 		{

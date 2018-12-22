@@ -10,6 +10,7 @@ public:
 	void run() override;
 signals:
 	void new_package(QByteArray arr);
+	void new_textcmd(QString str);
 	void sig_quit();
 };
 

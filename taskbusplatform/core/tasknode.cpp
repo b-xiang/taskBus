@@ -70,6 +70,10 @@ bool taskNode::cmd_start(QObject * node,QString cmd, QStringList paras)
 
 	emit sig_new_errmsg(QByteArray(cmdlinestr.toStdString().c_str()));
 
+	m_sbytes_sent = 0;
+	m_spackage_sent= 0;
+	m_sbytes_recieved = 0;
+	m_spackage_recieved = 0;
 	return true;
 }
 
@@ -82,7 +86,7 @@ bool taskNode::cmd_stop(QObject * node)
 	if (m_process->state()!=QProcess::Running)
 		return false;
 	//发送信令，终止
-	char cmd[] = "\"quit\":{ret = 0}\r\n";
+	char cmd[] = "function=quit;ret=0;source=taskbus;destin=all;";
 	subject_package_header header;
 	header.prefix[0] = 0x3C;
 	header.prefix[1] = 0x5A;
@@ -100,6 +104,7 @@ bool taskNode::cmd_stop(QObject * node)
 		QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 	m_process->kill();
+
 	return true;
 }
 
@@ -183,12 +188,36 @@ void taskNode::slot_readyReadStandardOutput()
 			if (m_array_stdout.size()>=
 					sizeof(TASKBUS::subject_package_header)+header->data_length)
 			{
+				++m_spackage_sent;
+				m_sbytes_sent += sizeof(TASKBUS::subject_package_header)+header->data_length;
+
 				QByteArray arr(m_array_stdout.constData(),
 							   sizeof(TASKBUS::subject_package_header)
-							   +header->data_length);
+							   +header->data_length);				
 				m_array_stdout.remove(0,sizeof(TASKBUS::subject_package_header)
 									  +header->data_length);
-				emit sig_new_package(arr);
+				//Analyse cab.
+				const TASKBUS::subject_package_header * header_package =
+						reinterpret_cast<const TASKBUS::subject_package_header *>(arr.constData());
+				//Command
+				if (header_package->subject_id == 0xffffffff)
+				{
+					//Command must endwith \0
+					const char * pCmd = arr.constData()+sizeof(TASKBUS::subject_package_header);
+					QString cmd = QString::fromUtf8(pCmd,header_package->data_length);
+					QMap<QString, QVariant> map_z
+							= taskCell::string_to_map(cmd);
+					//remember uuid
+					if (map_z.contains("source"))
+					{
+						if(m_uuid.size()==0 )
+							m_uuid = map_z["source"].toString();
+						if (map_z.contains("destin"))
+							emit sig_new_command(map_z);
+					}
+				}
+				else
+					emit sig_new_package(arr);
 				if (m_bDebug)
 					log_package(true,arr);
 			}
@@ -222,10 +251,19 @@ void taskNode::timerEvent(QTimerEvent *event)
 {
 	if (event->timerId()==m_nBp_TimerID)
 	{
+		static int ct = 0;
 		if (m_bBp_Recovered)
 		{
 			if (m_process->bytesAvailable())
 				slot_readyReadStandardOutput();
+		}
+		if (++ct % 3 ==0)
+		{
+			if (isRunning())
+			{
+				qint64 pid = TASKBUS::get_procid(m_process);
+				emit sig_iostat(pid,m_spackage_recieved,m_spackage_sent,m_sbytes_recieved,	m_sbytes_sent);
+			}
 		}
 	}
 }
@@ -286,8 +324,35 @@ bool taskNode::cmd_write(QObject * node,QByteArray arr)
 	else
 		m_outputBuf.push_back(arr);
 	m_nBp_QueueSz = m_outputBuf.size();
+	++m_spackage_recieved;
+	m_sbytes_recieved += arr.size();
 	return  true;
 }
+
+bool taskNode::cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins)
+{
+	if (destins.contains(m_uuid)==false
+			&&destins.contains("all")==false)
+		return false;
+	if (cmd.contains("source"))
+		if (cmd["source"]==m_uuid)
+			return false;
+	QString strv = taskCell::map_to_string(cmd);
+	QByteArray utf8 = strv.toUtf8();
+	QByteArray arr;
+	arr.append(0x3C);	arr.append(0x5A);
+	arr.append(0x7E);	arr.append(0x69);
+	arr.append(4,0xFF); arr.append(4,0x00);
+	utf8.append('\0');
+	const int sz = utf8.size();
+	arr.append((sz>> 0) & 0xff);
+	arr.append((sz>> 8) & 0xff);
+	arr.append((sz>> 16) & 0xff);
+	arr.append((sz>> 24) & 0xff);
+	arr.append(utf8);
+	return cmd_write(this,arr);
+}
+
 void taskNode::slot_sended(qint64 b)
 {
 	extern QAtomicInt g_totalsent ;

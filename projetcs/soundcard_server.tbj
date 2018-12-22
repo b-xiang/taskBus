@@ -4,7 +4,7 @@
             "instance": {
                 "additional_args": "OUTD=3;nice=2;",
                 "exec": "modules/source_soundcard.exe",
-                "instance_value": 24
+                "instance_value": 3
             },
             "name": {
                 "name": "soundcard"
@@ -85,7 +85,7 @@
             "instance": {
                 "additional_args": "nice=2;",
                 "exec": "modules/transform_fft.exe",
-                "instance_value": 25
+                "instance_value": 4
             },
             "name": {
                 "name": "libfftw"
@@ -167,7 +167,7 @@
             "instance": {
                 "additional_args": "nice=2;",
                 "exec": "modules/network_p2p.exe",
-                "instance_value": 26
+                "instance_value": 5
             },
             "name": {
                 "name": "network_p2p"
@@ -239,8 +239,8 @@
         "y": 1520
     },
     "pos2": {
-        "x": 2250,
-        "y": 1503
+        "x": 2199,
+        "y": 1494
     },
     "total_mods": 3
 }

@@ -11,6 +11,7 @@
 #include <QPointF>
 #include <QDebug>
 #include <QSettings>
+#include <algorithm>
 #include "process_prctl.h"
 
 int taskProject::instance_count = 0;
@@ -106,12 +107,15 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 
 		//关联各个事件 Associating individual events
 		connect (node, &taskNode::sig_new_package, this, &taskProject::slot_new_package,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_new_command, this, &taskProject::slot_new_command,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_new_errmsg, this, &taskProject::slot_new_errmsg,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_started, this, &taskProject::slot_pro_started,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_stopped, this, &taskProject::slot_pro_stopped,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_start, node, &taskNode::cmd_start,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_stop, node, &taskNode::cmd_stop,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_write, node, &taskNode::cmd_write,Qt::QueuedConnection);
+		connect (this, &taskProject::sig_cmd_sendcmd, node, &taskNode::cmd_sendcmd,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_iostat, this, &taskProject::sig_iostat);
 
 		//回调额外的索引创建事件 Callback for additional index creation events
 		m_fInsAppended(mod,node,pt);
@@ -494,7 +498,7 @@ void taskProject::slot_new_package(QByteArray pkg)
 		if (srcfuns.size()==0)
 			throw "srcfuns.size() is 0";
 		//看看是否合法 See if it's legal.
-		if (header->subject_id>0)
+		if (header->subject_id!=0xffffffff)
 		{
 			quint32 src_inst = mod->function_instance(srcfuns.first());
 			//专题是否被登记为内部专题
@@ -564,7 +568,8 @@ void taskProject::slot_new_package(QByteArray pkg)
 		else
 		{
 			//指令处理 Instruction processing
-
+			//! It will be dealed in each nodes' thread.
+			Q_ASSERT(false);
 		}
 	}
 	catch(QString msg)
@@ -579,6 +584,56 @@ void taskProject::slot_new_package(QByteArray pkg)
 	if (blocked)
 		slot_new_errmsg(QByteArray(QString("Blocked by later process.").toStdString().c_str()));
 
+}
+/*!
+ * \brief taskProject::slot_new_command commands is another way to handover messages.
+ * \param cmd message.
+ * \details
+ * taskbus支持跨模块的消息。消息由分号分割的键-值序列组成。以下三个保留的键名包括：
+ * 1.source 来源模块的标识。标识的值由模块自身定义并在手册中声明。建议采用UUID或者全域名。
+ * 2.destin 目的模块的标识。可以有多组。ALL表示向所有模块发送。
+ * 3.function 功能名。
+ * 其他参数任意指定。
+ * taskBus support messages over modules. messages is a set of key-value pairs,
+ * which is splitted by ";". Key-value are connected with "=".
+ * There are 3 reserved keywords:
+ * 1.source: ID of source module. ID is given by each module designer, UUID or
+ * full domain name is strongly recommanded.
+ * 2.destin: ID of destin modules. "all" means all modules. module names are seperated by ","
+ * 3.function: function name.
+ *
+ * eg:
+ * soucre=fft.ghstudio.org;destin=detector.clip.wav,plots.3dshow;function=spec_append;size=1024;
+ * means:
+ * source is from  fft.ghstudio.org
+ * destin is to detector.clip.wav and plots.3dshow
+ * function is spec_append
+ * other parameters: size=1024
+ */
+void taskProject::slot_new_command(QMap<QString,QVariant> cmd)
+{
+	if (cmd.size())
+	{		
+		QString source;
+		if (cmd.contains("source"))
+			source = cmd["source"].toString().trimmed();
+		else
+			return;
+		if (cmd.contains("destin"))
+		{
+			const QStringList destins = cmd["destin"].toString().split(",");
+			QSet<QString> notified;
+			foreach (QString destinstr, destins)
+			{
+				const QString des = destinstr.trimmed();
+				if (des!=source)
+					notified.insert(des);
+			}
+			emit sig_cmd_sendcmd(cmd,notified);
+		}
+		else
+			return;
+	}
 }
 
 /*!
@@ -786,7 +841,7 @@ void taskProject::slot_outside_recieved(QByteArray pkg)
 	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
 		return;
 	try {
-		if (header->subject_id>0)
+		if (header->subject_id!=0xffffffff)
 		{
 			//进行解析、转发 To parse, forward
 			if (m_iface_outside2inside_in.contains(header->subject_id)==false)
@@ -813,6 +868,10 @@ void taskProject::slot_outside_recieved(QByteArray pkg)
 		else
 		{
 			//信令
+			const char * cmd = pkg.constData() + sizeof( TASKBUS::subject_package_header);
+			QString dac = QString::fromUtf8(cmd,header->data_length);
+			QMap<QString,QVariant> vt_map = taskCell::string_to_map(dac);
+			slot_new_command(vt_map);
 		}
 	}
 	catch(QString msg)

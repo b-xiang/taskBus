@@ -14,6 +14,7 @@ namespace TASKBUS {
 
 	struct tagMemoryInfo{
 		qint64 pid;
+		qint64 phandle;
 		QString m_name;
 		double m_memsize;
 

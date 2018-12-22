@@ -18,6 +18,7 @@ class taskBusPlatformFrm : public QMainWindow
 public:
 	explicit taskBusPlatformFrm(QWidget *parent = 0);
 	~taskBusPlatformFrm() override;
+	void load_default_modules();
 private slots:
 	void slot_showPropModel(QObject * objModel);
 	void slot_showMsg(QString);
@@ -34,16 +35,16 @@ private slots:
 	void on_action_Open_Project_triggered();
 	void on_mdiArea_subWindowActivated(QMdiSubWindow *arg1);
 	void on_comboBox_class_currentIndexChanged(int index);
-
 	void on_actionhideWindow_toggled(bool arg1);
-
 	void on_action_Save_Project_As_triggered();
-
+signals:
+	void showSplash(QString msg,Qt::Alignment, QColor);
+	void hideSplash();
 protected:
 	void timerEvent(QTimerEvent *event) override;	
 	void closeEvent(QCloseEvent * event) override;
 	void load_modules(QStringList lstNames);
-	void load_default_modules();
+
 	void save_default_modules();
 private:
 	Ui::taskBus *ui;

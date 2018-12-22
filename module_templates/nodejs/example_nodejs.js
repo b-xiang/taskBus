@@ -66,7 +66,7 @@ else if (s_function=="example_nodejs")
 				eventEmitter.emit('dealpack',iheader,i_subject,i_path,i_data);    
 			else if (i_subject==0xffffffff)
 			{
-				if (i_data.indexOf("quit")>0)
+                if (i_data.indexOf("=quit;")>0)
 					process.exit(0);
 			}
 		}			

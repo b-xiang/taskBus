@@ -20,6 +20,7 @@ void taskBusPlatformFrm::load_modules(QStringList newfms)
 	QMap<QString, mod_info> minfo;
 	foreach (QString newfm, newfms)
 	{
+		emit showSplash(tr("Loading ")+newfm,Qt::AlignBottom,QColor(0,0,0));
 		//首先试图找JSON文件.
 		//We can provide a JSON file along with exe file.This approach
 		//will significantly boost loading approach.
@@ -80,6 +81,7 @@ void taskBusPlatformFrm::load_modules(QStringList newfms)
 				minfo[className+"|" + taskCell::pureName(mod.function_firstname())] = info;
 			}
 		}
+		QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 
 	QStringList keys = minfo.keys();

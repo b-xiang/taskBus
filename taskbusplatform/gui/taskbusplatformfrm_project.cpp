@@ -25,6 +25,7 @@ void taskBusPlatformFrm::on_action_New_Project_triggered()
 	connect (v,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
+	connect (v->project(), &taskProject::sig_iostat,ui->form_stat->wmod(),&WatchMemModule::slot_packio);
 
 }
 void taskBusPlatformFrm::on_action_Save_Project_triggered()
@@ -148,6 +149,7 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 			connect (dv,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_closed,this,&taskBusPlatformFrm::slot_projclosed,Qt::QueuedConnection);
+			connect (dv->project(), &taskProject::sig_iostat,ui->form_stat->wmod(),&WatchMemModule::slot_packio);
 			QCoreApplication::processEvents();
 			dv->project()->refresh_idxes();
 			QCoreApplication::processEvents();

@@ -10,6 +10,8 @@
 #include <QAtomicInt>
 #include <QProcess>
 #include <QSettings>
+#include <QSplashScreen>
+#include <QPixmap>
 #include <QDir>
 #include "watchdog/tbwatchdog.h"
 //全局吞吐量 global IO speed recorder
@@ -18,10 +20,13 @@ QAtomicInt  g_totalrev (0), g_totalsent (0);
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
+	//Init watchdog
 	tb_watch_dog().watch();
+	//Change CurrentDir
 	QDir dir("/");
 	dir.setCurrent(app.applicationDirPath());
 
+	//Install translators
 	QTranslator qtTranslator;
 	qtTranslator.load("qt_" + QLocale::system().name(),
 					  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
@@ -34,8 +39,23 @@ int main(int argc, char *argv[])
 			QLocale::system().name()+".qm";
 	appTranslator.load(strTransLocalFile );
 	app.installTranslator(&appTranslator);
+
+	//show splahs screen
+	QSplashScreen screen(QPixmap(":/taskBus/images/taskBus.png"));
+	screen.show();
+	app.processEvents(QEventLoop::ExcludeUserInputEvents);
+
+	//init main frame
 	taskBusPlatformFrm w;
+	QObject::connect(&w,&taskBusPlatformFrm::showSplash,
+					 &screen, &QSplashScreen::showMessage);
+	QObject::connect(&w,&taskBusPlatformFrm::hideSplash,
+					 &screen, &QSplashScreen::hide);
+	app.processEvents(QEventLoop::ExcludeUserInputEvents);
+	//Load default modules
+	w.load_default_modules();
 	w.show();
+
 #ifdef WIN32
 	setmode(fileno(stdout),O_BINARY);
 	setmode(fileno(stdin),O_BINARY);

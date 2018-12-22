@@ -35,7 +35,9 @@ signals:
 	void sig_pro_started();
 	void sig_pro_stopped(int exitCode, QProcess::ExitStatus exitStatus);
 	void sig_new_package(QByteArray);
+	void sig_new_command(QMap<QString, QVariant> cmd);
 	void sig_new_errmsg(QByteArray);
+	void sig_iostat(qint64 pid,quint64 pr,quint64 ps,quint64 br, quint64 bs);
 	void private_sig_nextcab();
 	void private_sig_nextwrite();
 public slots:
@@ -43,6 +45,7 @@ public slots:
 	bool cmd_start(QObject * node,QString cmd, QStringList paras);
 	bool cmd_stop(QObject * node);
 	bool cmd_write(QObject * node,QByteArray arr);
+	bool cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins);
 private slots:
 	void slot_readyReadStandardOutput();
 	void slot_readyReadStandardError();
@@ -60,6 +63,7 @@ private:
 	QFile m_dbgfile_stdin;
 	QFile m_dbgfile_stdout;
 	QFile m_dbgfile_stderr;
+	QString m_uuid;
 	QString dbgdir();
 public:
 	int outputQueueSize();
@@ -71,12 +75,23 @@ protected:
 	int  m_nBp_TimerID = -1;
 	taskCell * m_pCell = nullptr;
 	void timerEvent(QTimerEvent *event);
+	//statistic
+protected:
+	quint64 m_spackage_recieved = 0;
+	quint64 m_spackage_sent = 0;
+	quint64 m_sbytes_recieved = 0;
+	quint64 m_sbytes_sent = 0;
 public:
 	bool		isRunning ();
+	QString		uuid()const {return m_uuid;}
 	bool		isDebug() const {return m_bDebug;}
 	QProcess *	proc(){return m_process;}
 	void		bindCell(taskCell * t){m_pCell = t;}
 	taskCell *	cell(){return m_pCell;}
+	quint64 st_pack_recieved() const {return m_spackage_recieved;}
+	quint64 st_pack_sended() const {return m_spackage_sent;}
+	quint64 st_bytes_recieved() const {return m_sbytes_recieved;}
+	quint64 st_bytes_sended() const {return m_sbytes_sent;}
 };
 
 #endif // TASKNODE_H

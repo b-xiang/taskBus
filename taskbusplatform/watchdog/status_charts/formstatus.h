@@ -17,6 +17,8 @@ class FormStatus : public QWidget
 public:
 	explicit FormStatus(QWidget *parent = nullptr);
 	~FormStatus() override;
+	WatchMemModule * wmod() {return m_watchModule;}
+	void clearMap(){m_chart_serials.clear();}
 protected:
 	void timerEvent(QTimerEvent *event) override;
 private:

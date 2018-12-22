@@ -1,6 +1,8 @@
-# Taskbus - 一个跨平台的多进程合作框架
+# Taskbus(兔巴士) - 一个跨平台的多进程合作框架
 
 **Taskbus - A cross platform multi-process cooperation framework**
+
+![TaskBusLogo](taskbusplatform/images/taskBus.png)
 
 # 什么是Taskbus/What is TaskBus
 

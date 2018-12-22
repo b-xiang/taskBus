@@ -13,6 +13,7 @@
 #include <QThread>
 #include <QVector>
 #include <QObject>
+#include <QVariant>
 #include <functional>
 class taskCell;
 class taskNode;
@@ -144,13 +145,17 @@ signals:
 	void sig_message(QString str);
 	void sig_cmd_start(QObject * node, QString cmd, QStringList paras);
 	void sig_cmd_stop(QObject * node);
-	void sig_cmd_write(QObject * node, QByteArray arr);
+	void sig_cmd_write(QObject * node, QByteArray arr);	
+	void sig_cmd_sendcmd(QMap<QString,QVariant> cmd,QSet<QString> destions);
 	//外部通信 External communication
 	void sig_outside_new_package(QByteArray);
 	void sig_started();
 	void sig_stopped();
+	//IO Status
+	void sig_iostat(qint64 pid,quint64 pr,quint64 ps,quint64 br, quint64 bs);
 private slots:
 	void slot_new_package(QByteArray);
+	void slot_new_command(QMap<QString,QVariant> cmd);
 	void slot_new_errmsg(QByteArray);
 	void slot_pro_started();
 	void slot_pro_stopped();

@@ -89,7 +89,7 @@ int do_fftw(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 
 
 		//double * in;
@@ -120,7 +120,7 @@ int do_fftw(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")!=nullptr)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 			}
 			else if (header.subject_id==itmstamp_in)
