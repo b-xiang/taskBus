@@ -11,4 +11,15 @@ SOURCES += \
 DISTFILES += \
     transform_fft.json
 
-LIBS+=-lfftw3
+win32{
+    contains(QMAKESPEC,vc){
+    INCLUDEPATH +=$$PWD/win32/fftw
+    contains(QT_ARCH, i386) {
+	LIBS+=-L$$PWD/"win32/fftw/x86" -llibfftw3-3
+    } else {
+	LIBS+=-L$$PWD/"win32/fftw/x64" -llibfftw3-3
+    }
+    }
+    else: LIBS+=-lfftw3
+}
+else: LIBS+=-lfftw3

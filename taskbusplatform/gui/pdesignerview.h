@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * PDesignerView provides  a modular drag-and-drop interface like Simulink or
  * gnu-radio that can be used to implement (quasi-)real-time processing logic
  * on a general-purpose computer.
@@ -91,6 +91,7 @@ public:
 	void open_project(QString fm);
 	QString fullFileName() const {return m_strFullFilename;}
 	void setFullFileName(const QString n){m_strFullFilename = n;}
+	void addCell(QMimeData * data);
 protected:
 	void callbk_instanceAppended(taskCell * pmod, taskNode * pnod,QPointF pt);
 	taskCell * callbk_newcell();

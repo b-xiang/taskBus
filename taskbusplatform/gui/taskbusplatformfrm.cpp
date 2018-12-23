@@ -1,4 +1,4 @@
-#include "taskbusplatformfrm.h"
+﻿#include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
 #include <QCloseEvent>
 #include <QDir>
@@ -296,3 +296,24 @@ void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
 }
 
 
+
+void taskBusPlatformFrm::on_listView_modules_doubleClicked(const QModelIndex &index)
+{
+	QMdiSubWindow * sub = ui->mdiArea->activeSubWindow();
+	if (sub)
+	{
+		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		if (dv)
+		{
+			if (ui->listView_modules->model())
+			{
+				QModelIndexList lst;
+				lst<<index;
+				QMimeData * d = ui->listView_modules->model()->mimeData(lst);
+				if (d)
+					dv->addCell(d);
+			}
+
+		}
+	}
+}

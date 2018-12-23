@@ -1,4 +1,4 @@
-#ifndef PROGRESSBUSPLATFORMFRM_H
+﻿#ifndef PROGRESSBUSPLATFORMFRM_H
 #define PROGRESSBUSPLATFORMFRM_H
 #include "taskmodule.h"
 #include <QMainWindow>
@@ -37,6 +37,8 @@ private slots:
 	void on_comboBox_class_currentIndexChanged(int index);
 	void on_actionhideWindow_toggled(bool arg1);
 	void on_action_Save_Project_As_triggered();
+	void on_listView_modules_doubleClicked(const QModelIndex &index);
+
 signals:
 	void showSplash(QString msg,Qt::Alignment, QColor);
 	void hideSplash();

@@ -1,4 +1,4 @@
-#include "dialognetp2p.h"
+﻿#include "dialognetp2p.h"
 #include "ui_dialognetp2p.h"
 #include <QDateTime>
 #include <QMessageBox>
@@ -190,8 +190,8 @@ void DialogNetP2P::slot_read_sock()
 	{
 		//检查独特码
 		int goodoff = 0;
-		while (!(m_package_array[0+goodoff]==0x3c && m_package_array[1+goodoff]==0x5A
-				 &&m_package_array[2+goodoff]==0x7E  &&m_package_array[3+goodoff]==0x69 ))
+		while (!(m_package_array[0+goodoff]==(char)0x3c && m_package_array[1+goodoff]==(char)0x5A
+				 &&m_package_array[2+goodoff]==(char)0x7E  &&m_package_array[3+goodoff]==(char)0x69 ))
 		{
 			++goodoff;
 			if (goodoff+3>= m_package_array.size())
@@ -204,8 +204,8 @@ void DialogNetP2P::slot_read_sock()
 		const subject_package_header * pheader = (const subject_package_header *)
 				m_package_array.constData();
 
-		Q_ASSERT(m_package_array[0+goodoff]==0x3c && m_package_array[1+goodoff]==0x5A
-				&&m_package_array[2+goodoff]==0x7E  &&m_package_array[3+goodoff]==0x69 );
+		Q_ASSERT(m_package_array[0+goodoff]==(char)0x3c && m_package_array[1+goodoff]==(char)0x5A
+				&&m_package_array[2+goodoff]==(char)0x7E  &&m_package_array[3+goodoff]==(char)0x69 );
 
 		const unsigned int datalen =
 				cvendian(pheader->data_length,false);

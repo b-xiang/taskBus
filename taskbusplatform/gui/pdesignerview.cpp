@@ -1,4 +1,4 @@
-#include "pdesignerview.h"
+﻿#include "pdesignerview.h"
 #include "ui_pdesignerview.h"
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -225,8 +225,40 @@ void PDesignerView::dropEvent(QDropEvent * event)
 			QPoint pt2 = ui->graphicsView_main->mapFromParent(pt);
 			QPointF pt3 = ui->graphicsView_main->mapToScene(pt2);
 			m_project->add_node(md,pt3);
-			set_modified();
 		}
+		set_modified();
+	}
+}
+
+void  PDesignerView::addCell(QMimeData * data)
+{
+	QByteArray encodedData = data->data("application/vnd.text.list");
+	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	QStringList newItems;
+	int rows = 0;
+
+	while (!stream.atEnd()) {
+		QString text;
+		stream >> text;
+		newItems << text;
+		++rows;
+	}
+	if (newItems.size())
+	{
+		static int offset = 0;
+		foreach (QString md, newItems)
+		{
+			QPointF pt3 = ui->graphicsView_main->sceneRect().center();
+			pt3.setX(pt3.x()-200+((offset%25)/5)*100);
+			pt3.setY(pt3.y()-200+((offset%25)%5)*100);
+			if (pt3.x()<0)	pt3.setX(300);
+			if (pt3.y()<0)	pt3.setY(300);
+			if (pt3.x()>m_scene->width())	pt3.setX(m_scene->width()-300);
+			if (pt3.y()>m_scene->height())	pt3.setY(m_scene->height()-300);
+			m_project->add_node(md,pt3);
+			++offset;
+		}
+		set_modified();
 	}
 
 }
