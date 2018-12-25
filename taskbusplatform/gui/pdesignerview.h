@@ -20,6 +20,7 @@ class TGraphicsTaskItem;
 class taskNode;
 class QGraphicsScene;
 class QGraphicsLineItem;
+class taskBusPlatformFrm;
 namespace Ui {
 	class PDesignerView;
 }
@@ -29,7 +30,7 @@ class PDesignerView : public QWidget
 	Q_OBJECT
 
 public:
-	explicit PDesignerView(QWidget *parent = 0);
+	explicit PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent = 0);
 	~PDesignerView();
 	void show_prop_page(QObject * model);
 	bool modified() const {return m_bModified;}
@@ -37,9 +38,9 @@ public:
 	//拖放事件
 	//Drag and drop events
 protected:
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dropEvent(QDropEvent * event);
-	void closeEvent(QCloseEvent *);
+	void dragEnterEvent(QDragEnterEvent *event) override;
+	void dropEvent(QDropEvent * event) override;
+	void closeEvent(QCloseEvent *) override;
 public slots:
 	//重新计算并更新连接
 	//connect pins with sp lines
@@ -56,7 +57,6 @@ signals:
 	void sig_updatePaths();
 	void sig_projstarted();
 	void sig_projstopped();
-	void sig_closed(QString proFile);
 signals:
 	void cmd_start_project();
 	void cmd_stop_project(QThread * th);
@@ -79,6 +79,8 @@ private:
 	taskProject * m_project = nullptr;
 	QThread * m_pRunThread = nullptr;
 	QString m_strFullFilename;
+	//Mainframe
+	taskBusPlatformFrm * m_pMainFrm = nullptr;
 	static int m_nextCV ;
 	bool m_bModified = false;
 public:
@@ -90,7 +92,7 @@ public:
 	bool is_running();
 	void open_project(QString fm);
 	QString fullFileName() const {return m_strFullFilename;}
-	void setFullFileName(const QString n){m_strFullFilename = n;}
+	void setFullFileName(const QString & n){m_strFullFilename = n;}
 	void addCell(QMimeData * data);
 protected:
 	void callbk_instanceAppended(taskCell * pmod, taskNode * pnod,QPointF pt);

@@ -19,13 +19,13 @@ public:
 	explicit taskBusPlatformFrm(QWidget *parent = 0);
 	~taskBusPlatformFrm() override;
 	void load_default_modules();
+	void unregProject(QString fm);
 private slots:
 	void slot_showPropModel(QObject * objModel);
 	void slot_showMsg(QString);
 	void slot_openprj(QString);
 	void slot_projstarted();
 	void slot_projstopped();
-	void slot_projclosed(QString fm);
 	void on_action_Load_Module_triggered();
 	void on_action_New_Project_triggered();
 	void on_action_About_triggered();

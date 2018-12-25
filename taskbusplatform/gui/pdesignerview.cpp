@@ -15,6 +15,7 @@
 #include <QEasingCurve>
 #include <QToolBar>
 #include "core/tasknode.h"
+#include "taskbusplatformfrm.h"
 #include "taskmodule.h"
 #include "tgraphicstaskitem.h"
 #include "tb_interface.h"
@@ -23,12 +24,13 @@
 
 int PDesignerView::m_nextCV = 1;
 
-PDesignerView::PDesignerView(QWidget *parent) :
+PDesignerView::PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::PDesignerView),
 	m_scene(new QGraphicsScene(0,0,4096,3072,this)),
 	m_pRunThread(new QThread(this)),
-	m_project(new taskProject(0))
+	m_project(new taskProject(0)),
+	m_pMainFrm(pMainfrm)
 {
 	ui->setupUi(this);
 	setAcceptDrops(true);
@@ -275,9 +277,10 @@ void PDesignerView::closeEvent(QCloseEvent * e)
 			return;
 		}
 	}
-	emit sig_closed(fullFileName());
 	this->stop();
 	e->accept();
+	if (m_pMainFrm)
+		m_pMainFrm->unregProject(fullFileName());
 }
 
 void PDesignerView::show_prop_page(QObject * model)

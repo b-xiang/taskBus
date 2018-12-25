@@ -1,4 +1,4 @@
-#include "taskbusplatformfrm.h"
+﻿#include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
 #include <QDebug>
 #include <QMdiSubWindow>
@@ -13,7 +13,7 @@
 
 void taskBusPlatformFrm::on_action_New_Project_triggered()
 {
-	PDesignerView * v = new PDesignerView();
+	PDesignerView * v = new PDesignerView(this);
 	QString fm = QString("Untitled %1").arg(++m_doc_ins);
 	v->setWindowTitle(fm);
 	v->setFullFileName(fm);
@@ -136,7 +136,7 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 	{
 		QByteArray ar = fo.readAll();
 		QFileInfo info(newfm);
-		PDesignerView * dv = new PDesignerView();
+		PDesignerView * dv = new PDesignerView(this);
 		if (dv)
 		{
 			QMdiSubWindow * wnd =  ui->mdiArea->addSubWindow(dv);
@@ -148,7 +148,6 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 			connect (dv,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
-			connect (dv,&PDesignerView::sig_closed,this,&taskBusPlatformFrm::slot_projclosed,Qt::QueuedConnection);
 			connect (dv->project(), &taskProject::sig_iostat,ui->form_stat->wmod(),&WatchMemModule::slot_packio);
 			QCoreApplication::processEvents();
 			dv->project()->refresh_idxes();
@@ -235,7 +234,7 @@ void taskBusPlatformFrm::slot_projstopped()
 	}
 }
 
-void taskBusPlatformFrm::slot_projclosed(QString fm)
+void taskBusPlatformFrm::unregProject(QString fm)
 {
 	qDebug()<<fm<<" closed.";
 	m_activePagesFileName.remove(fm);
