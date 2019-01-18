@@ -14,6 +14,7 @@
 #include <QVector>
 #include <QObject>
 #include <QVariant>
+#include <QByteArrayList>
 #include <functional>
 class taskCell;
 class taskNode;
@@ -44,7 +45,7 @@ public:
 	//向场景添加实例 Add an function instance to a scene
 	void			add_node		(const QString json,QPointF pt,
 									 bool rebuildidx = true);
-	//删除实例(给定序号) Delete instance (given ordinal)
+	//删除实例(给定序号) Delete instance (given ordinal),-1 means all
 	void			del_node		(int);
 	//转换为JSON Convert to JSON
 	QByteArray		toJson			();
@@ -142,7 +143,7 @@ public:
 	void setWarpperPrj(bool b){m_bWarpper = b; refresh_idxes();}
 
 signals:
-	void sig_message(QString str);
+	void sig_message(QStringList namestr,QByteArrayList strMessages);
 	void sig_cmd_start(QObject * node, QString cmd, QStringList paras);
 	void sig_cmd_stop(QObject * node);
 	void sig_cmd_write(QObject * node, QByteArray arr);	
@@ -154,13 +155,21 @@ signals:
 	//IO Status
 	void sig_iostat(qint64 pid,quint64 pr,quint64 ps,quint64 br, quint64 bs);
 private slots:
-	void slot_new_package(QByteArray);
+	void slot_new_package(QByteArrayList);
 	void slot_new_command(QMap<QString,QVariant> cmd);
-	void slot_new_errmsg(QByteArray);
+	void slot_new_msg(QByteArrayList);
 	void slot_pro_started();
 	void slot_pro_stopped();
 
 
+protected:
+	int m_nTimerID = -1;
+	QByteArrayList m_bufferMsgs;
+	QStringList    m_bufferMsgSources;
+	void timerEvent(QTimerEvent * evt) override;
+	void push_msg(QString smsg);
+	void send_msg(QString smsgSource, QByteArrayList lst);
+	void flush_msg();
 	//一些为了GUI程序提供的回调接口
 	//Some callback interfaces provided for GUI programs
 public:
@@ -184,7 +193,8 @@ private:
 	void		default_InsAppended(taskCell * pmod, taskNode * pnod,QPointF pt);
 	void		default_Indexrefreshed();
 	QPointF		default_GetCellPos(int);
-
+	static quint32	new_instance();
+	static void		unreg_instance(const quint32 ins);
 	/*!
 	  *关键成员变量
 	  * Key members
@@ -207,7 +217,7 @@ private:
 	 * inserted module. This ID is local and does not exceed the scope of this
 	 * class instance.
 	 */
-	static int instance_count;
+	static QSet<quint32> m_instance_set;
 	//线程池大小 Thread pool Size
 	const int m_nthreads = 6;
 	//功能管理器taskNode实例列表

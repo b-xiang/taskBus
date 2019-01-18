@@ -130,4 +130,5 @@ DISTFILES += \
     Resources/Folder Online aqua.png \
     Resources/hanukkah_03.png \
     Resources/terminalserver.png \
-    network_p2p.exe.json
+    network_p2p.exe.json \
+    network_p2p.zh_CN.json

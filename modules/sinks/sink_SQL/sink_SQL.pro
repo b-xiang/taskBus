@@ -31,7 +31,8 @@ FORMS += \
 	dialogsql.ui
 
 DISTFILES += \
-    sink_SQL.exe.json
+    sink_SQL.exe.json \
+    sink_SQL.zh_CN.json
 
 RESOURCES += \
     sinksql.qrc

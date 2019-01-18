@@ -35,6 +35,9 @@ SOURCES += \
     core/process_prctl.cpp \
     watchdog/tbwatchdog.cpp \
     watchdog/consolewatchdog.cpp
+
 message($$QT_ARCH)
 contains(QT_ARCH,x86):CONFIG(release, debug|release): QMAKE_CXXFLAGS +=  -march=core2  -O3 -fexpensive-optimizations
+
+
 

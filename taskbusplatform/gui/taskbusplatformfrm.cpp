@@ -8,8 +8,10 @@
 #include <QMessageBox>
 #include <QMdiSubWindow>
 #include <QSettings>
+#include <QDateTime>
 #include "pdesignerview.h"
 #include "watchdog/tbwatchdog.h"
+#include "dlgabout.h"
 
 int taskBusPlatformFrm::m_doc_ins = 0;
 
@@ -23,7 +25,7 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	ui->setupUi(this);	
 	setCentralWidget(ui->mdiArea);
 	//全部模块 Create Module for All taskModules
-	m_toolModules[tr("All")] = new taskModule(true,this);
+	m_pRefModule = m_toolModules[tr("All")] = new taskModule(true,this);
 	ui->listView_modules->setModel(m_toolModules[tr("All")]);
 
 	//类别 ComboBox for classes
@@ -51,9 +53,8 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_modules->toggleViewAction());
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_props->toggleViewAction());
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_watch->toggleViewAction());
-
-
 	m_pTrayIcon->setContextMenu(me);
+	connect(m_pTrayIcon,&QSystemTrayIcon::activated,this,&taskBusPlatformFrm::slot_traymessage);
 
 }
 
@@ -68,6 +69,19 @@ taskBusPlatformFrm::~taskBusPlatformFrm()
 	}
 	delete ui;
 }
+
+void taskBusPlatformFrm::slot_traymessage(QSystemTrayIcon::ActivationReason r)
+{
+	switch (r)
+	{
+	case QSystemTrayIcon::DoubleClick:
+		ui->actionhideWindow->setChecked(false);
+		break;
+	default:
+		break;
+	}
+}
+
 void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 {
 	static int pp = 0;
@@ -111,12 +125,15 @@ void taskBusPlatformFrm::slot_showPropModel(QObject * objModel)
 		ui->treeView_props->scrollToBottom();
 		//ui->treeView_props->expandAll();
 	}
+	else
+		ui->treeView_props->setModel(0);
 }
 
 void taskBusPlatformFrm::on_action_About_triggered()
 {
-	QMessageBox::about(this,tr("taskBus"),tr("Used to orgnize process-based modules. by goldenhawking, 2018 for opensource usage."));
-	QApplication::aboutQt();
+	DlgAbout about(this);
+	if (about.exec()==QDialog::Accepted)
+		QApplication::aboutQt();
 }
 
 void taskBusPlatformFrm::on_action_Start_project_triggered()
@@ -164,15 +181,12 @@ void taskBusPlatformFrm::load_default_modules()
 	fin.close();
 	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"),QSystemTrayIcon::Information, 1000);
 	load_modules(lstNames);
-	//m_pTrayIcon->hide();
-	//m_pTrayIcon->show();
-	//QThread::msleep(2000);
 	m_pTrayIcon->showMessage(tr("Succeed."),tr("Init modules from default_mods.text succeed!"),QSystemTrayIcon::Information, 2000);
 	emit hideSplash();
 }
 void taskBusPlatformFrm::save_default_modules()
 {
-	const QSet<QString> & s = m_toolModules[tr("All")]->full_paths();
+	const QSet<QString> & s = refModule()->full_paths();
 
 	QString DefaultFile = QCoreApplication::applicationDirPath() + "/default_mods.text";
 	QFile fin(DefaultFile);

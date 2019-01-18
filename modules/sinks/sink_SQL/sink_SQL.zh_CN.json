@@ -6,62 +6,59 @@
             "DRIVER":{
                 "type":"string",
                 "default":"QSQLITE",
-                "tooltip":"Qt Database Driver",
-                "range":{"tip":"QIBASE,QSQLITE,QMYSQL,QMYSQL3,QODBC,QODBC3,QPSQL,QPSQL7"}
+                "tooltip":"数据驱动"
             },
             "HOST":{
                 "type":"string",
                 "default":"127.0.0.1",
-                "tooltip":"server address"
+                "tooltip":"服务器"
             },
             "PORT":{
                 "type":"string",
                 "default":1234,
-                "tooltip":"server port"
+                "tooltip":"端口"
             },
             "DATABASE":{
                 "type":"string",
                 "default":".\\my.db",
-                "tooltip":"database instance"
+                "tooltip":"数据库"
             },
             "USER":{
                 "type":"string",
                 "default":"user",
-                "tooltip":"user name"
+                "tooltip":"用户"
             },
             "PASS":{
                 "type":"string",
                 "default":"pass",
-                "tooltip":"password"
+                "tooltip":"口令"
             },
             "hide_window":{
                 "type":"int",
                 "default":"0",
-                "tooltip":"hide the window",
-                 "range":{"tip":"0=show,1=hide"}
+                "tooltip":"隐藏窗口"
             },
             "use_transaction":{
                 "type":"int",
                 "default":"0",
-                "tooltip":"use transaction",
-                 "range":{"tip":"0=disable transaction,1=enable transaction"}
+                "tooltip":"使用事务"
             },
             "commit_time":{
                 "type":"int",
                 "default":"1",
-                "tooltip":"commit time period(seconds)"
+                "tooltip":"提交时间门限(秒)"
             },
             "encoding":{
                 "type":"int",
                 "default":"0",
-                "tooltip":"char encoding",
+                "tooltip":"字符编码",
                 "range":{"tip":"0=936;1=UTF-8"}
             },
             "start_script":{
                 "type":"string",
                 "default":"",
-                "tooltip":"Database start script",
-                "range":{"tip":"use this script to start database."}
+                "tooltip":"数据库开启脚本",
+                "range":{"tip":"会用start.exe 独立启动。"}
             }
 
 
@@ -69,7 +66,7 @@
         "input_subjects":{
             "sql":{
                 "type":"byte",
-                "tooltip":"sql script input"
+                "tooltip":"SQL输入"
             }
         },
         "output_subjects":{

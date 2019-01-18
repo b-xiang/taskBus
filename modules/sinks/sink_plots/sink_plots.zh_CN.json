@@ -1,0 +1,38 @@
+{
+    "sink_plots":{
+        "name":"plots",
+        "version":"1,1,0",
+        "parameters":{
+            "channels":{
+                "type":"string",
+                "default":"1,1,1,1,1,1",
+                "tooltip":"各路通道数",
+                "range":{"tip":"1 or 2"}
+            }
+        },
+        "input_subjects":{
+            "plot0":{
+                "type":"byte",
+                "tooltip":"double input"
+            },
+            "plot1":{
+                "type":"byte",
+                "tooltip":"double input"
+            },
+            "plot2":{
+                "type":"byte",
+                "tooltip":"double input"
+            },
+            "plot3":{
+                "type":"byte",
+                "tooltip":"double input"
+            },
+            "plot4":{
+                "type":"byte",
+                "tooltip":"double input"
+            }
+        },
+        "output_subjects":{
+        }
+    }
+}

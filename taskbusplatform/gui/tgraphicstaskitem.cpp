@@ -195,112 +195,119 @@ void TGraphicsTaskItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 	}
 
 }
+void TGraphicsTaskItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (event->buttons()&Qt::LeftButton)
+	{
+		//判断增补选择 select or un-select pins
+		const  QString func = m_pModel->function_names().first();
+		const  QStringList lstSrcPs = m_pModel->in_subjects(func);
+		const  QStringList lstDstPs = m_pModel->out_subjects(func);
+		const  unsigned int instance_id = m_pModel->function_instance(func);
 
+		QMap<QString,int> mp_Src,mp_Dst;
+
+		const int cell_size = cellSize(&mp_Src,&mp_Dst)+1;
+
+		const double x = event->pos().x();
+		const double y = event->pos().y();
+		bool hit = false;
+		int ctInput = 0;
+		foreach (QString src, lstSrcPs)
+		{
+			const QPointF pos = this->mapFromScene(m_insbpos[src]);
+			if (pos.x()<0)
+			{
+				if (x>=-100 && x<=-50 && y>=pos.y()-20 && y<=pos.y()+4)
+				{
+					pin_info info;
+					info.bInPin = true;
+					info.nOrder = ctInput;
+					info.pModule = this->m_pModel;
+					info.sName = src;
+					if (m_pinList.contains(info))
+						m_pinList.remove(info);
+					else
+						m_pinList.insert(info);
+					hit = true;
+					break;
+				}
+			}
+			else
+			{
+				if (x>=50 && x<=100 && y>=pos.y()-20 && y<=pos.y()+4)
+				{
+					pin_info info;
+					info.bInPin = true;
+					info.nOrder = ctInput;
+					info.pModule = this->m_pModel;
+					info.sName = src;
+					if (m_pinList.contains(info))
+						m_pinList.remove(info);
+					else
+						m_pinList.insert(info);
+					hit = true;
+					break;
+				}
+
+			}
+			++ctInput;
+		}
+		int ctOutput = 0;
+		foreach (QString dst, lstDstPs)
+		{
+			const QPointF pos = this->mapFromScene(m_outsbpos[dst]);
+			if (pos.x()<0)
+			{
+				if (x>=-100 && x<=-50 && y>=pos.y()-20 && y<=pos.y()+4)
+				{
+					pin_info info;
+					info.bInPin = false;
+					info.nOrder = ctOutput;
+					info.pModule = this->m_pModel;
+					info.sName = dst;
+					if (m_pinList.contains(info))
+						m_pinList.remove(info);
+					else
+						m_pinList.insert(info);
+					hit = true;
+					break;
+				}
+			}
+			else
+			{
+				if (x>=50 && x<=100 && y>=pos.y()-20 && y<=pos.y()+4)
+				{
+					pin_info info;
+					info.bInPin = false;
+					info.nOrder = ctOutput;
+					info.pModule = this->m_pModel;
+					info.sName = dst;
+					if (m_pinList.contains(info))
+						m_pinList.remove(info);
+					else
+						m_pinList.insert(info);
+					hit = true;
+					break;
+				}
+			}
+			++ctOutput;
+		}
+		if (hit==false)
+		{
+			m_pinList.clear();
+		}
+	}
+
+	QGraphicsItem::mousePressEvent(event);
+}
 void TGraphicsTaskItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	//判断增补选择
-	const  QString func = m_pModel->function_names().first();
-	const  QStringList lstSrcPs = m_pModel->in_subjects(func);
-	const  QStringList lstDstPs = m_pModel->out_subjects(func);
-	const  unsigned int instance_id = m_pModel->function_instance(func);
-
-	QMap<QString,int> mp_Src,mp_Dst;
-
-	const int cell_size = cellSize(&mp_Src,&mp_Dst)+1;
-
-	const double x = event->pos().x();
-	const double y = event->pos().y();
-	bool hit = false;
-	int ctInput = 0;
-	foreach (QString src, lstSrcPs)
-	{
-		const QPointF pos = this->mapFromScene(m_insbpos[src]);
-		if (pos.x()<0)
-		{
-			if (x>=-100 && x<=-50 && y>=pos.y()-20 && y<=pos.y()+4)
-			{
-				pin_info info;
-				info.bInPin = true;
-				info.nOrder = ctInput;
-				info.pModule = this->m_pModel;
-				info.sName = src;
-				if (m_pinList.contains(info))
-					m_pinList.remove(info);
-				else
-					m_pinList.insert(info);
-				hit = true;
-				break;
-			}
-		}
-		else
-		{
-			if (x>=50 && x<=100 && y>=pos.y()-20 && y<=pos.y()+4)
-			{
-				pin_info info;
-				info.bInPin = true;
-				info.nOrder = ctInput;
-				info.pModule = this->m_pModel;
-				info.sName = src;
-				if (m_pinList.contains(info))
-					m_pinList.remove(info);
-				else
-					m_pinList.insert(info);
-				hit = true;
-				break;
-			}
-
-		}
-		++ctInput;
-	}
-	int ctOutput = 0;
-	foreach (QString dst, lstDstPs)
-	{
-		const QPointF pos = this->mapFromScene(m_outsbpos[dst]);
-		if (pos.x()<0)
-		{
-			if (x>=-100 && x<=-50 && y>=pos.y()-20 && y<=pos.y()+4)
-			{
-				pin_info info;
-				info.bInPin = false;
-				info.nOrder = ctOutput;
-				info.pModule = this->m_pModel;
-				info.sName = dst;
-				if (m_pinList.contains(info))
-					m_pinList.remove(info);
-				else
-					m_pinList.insert(info);
-				hit = true;
-				break;
-			}
-		}
-		else
-		{
-			if (x>=50 && x<=100 && y>=pos.y()-20 && y<=pos.y()+4)
-			{
-				pin_info info;
-				info.bInPin = false;
-				info.nOrder = ctOutput;
-				info.pModule = this->m_pModel;
-				info.sName = dst;
-				if (m_pinList.contains(info))
-					m_pinList.remove(info);
-				else
-					m_pinList.insert(info);
-				hit = true;
-				break;
-			}
-		}
-		++ctOutput;
-	}
-	if (hit==false)
-	{
-		m_pinList.clear();
-	}
-
+	qDebug()<<event->buttons();
 	m_pPrjView->update_paths();
 	m_pPrjView->show_prop_page(m_pModel);
+	m_pPrjView->appendUndoList();
 	QGraphicsItem::mouseReleaseEvent(event);
-
 }
 QPointF TGraphicsTaskItem::in_subject_pos(QString name)
 {

@@ -7,6 +7,7 @@
 #include <list>
 #include <algorithm>
 #include <iterator>
+#include <QLocale>
 #include <set>
 #include <QDir>
 #include <QDateTime>
@@ -39,9 +40,14 @@ int main(int argc , char * argv[])
 
 	//每个模块要响应 --information参数,打印自己的功能定义字符串。或者提供一个json文件。
 	if (args.contains("information"))
-	{
-		QFile fp(":/json/sink_file.exe.json");
-		if (fp.open(QIODevice::ReadOnly))
+	{		
+		QFile fp(":/json/sink_file."+QLocale::system().name()+".json");
+		if (fp.open(QIODevice::ReadOnly)==false)
+		{
+			fp.setFileName(":/json/sink_file.exe.json");
+			fp.open(QIODevice::ReadOnly);
+		}
+		if (fp.isOpen())
 		{
 			QByteArray arr = fp.readAll();
 			arr.push_back('\0');

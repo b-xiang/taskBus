@@ -16,6 +16,7 @@
 #include "taskcell.h"
 #include <QProcess>
 #include <QList>
+#include <QByteArrayList>
 #include <QFile>
 class taskCell;
 /*!
@@ -34,9 +35,9 @@ signals:
 	//进程消息 Process messages
 	void sig_pro_started();
 	void sig_pro_stopped(int exitCode, QProcess::ExitStatus exitStatus);
-	void sig_new_package(QByteArray);
+	void sig_new_package(QByteArrayList);
 	void sig_new_command(QMap<QString, QVariant> cmd);
-	void sig_new_errmsg(QByteArray);
+	void sig_new_errmsg(QByteArrayList);
 	void sig_iostat(qint64 pid,quint64 pr,quint64 ps,quint64 br, quint64 bs);
 	void private_sig_nextcab();
 	void private_sig_nextwrite();
@@ -56,8 +57,13 @@ private:
 	QProcess * m_process = nullptr;
 	//进程缓存
 	QByteArray m_array_stdout;
-	QList<QByteArray> m_outputBuf;
+	QByteArrayList m_outputBuf;
+	QByteArrayList m_arr_Strerr;
+	QByteArrayList m_packBuf;
 	bool m_bDebug = false;
+	//Flush buffered messages, emit signals.
+	void flush_from_stderr();
+	void flush_from_stdout();
 private:
 	void log_package(bool fromStdOut,QByteArray arrPackage);
 	QFile m_dbgfile_stdin;
@@ -65,6 +71,9 @@ private:
 	QFile m_dbgfile_stderr;
 	QString m_uuid;
 	QString dbgdir();
+	//Call these functions to emit message and packs with bufferring approach.
+	void emit_message(QByteArray a);
+	void emit_package(QByteArray packages);
 public:
 	int outputQueueSize();
 	void setBlockFlag(bool b);

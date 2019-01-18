@@ -36,7 +36,6 @@ PDesignerView::PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent) :
 	setAcceptDrops(true);
 
 	connect(this,&PDesignerView::sig_updatePaths,this,&PDesignerView::update_paths,Qt::QueuedConnection);
-
 	ui->graphicsView_main->setScene(m_scene);
 
 	//工程管理，用来控制显示
@@ -48,7 +47,7 @@ PDesignerView::PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent) :
 	m_project->setCallback_GetCellPos(std::bind(&PDesignerView::callbk_GetCellPos,this,std::placeholders::_1));
 	//工程管理，用来控制多线程
 	//Project management .
-	connect (m_project, &taskProject::sig_message, this, &PDesignerView::sig_message,Qt::QueuedConnection );
+	connect (m_project, &taskProject::sig_message, this, &PDesignerView::sig_message);
 	connect (m_project, &taskProject::sig_stopped, this, &PDesignerView::slot_project_stopped,Qt::QueuedConnection );
 	connect (m_project, &taskProject::sig_started, this, &PDesignerView::slot_project_started,Qt::QueuedConnection );
 	connect (this, &PDesignerView::cmd_start_project,m_project,&taskProject::start_project,Qt::QueuedConnection);
@@ -56,30 +55,43 @@ PDesignerView::PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent) :
 			 static_cast<void (taskProject::*)(QThread *)>(&taskProject::stop_project),Qt::QueuedConnection);
 
 	//创建工具栏 toolbar
-	QToolBar * bar = new QToolBar(tr("zoom"),this) ;
-	bar->addAction(ui->actionzoom_In);
-	bar->addAction(ui->actionzoom_Out);
-	bar->addAction(ui->actionzoom_orgin);
-	bar->addSeparator();
-	bar->addAction(ui->actionCopy);
-	bar->addAction(ui->actionCut);
-	bar->addAction(ui->actionPaste);
-	bar->addSeparator();
-	bar->addAction(ui->actionConnectLine);
-	bar->addAction(ui->actionDeleteLine);
-	bar->addAction(ui->actionPinUp);
-	bar->addAction(ui->actionPinDown);
-	bar->addAction(ui->actionPinSide);
-	bar->addSeparator();
-	bar->addAction(ui->actionDelete_selected_node);
-	bar->addAction(ui->actiondebug_on);
-	bar->addAction(ui->actiondebug_off);
-	bar->addAction(ui->actionNiceUp);
-	bar->addAction(ui->actionNiceDown);
-	bar->adjustSize();
-	bar->show();
-
-	bar->setIconSize(QSize(24,24));
+	{
+		QToolBar * bar = new QToolBar(tr("View"),this) ;
+		bar->addAction(ui->actionzoom_In);		addAction(ui->actionzoom_In);
+		bar->addAction(ui->actionzoom_Out);		addAction(ui->actionzoom_Out);
+		bar->addAction(ui->actionzoom_orgin);bar->addAction(ui->actionzoom_orgin);
+		addAction(bar->addSeparator());
+		bar->addAction(ui->actionCopy);		addAction(ui->actionCopy);
+		bar->addAction(ui->actionCut);		addAction(ui->actionCut);
+		bar->addAction(ui->actionPaste);	addAction(ui->actionPaste);
+		bar->addAction(ui->actionUndo);		addAction(ui->actionUndo);
+		bar->addAction(ui->actionRedo);		addAction(ui->actionRedo);
+		addAction(bar->addSeparator());
+		bar->setOrientation(Qt::Vertical);
+		ui->horizontalLayout->insertWidget(1,bar);
+		bar->adjustSize();
+		bar->show();
+		bar->setIconSize(QSize(24,24));
+	}
+	{
+		QToolBar * bar = new QToolBar(tr("Designer"),this) ;
+		bar->addAction(ui->actionConnectLine);	addAction(ui->actionConnectLine);
+		bar->addAction(ui->actionDeleteLine);	addAction(ui->actionDeleteLine);
+		bar->addAction(ui->actionPinUp);		addAction(ui->actionPinUp);
+		bar->addAction(ui->actionPinDown);		addAction(ui->actionPinDown);
+		bar->addAction(ui->actionPinSide);		addAction(ui->actionPinSide);
+		addAction(bar->addSeparator());
+		bar->addAction(ui->actionDelete_selected_node);
+		bar->addAction(ui->actiondebug_on);
+		bar->addAction(ui->actiondebug_off);
+		bar->addAction(ui->actionNiceUp);
+		bar->addAction(ui->actionNiceDown);
+		bar->setOrientation(Qt::Vertical);
+		ui->horizontalLayout->insertWidget(2,bar);
+		bar->adjustSize();
+		bar->show();
+		bar->setIconSize(QSize(24,24));
+	}
 
 	m_pRunThread->start();
 }
@@ -98,7 +110,6 @@ PDesignerView::~PDesignerView()
 void PDesignerView::callbk_refreshIdx()
 {
 	emit sig_updatePaths();
-	set_modified();
 }
 
 void PDesignerView::zoomIn()
@@ -122,7 +133,8 @@ void PDesignerView::callbk_instanceAppended(taskCell * pmod, taskNode * node,QPo
 		m_scene->addItem(git);
 		m_vec_gitems.push_back(git);
 		connect (mod, &QAbstractItemModel::dataChanged, this->m_project, &taskProject::refresh_idxes,Qt::QueuedConnection);
-		set_modified();
+		connect (mod, &QAbstractItemModel::dataChanged, this,&PDesignerView::appendUndoList,Qt::QueuedConnection);
+
 	}
 }
 
@@ -228,7 +240,7 @@ void PDesignerView::dropEvent(QDropEvent * event)
 			QPointF pt3 = ui->graphicsView_main->mapToScene(pt2);
 			m_project->add_node(md,pt3);
 		}
-		set_modified();
+		appendUndoList();
 	}
 }
 
@@ -260,7 +272,6 @@ void  PDesignerView::addCell(QMimeData * data)
 			m_project->add_node(md,pt3);
 			++offset;
 		}
-		set_modified();
 	}
 
 }
@@ -410,7 +421,17 @@ void PDesignerView::deleteNode(int node)
 		m_vec_gitems.remove(node);
 		//删除运行时 delete the runtime cell and node
 		m_project->del_node(node);
-		set_modified();
+	}
+	else
+	{
+		for (int i=0;i<sz;++i)
+		{
+			//清理图元 delete a graphices item
+			m_scene->removeItem(m_vec_gitems[i]);
+			delete m_vec_gitems[i];
+		}
+		m_vec_gitems.clear();
+		m_project->del_node(-1);
 	}
 }
 
@@ -426,8 +447,6 @@ void PDesignerView::debug_node(int node, bool on)
 	}
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-
-
 }
 
 
@@ -440,7 +459,6 @@ bool PDesignerView::is_debug_node(int node)
 		return m_project->vec_nodes()[node]->isDebug();
 	}
 	return false;
-
 }
 
 
@@ -481,6 +499,7 @@ void PDesignerView::on_actionzoom_orgin_triggered()
 void PDesignerView::on_actionDelete_selected_node_triggered()
 {
 	deleteNode(selectedNode());
+	appendUndoList();
 }
 
 void PDesignerView::on_actiondebug_on_triggered()
@@ -504,7 +523,6 @@ void PDesignerView::on_actionCopy_triggered()
 		QClipboard *clipboard = QGuiApplication::clipboard();
 		QString newText = tmod->toJson("");
 		clipboard->setText(newText);
-
 	}
 }
 
@@ -515,7 +533,7 @@ void PDesignerView::on_actionPaste_triggered()
 
 	QPointF pt = ui->graphicsView_main->sceneRect().center();
 	m_project->add_node(text,pt);
-	set_modified();
+	appendUndoList();
 }
 
 void PDesignerView::on_actionCut_triggered()
@@ -530,6 +548,7 @@ void PDesignerView::on_actionCut_triggered()
 		QString newText = tmod->toJson("");
 		clipboard->setText(newText);
 		deleteNode(node);
+		appendUndoList();
 	}
 }
 
@@ -566,7 +585,6 @@ void PDesignerView::on_actionConnectLine_triggered()
 				p.pModule->set_in_subject_instance(p.pModule->function_firstname(),p.sName,gIns);
 			else
 				p.pModule->set_out_subject_instance(p.pModule->function_firstname(),p.sName,gIns);
-			set_modified();
 		}
 	}
 
@@ -574,6 +592,7 @@ void PDesignerView::on_actionConnectLine_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	appendUndoList();
 }
 
 void PDesignerView::on_actionDeleteLine_triggered()
@@ -587,12 +606,12 @@ void PDesignerView::on_actionDeleteLine_triggered()
 			else
 				p.pModule->set_out_subject_instance(p.pModule->function_firstname(),p.sName,0);
 		}
-		set_modified();
 	}
 	TGraphicsTaskItem::m_pinList.clear();
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
+	appendUndoList();
 }
 
 void PDesignerView::on_actionPinUp_triggered()
@@ -626,8 +645,7 @@ void PDesignerView::on_actionPinUp_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-	set_modified();
-
+	appendUndoList();
 }
 
 void PDesignerView::on_actionPinDown_triggered()
@@ -694,7 +712,7 @@ void PDesignerView::on_actionPinDown_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-	set_modified();
+	appendUndoList();
 }
 
 void PDesignerView::on_actionPinSide_triggered()
@@ -724,7 +742,7 @@ void PDesignerView::on_actionPinSide_triggered()
 	m_project->refresh_idxes();
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-	set_modified();
+	appendUndoList();
 }
 
 void PDesignerView::on_actionNiceUp_triggered()
@@ -741,7 +759,7 @@ void PDesignerView::on_actionNiceUp_triggered()
 	}
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-	set_modified();
+	appendUndoList();
 }
 
 void PDesignerView::on_actionNiceDown_triggered()
@@ -758,7 +776,7 @@ void PDesignerView::on_actionNiceDown_triggered()
 	}
 	ui->graphicsView_main->scale(0.5,1);
 	ui->graphicsView_main->scale(2,1);
-	set_modified();
+	appendUndoList();
 }
 
 void PDesignerView::set_modified(bool bmod /*= true*/)
@@ -776,5 +794,69 @@ void PDesignerView::set_modified(bool bmod /*= true*/)
 		}
 		m_bModified = bmod;
 	}
+}
 
+void PDesignerView::on_actionUndo_triggered()
+{
+	show_prop_page(0);
+	if (m_undoPos>0)
+	{
+		--m_undoPos;
+		deleteNode(-1);//remove all nodes
+		QCoreApplication::processEvents();
+		project()->fromJson(m_undoStack[m_undoPos],m_pMainFrm->refModule());
+		project()->refresh_idxes();
+		drawAll();
+		if (m_undoPos==m_savedPos)
+			set_modified(false);
+		else
+			set_modified(true);
+		m_undoStack[m_undoPos] = project()->toJson();
+	}
+}
+
+void PDesignerView::on_actionRedo_triggered()
+{
+	show_prop_page(0);
+	if (m_undoPos<m_undoStack.size()-1)
+	{
+		++m_undoPos;
+		deleteNode(-1);//remove all nodes
+		QCoreApplication::processEvents();
+		project()->fromJson(m_undoStack[m_undoPos],m_pMainFrm->refModule());
+		project()->refresh_idxes();
+		drawAll();
+		if (m_undoPos==m_savedPos)
+			set_modified(false);
+		else
+			set_modified(true);
+		m_undoStack[m_undoPos] = project()->toJson();
+	}
+}
+void PDesignerView::initialUndoList()
+{
+	m_undoStack.clear();
+	m_undoStack.push_back(project()->toJson());
+	m_undoPos = 0;
+	m_savedPos = 0;
+}
+
+void PDesignerView::appendUndoList()
+{
+	QByteArray arr = project()->toJson();
+	QByteArray arrRaw = m_undoStack[m_undoPos];
+	if (arr==arrRaw)
+		return;
+	if (m_undoPos+1<m_undoStack.size())
+		m_undoStack.remove(m_undoPos+1,m_undoStack.size()-m_undoPos-1);
+	m_undoStack.push_back(project()->toJson());
+	++m_undoPos;
+	if (m_savedPos>=m_undoPos)
+		m_savedPos = -1;
+	set_modified();
+}
+void PDesignerView::savedUndoState()
+{
+	set_modified(false);
+	m_savedPos = m_undoPos;
 }

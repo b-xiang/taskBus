@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/json">
         <file>source_files.json</file>
+        <file>source_files.zh_CN.json</file>
     </qresource>
 </RCC>

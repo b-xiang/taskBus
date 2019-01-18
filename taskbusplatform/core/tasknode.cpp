@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QDir>
+#include <QDebug>
 #include <QAtomicInt>
 #include "tb_interface.h"
 #include "process_prctl.h"
@@ -68,7 +69,7 @@ bool taskNode::cmd_start(QObject * node,QString cmd, QStringList paras)
 	foreach (QString cmd, lstCmds)
 		cmdlinestr += " " + cmd;
 
-	emit sig_new_errmsg(QByteArray(cmdlinestr.toStdString().c_str()));
+	emit_message(QByteArray(cmdlinestr.toStdString().c_str()));
 
 	m_sbytes_sent = 0;
 	m_spackage_sent= 0;
@@ -178,7 +179,7 @@ void taskNode::slot_readyReadStandardOutput()
 		if (header->prefix[0]!=0x3C || header->prefix[1]!=0x5A ||
 				header->prefix[2]!=0x7E || header->prefix[3]!=0x69)
 		{
-			emit sig_new_errmsg(QByteArray("Error header recieved. "
+			emit_message(QByteArray("Error header recieved. "
 										   "Header must be 0x3C, 0x5A, 0x7E,"
 										   " 0x69. Aborting."));
 			m_array_stdout.clear();
@@ -217,7 +218,7 @@ void taskNode::slot_readyReadStandardOutput()
 					}
 				}
 				else
-					emit sig_new_package(arr);
+					emit_package(arr);
 				if (m_bDebug)
 					log_package(true,arr);
 			}
@@ -232,6 +233,65 @@ void taskNode::slot_readyReadStandardOutput()
 					break;
 			}
 		}
+	}
+}
+
+/*!
+ * \brief taskNode::emit_message
+ * Signals and Slots is easy to use, but it will take too much cpu resource with out bufferring .
+ * 没有缓存机制，频繁的发送信号，将降低系统的性能。
+ * We will check the timestamp between 2 signals, catch it , and send it out as a batch array.
+ * \param arred single message.
+ */
+void taskNode::emit_message(QByteArray arred)
+{
+	static clock_t last_ck = clock();
+	//Prevent of too short freq.
+	clock_t curr_ck = clock();
+	bool keep = false;
+	if (curr_ck-last_ck <=CLOCKS_PER_SEC/10 && curr_ck-last_ck>=0)
+		keep = true;
+	last_ck = curr_ck;
+	m_arr_Strerr.push_back(arred);
+	if (false==keep)
+		flush_from_stderr();
+}
+
+/*!
+ * \brief taskNode::emit_package
+ * * Signals and Slots is easy to use, but it will take too much cpu resource with out bufferring .
+ * 没有缓存机制，频繁的发送信号，将降低系统的性能。
+ * We will check the timestamp between 2 signals, catch it , and send it out as a batch list.
+ * \param package
+ */
+void taskNode::emit_package(QByteArray package)
+{
+	static clock_t last_ck = clock();
+	//Prevent of too short freq.
+	clock_t curr_ck = clock();
+	bool keep = false;
+	if (curr_ck-last_ck <=CLOCKS_PER_SEC/10 && curr_ck-last_ck>=0)
+		keep = true;
+	last_ck = curr_ck;
+	m_packBuf.push_back(package);
+	if (keep==false)
+		flush_from_stdout();
+}
+
+void taskNode::flush_from_stderr()
+{
+	if (m_arr_Strerr.size())
+	{
+		emit sig_new_errmsg(m_arr_Strerr);
+		m_arr_Strerr.clear();
+	}
+}
+void taskNode::flush_from_stdout()
+{
+	if (m_packBuf.size())
+	{
+		emit sig_new_package(m_packBuf);
+		m_packBuf.clear();
 	}
 }
 
@@ -265,6 +325,8 @@ void taskNode::timerEvent(QTimerEvent *event)
 				emit sig_iostat(pid,m_spackage_recieved,m_spackage_sent,m_sbytes_recieved,	m_sbytes_sent);
 			}
 		}
+		flush_from_stderr();
+		flush_from_stdout();
 	}
 }
 
@@ -301,7 +363,8 @@ void taskNode::slot_readyReadStandardError()
 	QByteArray arred =m_process->readAllStandardError();
 	extern QAtomicInt g_totalrev;
 	g_totalrev += arred.size();
-	emit sig_new_errmsg(arred);
+
+	emit_message(arred);
 
 	if (m_bDebug && m_dbgfile_stderr.isOpen())
 	{

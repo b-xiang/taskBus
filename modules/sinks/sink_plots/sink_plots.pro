@@ -44,7 +44,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    sink_plots.json
+    sink_plots.json \
+    sink_plots.zh_CN.json
 
 RESOURCES += \
     dialogplots.qrc

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/json">
         <file>sink_plots.json</file>
+        <file>sink_plots.zh_CN.json</file>
     </qresource>
 </RCC>

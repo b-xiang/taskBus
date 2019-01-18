@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/json">
         <file>network_p2p.exe.json</file>
+        <file>network_p2p.zh_CN.json</file>
     </qresource>
 </RCC>

@@ -16,7 +16,7 @@
 #include "watchdog/tbwatchdog.h"
 //全局吞吐量 global IO speed recorder
 QAtomicInt  g_totalrev (0), g_totalsent (0);
-
+void create_custom_item_editor();
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -39,7 +39,8 @@ int main(int argc, char *argv[])
 			QLocale::system().name()+".qm";
 	appTranslator.load(strTransLocalFile );
 	app.installTranslator(&appTranslator);
-
+	//using custon item editor, for double int values.
+	create_custom_item_editor();
 	//show splahs screen
 	QSplashScreen screen(QPixmap(":/taskBus/images/taskBus.png"));
 	screen.show();

@@ -6,66 +6,66 @@
             "address":{
                 "type":"string",
                 "default":"192.168.1.100",
-                "tooltip":"address"
+                "tooltip":"地址"
             },
             "port":{
                 "type":"int",
                 "default":"9527",
-                "tooltip":"listen port"
+                "tooltip":"端口"
             },
             "mod":{
                 "type":"int",
                 "default":"0",
-                "tooltip":"work mod(0:listen,1:connect)"
+                "tooltip":"连接方式(0:监听,1:发起)"
             },
             "hide":{
                 "type":"int",
                 "default":"0",
-                "tooltip":"hide the window(0:show,1:hide)"
+                "tooltip":"不显示窗口(0:显示,1:隐藏)"
             }
         },
         "input_subjects":{
             "in1":{
                 "type":"byte",
-                "tooltip":"input1"
+                "tooltip":"入口1"
             },
             "in2":{
                 "type":"byte",
-                "tooltip":"input2"
+                "tooltip":"入口2"
             },
             "in3":{
                 "type":"byte",
-                "tooltip":"input3"
+                "tooltip":"入口3"
             },
             "in4":{
                 "type":"byte",
-                "tooltip":"input4"
+                "tooltip":"入口4"
             },
             "in5":{
                 "type":"byte",
-                "tooltip":"input5"
+                "tooltip":"入口5"
             }
         },
         "output_subjects":{
             "out1":{
                 "type":"byte",
-                "tooltip":"output1"
+                "tooltip":"出口1"
             },
             "out2":{
                 "type":"byte",
-                "tooltip":"output2"
+                "tooltip":"出口2"
             },
             "out3":{
                 "type":"byte",
-                "tooltip":"output3"
+                "tooltip":"出口3"
             },
             "out4":{
                 "type":"byte",
-                "tooltip":"output4"
+                "tooltip":"出口4"
             },
             "out5":{
                 "type":"byte",
-                "tooltip":"output5"
+                "tooltip":"出口5"
             }
         }
     }

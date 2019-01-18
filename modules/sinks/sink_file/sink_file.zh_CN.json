@@ -4,42 +4,42 @@
         "parameters":{
             "type1":{
 				"type":"int",
-                "tooltip":"Data type for sub1",
+				"tooltip":"第1路类型",
 				"default":"0",
 				"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
 			},
 			"type2":{
 				"type":"int",
-                "tooltip":"Data type for sub2",
+				"tooltip":"第2路类型",
 				"default":"0",
 				"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
 			},
 			"type3":{
 				"type":"int",
-                "tooltip":"Data type for sub3",
+				"tooltip":"第3路类型",
 				"default":"0",
 				"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
 			},
 			"type4":{
 				"type":"int",
-                "tooltip":"Data type for sub4",
+				"tooltip":"第4路类型",
 				"default":"0",
 				"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
 			},
 			"type5":{
 				"type":"int",
-                "tooltip":"Data type for sub5",
+				"tooltip":"第5路类型",
 				"default":"0",
 				"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
 			},		
 			"folder":{
                 "type":"string",
-                "tooltip":"output file path",
+                "tooltip":"存储文件夹",
                 "default":"./"
             },
             "maxsize":{
                 "type":"int",
-                "tooltip":"single file size(bytes)",
+                "tooltip":"单个文件大小(字节)",
                 "default":16777216
             }
         },
@@ -74,42 +74,42 @@
         "parameters":{
             "type1":{
                 "type":"int",
-                "tooltip":"Data type for sub1",
+                "tooltip":"第1路类型",
                 "default":"0",
                 "range":{"value":"0:raw 1:frame"}
             },
             "type2":{
                 "type":"int",
-                "tooltip":"Data type for sub2",
+                "tooltip":"第2路类型",
                 "default":"0",
                 "range":{"value":"0:raw 1:frame"}
             },
             "type3":{
                 "type":"int",
-                "tooltip":"Data type for sub3",
+                "tooltip":"第3路类型",
                 "default":"0",
                 "range":{"value":"0:raw 1:frame"}
             },
             "type4":{
                 "type":"int",
-                "tooltip":"Data type for sub4",
+                "tooltip":"第4路类型",
                 "default":"0",
                 "range":{"value":"0:raw 1:frame"}
             },
             "type5":{
                 "type":"int",
-                "tooltip":"Data type for sub5",
+                "tooltip":"第5路类型",
                 "default":"0",
                 "range":{"value":"0:raw 1:frame"}
             },
 			"folder":{
                 "type":"string",
-                "tooltip":"output file path",
+                "tooltip":"存储文件夹",
                 "default":"./"
             },
             "maxsize":{
                 "type":"int",
-                "tooltip":"single file size(bytes)",
+                "tooltip":"单个文件大小(字节)",
                 "default":16777216
             }
         },

@@ -34,13 +34,13 @@ public:
 	~PDesignerView();
 	void show_prop_page(QObject * model);
 	bool modified() const {return m_bModified;}
-	void set_modified(bool bmod = true);
 	//拖放事件
 	//Drag and drop events
 protected:
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dropEvent(QDropEvent * event) override;
 	void closeEvent(QCloseEvent *) override;
+
 public slots:
 	//重新计算并更新连接
 	//connect pins with sp lines
@@ -52,7 +52,7 @@ public slots:
 	void drawAll();
 signals:
 	void sig_showProp(QObject * model);
-	void sig_message(QString str);
+	void sig_message(QStringList namestr,QByteArrayList strMessages);
 	void sig_openprj(QString);
 	void sig_updatePaths();
 	void sig_projstarted();
@@ -83,6 +83,10 @@ private:
 	taskBusPlatformFrm * m_pMainFrm = nullptr;
 	static int m_nextCV ;
 	bool m_bModified = false;
+	//Structure for undo and redo
+	QVector<QByteArray> m_undoStack;
+	int m_undoPos = 0;
+	int m_savedPos = 0;
 public:
 	taskProject * project(){return m_project;}
 	int selectedNode();
@@ -94,6 +98,14 @@ public:
 	QString fullFileName() const {return m_strFullFilename;}
 	void setFullFileName(const QString & n){m_strFullFilename = n;}
 	void addCell(QMimeData * data);
+	//Undo
+	void initialUndoList();
+	void savedUndoState();
+public slots:
+	void appendUndoList();
+
+protected:
+	void set_modified(bool bmod = true);
 protected:
 	void callbk_instanceAppended(taskCell * pmod, taskNode * pnod,QPointF pt);
 	taskCell * callbk_newcell();
@@ -118,6 +130,8 @@ private slots:
 	void on_actionPinSide_triggered();
 	void on_actionNiceUp_triggered();
 	void on_actionNiceDown_triggered();
+	void on_actionUndo_triggered();
+	void on_actionRedo_triggered();
 };
 
 #endif // PDESIGNERVIEW_H

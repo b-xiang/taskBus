@@ -50,14 +50,16 @@ SOURCES += \
     core/taskproject.cpp \
     gui/taskbusplatformfrm.cpp \
     gui/taskbusplatformfrm_modules.cpp \
-    gui/taskbusplatformfrm_project.cpp \
+    gui/taskbusplatformfrm_project.cpp  \
+    gui/dlgabout.cpp \
     gui/main.cpp \
     gui/pdesignerview.cpp \
     gui/taskmodule.cpp \
     gui/tgraphicstaskitem.cpp \
     core/process_prctl.cpp \
     watchdog/tbwatchdog.cpp \
-    watchdog/watchmemmodule.cpp
+    watchdog/watchmemmodule.cpp \
+    gui/custom_item_editor.cpp
 
 HEADERS += \
     core/tasknode.h \
@@ -67,6 +69,7 @@ HEADERS += \
     gui/pdesignerview.h \
     gui/taskmodule.h \
     gui/tgraphicstaskitem.h \
+    gui/dlgabout.h \
     cmdlineparser.h \
     tb_interface.h \
     tb_datastruct.h \
@@ -76,9 +79,11 @@ HEADERS += \
     watchdog/tbwatchdog.h \
     watchdog/watchmemmodule.h
 
+
 FORMS += \
     gui/taskbusplatformfrm.ui \
-    gui/pdesignerview.ui
+    gui/pdesignerview.ui \
+    gui/dlgabout.ui
 
 TRANSLATIONS +=\
 	taskBusPlatform_zh_CN.ts

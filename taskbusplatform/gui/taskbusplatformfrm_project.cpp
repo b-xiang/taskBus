@@ -20,8 +20,9 @@ void taskBusPlatformFrm::on_action_New_Project_triggered()
 	QMdiSubWindow * wnd = ui->mdiArea->addSubWindow(v);
 	m_activePagesFileName[fm] = wnd;
 	v->show();
+	v->initialUndoList();
 	connect (v,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
-	connect (v,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg,Qt::QueuedConnection);
+	connect (v,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg);
 	connect (v,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
@@ -69,7 +70,7 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 					fo.write(json);
 					fo.close();
 					dv->setFullFileName(newfm);
-					dv->set_modified(false);
+					dv->savedUndoState();
 					m_activePagesFileName.remove(oldfm);
 					m_activePagesFileName[newfm] = sub;
 				}
@@ -115,7 +116,7 @@ void taskBusPlatformFrm::on_action_Save_Project_As_triggered()
 					fo.write(json);
 					fo.close();
 					dv->setFullFileName(newfm);
-					dv->set_modified(false);
+					dv->savedUndoState();
 					m_activePagesFileName.remove(oldfm);
 					m_activePagesFileName[newfm] = sub;
 				}
@@ -140,11 +141,12 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 		if (dv)
 		{
 			QMdiSubWindow * wnd =  ui->mdiArea->addSubWindow(dv);
-			dv->project()->fromJson(ar,this->m_toolModules[tr("All")]);
+			dv->project()->fromJson(ar,this->refModule());
 			dv->setWindowTitle(info.completeBaseName());
 			dv->show();
+			dv->initialUndoList();
 			connect (dv,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
-			connect (dv,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg,Qt::QueuedConnection);
+			connect (dv,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg);
 			connect (dv,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);

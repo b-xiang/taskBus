@@ -20,12 +20,14 @@ public:
 	~taskBusPlatformFrm() override;
 	void load_default_modules();
 	void unregProject(QString fm);
+	taskModule * refModule(){return m_pRefModule;}
 private slots:
 	void slot_showPropModel(QObject * objModel);
-	void slot_showMsg(QString);
+	void slot_showMsg(QStringList namestr,QByteArrayList strMessages);
 	void slot_openprj(QString);
 	void slot_projstarted();
 	void slot_projstopped();
+	void slot_traymessage(QSystemTrayIcon::ActivationReason r);
 	void on_action_Load_Module_triggered();
 	void on_action_New_Project_triggered();
 	void on_action_About_triggered();
@@ -43,10 +45,9 @@ signals:
 	void showSplash(QString msg,Qt::Alignment, QColor);
 	void hideSplash();
 protected:
-	void timerEvent(QTimerEvent *event) override;	
+	void timerEvent(QTimerEvent *event) override;
 	void closeEvent(QCloseEvent * event) override;
 	void load_modules(QStringList lstNames);
-
 	void save_default_modules();
 private:
 	Ui::taskBus *ui;
@@ -55,7 +56,8 @@ private:
 	QLabel * m_pStatus;
 	int m_nTmid = -1;
 	QMap<QString,taskModule *> m_toolModules;
-	QMap<QString,QMdiSubWindow *> m_activePagesFileName;	
+	taskModule * m_pRefModule = nullptr;
+	QMap<QString,QMdiSubWindow *> m_activePagesFileName;
 	QStandardItemModel * m_pMsgModel;
 	QStandardItemModel * m_pClassModel;
 	QString inifile();
