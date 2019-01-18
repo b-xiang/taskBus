@@ -86,7 +86,7 @@ int taskModule::rowCount(const QModelIndex &parent) const
 	return 0;
 }
 
-int taskModule::columnCount(const QModelIndex &parent) const
+int taskModule::columnCount(const QModelIndex &/*parent*/) const
 {
 	return m_btoolMod==true?2:7;
 }

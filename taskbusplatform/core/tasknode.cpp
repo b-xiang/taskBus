@@ -93,7 +93,7 @@ bool taskNode::cmd_stop(QObject * node)
 	header.prefix[1] = 0x5A;
 	header.prefix[2] = 0x7E;
 	header.prefix[3] = 0x69;
-	header.data_length = strlen(cmd)+1;
+	header.data_length = static_cast<unsigned int>(strlen(cmd)+1);
 	header.path_id = 1;
 	header.subject_id = control_subect_id();
 	m_process->write((char *)&header,sizeof(subject_package_header));
@@ -186,7 +186,7 @@ void taskNode::slot_readyReadStandardOutput()
 		}
 		else
 		{
-			if (m_array_stdout.size()>=
+			if (static_cast<size_t>(m_array_stdout.size())>=
 					sizeof(TASKBUS::subject_package_header)+header->data_length)
 			{
 				++m_spackage_sent;
@@ -225,11 +225,11 @@ void taskNode::slot_readyReadStandardOutput()
 			//处理了一个包之后，若还存在后续的包，则继续处理。
 			//After processing a package, continue processing if a subsequent
 			// package is present.
-			if (m_array_stdout.size()>=sizeof(TASKBUS::subject_package_header))
+			if (static_cast<size_t>(m_array_stdout.size())>=sizeof(TASKBUS::subject_package_header))
 			{
 				header =
 						reinterpret_cast<const TASKBUS::subject_package_header *>(m_array_stdout.constData());
-				if (!(m_array_stdout.size()>=sizeof(TASKBUS::subject_package_header)+header->data_length))
+				if (!(static_cast<size_t>(m_array_stdout.size())>=sizeof(TASKBUS::subject_package_header)+header->data_length))
 					break;
 			}
 		}
@@ -405,7 +405,7 @@ bool taskNode::cmd_sendcmd(QMap<QString,QVariant> cmd, QSet<QString> destins)
 	QByteArray arr;
 	arr.append(0x3C);	arr.append(0x5A);
 	arr.append(0x7E);	arr.append(0x69);
-	arr.append(4,0xFF); arr.append(4,0x00);
+	arr.append(4,0xFFu); arr.append(4,0x00u);
 	utf8.append('\0');
 	const int sz = utf8.size();
 	arr.append((sz>> 0) & 0xff);

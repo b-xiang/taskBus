@@ -18,9 +18,9 @@ int taskBusPlatformFrm::m_doc_ins = 0;
 taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::taskBus),
+	m_pTrayIcon(new QSystemTrayIcon(this)),
 	m_pMsgModel(new QStandardItemModel(this)),
-	m_pClassModel(new QStandardItemModel(this)),
-	m_pTrayIcon(new QSystemTrayIcon(this))
+	m_pClassModel(new QStandardItemModel(this))
 {
 	ui->setupUi(this);	
 	setCentralWidget(ui->mdiArea);

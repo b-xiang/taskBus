@@ -1,4 +1,4 @@
-#include "listen_thread.h"
+﻿#include "listen_thread.h"
 #include "tb_interface.h"
 listen_thread::listen_thread(
 		const TASKBUS::cmdlineParser * cmdline,
@@ -15,9 +15,9 @@ void listen_thread::run()
 {
 	using namespace TASKBUS;
 	bool bfinished = false;
-	int iref_tms = 0;
+	unsigned int iref_tms = 0;
 	if (m_cmd)
-		iref_tms = m_cmd->toInt("timestamp_in",0);
+		iref_tms = m_cmd->toUInt("timestamp_in",0);
 
 	while (false==bfinished)
 	{
@@ -30,7 +30,7 @@ void listen_thread::run()
 			msleep(100);
 			continue;
 		}
-		if (packagedta.size())
+		if (!packagedta.empty())
 		{
 			if ( is_control_subject(header))
 			{
@@ -55,5 +55,4 @@ void listen_thread::run()
 		}
 	}
 	emit quit_app();
-	return ;
 }

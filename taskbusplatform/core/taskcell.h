@@ -1,4 +1,4 @@
-/*!
+﻿/*!
   * 本文件是类taskCell的头文件。taskCell存储模块的描述信息。它既包含模块JSON文件中预
   * 先定义的输入输出接口、参数配置项，又包括运行时配置的参数。
   * This file is the header file for class Taskcell. It contains description
@@ -13,6 +13,7 @@
 #include <QVariant>
 #include <QVector>
 #include <memory>
+#include <QString>
 #include <QSet>
 #include <QJsonDocument>
 /*!

@@ -1,4 +1,4 @@
-#include "listen_thread.h"
+﻿#include "listen_thread.h"
 #include "tb_interface.h"
 #include <QByteArray>
 #include <QCoreApplication>
@@ -40,7 +40,7 @@ void reciv_thread::run()
 	}
 
 
-	const int iSQL = m_pCmd->toInt("sql",0);
+	const unsigned int iSQL = m_pCmd->toUInt("sql",0);
 	int iUseTrans = m_pCmd->toInt("use_transaction",0);
 	const int iCommitTm = m_pCmd->toInt("commit_time",1);
 	const int iencoding = m_pCmd->toInt("encoding",0);

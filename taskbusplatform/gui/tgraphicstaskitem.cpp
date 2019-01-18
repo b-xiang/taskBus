@@ -1,4 +1,4 @@
-#include "tgraphicstaskitem.h"
+﻿#include "tgraphicstaskitem.h"
 #include <QPainter>
 #include <QDebug>
 #include <QFileInfo>
@@ -29,7 +29,7 @@ QRectF TGraphicsTaskItem::boundingRect() const
 	return QRectF(-width_cell/2,-height_cell/2,width_cell,height_cell);
 }
 
-void TGraphicsTaskItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TGraphicsTaskItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *  /*option*/, QWidget *  /*widget*/)
 {
 	const  QString func = m_pModel->function_names().first();
 	const  QStringList lstSrcPs = m_pModel->in_subjects(func);
@@ -42,7 +42,7 @@ void TGraphicsTaskItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 	const int cell_size_raw = cellSize(&mp_Src,&mp_Dst)+1;
 	const int cell_size = cell_size_raw<2?2:cell_size_raw;
-	const int cell_width = 300;
+	//const int cell_width = 300;
 	const int cell_height = 32 * cell_size;
 	QPen pen = painter->pen();
 	QPen newpen (QColor(255,0,0));
@@ -203,11 +203,11 @@ void TGraphicsTaskItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		const  QString func = m_pModel->function_names().first();
 		const  QStringList lstSrcPs = m_pModel->in_subjects(func);
 		const  QStringList lstDstPs = m_pModel->out_subjects(func);
-		const  unsigned int instance_id = m_pModel->function_instance(func);
+		//const  unsigned int instance_id = m_pModel->function_instance(func);
 
 		QMap<QString,int> mp_Src,mp_Dst;
 
-		const int cell_size = cellSize(&mp_Src,&mp_Dst)+1;
+		//const int cell_size = cellSize(&mp_Src,&mp_Dst)+1;
 
 		const double x = event->pos().x();
 		const double y = event->pos().y();

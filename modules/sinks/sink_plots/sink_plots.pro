@@ -35,8 +35,7 @@ HEADERS += \
     listen_thread.h
 
 FORMS += \
-        dialogplots.ui \
-    dialogplots.ui
+	dialogplots.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

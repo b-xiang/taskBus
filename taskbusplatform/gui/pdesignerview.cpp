@@ -28,8 +28,8 @@ PDesignerView::PDesignerView(taskBusPlatformFrm * pMainfrm,QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::PDesignerView),
 	m_scene(new QGraphicsScene(0,0,4096,3072,this)),
-	m_pRunThread(new QThread(this)),
 	m_project(new taskProject(0)),
+	m_pRunThread(new QThread(this)),
 	m_pMainFrm(pMainfrm)
 {
 	ui->setupUi(this);
@@ -121,7 +121,7 @@ void PDesignerView::zoomOut()
 	ui->graphicsView_main->scale(0.8,0.8);
 }
 
-void PDesignerView::callbk_instanceAppended(taskCell * pmod, taskNode * node,QPointF pt)
+void PDesignerView::callbk_instanceAppended(taskCell * pmod, taskNode * /*node*/,QPointF pt)
 {
 	taskModule * mod = dynamic_cast<taskModule *>(pmod);
 	if (mod)

@@ -1,4 +1,4 @@
-#include "dialogsql.h"
+﻿#include "dialogsql.h"
 #include "ui_dialogsql.h"
 #include "tb_interface.h"
 #include <algorithm>
@@ -6,9 +6,9 @@
 DialogSQL::DialogSQL(const TASKBUS::cmdlineParser * ps, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::DialogSQL),
+	m_pCmd(ps),
 	m_rthread(new reciv_thread(ps,this)),
-	m_pMod(new QStandardItemModel(this)),
-	m_pCmd(ps)
+	m_pMod(new QStandardItemModel(this))
 {
 	ui->setupUi(this);
 	connect(m_rthread,&reciv_thread::sig_quit,this,&DialogSQL::close);

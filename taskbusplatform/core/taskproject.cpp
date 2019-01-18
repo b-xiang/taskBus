@@ -1,4 +1,4 @@
-/*!
+﻿/*!
   * taskProject 类的实现。
   * @author goldenhawking@163.com, 2016-09
   */
@@ -537,11 +537,11 @@ void taskProject::slot_new_package(QByteArrayList pkgs)
 {
 	foreach (QByteArray pkg, pkgs)
 	{
-		if (pkg.size()<sizeof(TASKBUS::subject_package_header))
+		if (static_cast<size_t>(pkg.size())<sizeof(TASKBUS::subject_package_header))
 			continue;
 		const TASKBUS::subject_package_header * header =
 				reinterpret_cast<const TASKBUS::subject_package_header *>(pkg.constData());
-		if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
+		if (header->data_length+sizeof( TASKBUS::subject_package_header)!=static_cast<size_t>(pkg.size()))
 			continue;
 		bool blocked = false;
 		try {
@@ -869,7 +869,7 @@ taskCell * taskProject::default_NewCell()
  * \param pnod 模块对应的运行时 The runtime of the corresponding module
  * \param pt 模块位置 Module graphics location
  */
-void taskProject::default_InsAppended(taskCell * pmod, taskNode * pnod,QPointF pt)
+void taskProject::default_InsAppended(taskCell * /*pmod*/, taskNode * /*pnod*/,QPointF /*pt*/)
 {
 
 }
@@ -892,11 +892,11 @@ QPointF	taskProject::default_GetCellPos(int n)
  */
 void taskProject::slot_outside_recieved(QByteArray pkg)
 {
-	if (pkg.size()<sizeof(TASKBUS::subject_package_header))
+	if (static_cast<size_t>(pkg.size())<sizeof(TASKBUS::subject_package_header))
 		return;
 	const TASKBUS::subject_package_header * header =
 			reinterpret_cast<const TASKBUS::subject_package_header *>(pkg.constData());
-	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
+	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=static_cast<size_t>(pkg.size()))
 		return;
 	try {
 		if (header->subject_id!=0xffffffff)

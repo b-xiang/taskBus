@@ -9,8 +9,8 @@ DialogNetP2P::DialogNetP2P(const int ins,QWidget *parent)
 	:QDialog(parent)
 	,ui(new Ui::DialogNetP2P)
 	,m_svr( new QTcpServer(this))
-	,m_pRevThd(new reciv_thread(this))
 	,m_n_instance(ins)
+	,m_pRevThd(new reciv_thread(this))
 {
 	ui->setupUi(this);
 	connect(m_svr,&QTcpServer::newConnection,this,&DialogNetP2P::slot_new_connection);
@@ -54,9 +54,9 @@ void  DialogNetP2P::timerEvent(QTimerEvent * e)
 		}
 		else
 		{
-			if (m_svr->isListening()==false)
+			if (!m_svr->isListening())
 			{
-				if (true==m_svr->listen(QHostAddress(m_str_addr),m_n_port))
+				if (m_svr->listen(QHostAddress(m_str_addr),m_n_port))
 				{
 					fprintf(stderr,"Listening on port %d\n",m_n_port);
 					fflush(stderr);
@@ -164,17 +164,17 @@ void DialogNetP2P::startWork()
 	}
 }
 
-void DialogNetP2P::on_checkBox_listener_positive_stateChanged(int arg1)
+void DialogNetP2P::on_checkBox_listener_positive_stateChanged(int /*arg1*/)
 {
 	m_n_mod = ui->checkBox_listener_positive->isChecked()?0:1;
 }
 
-void DialogNetP2P::on_lineEdit_listenerAddr_textChanged(const QString &arg1)
+void DialogNetP2P::on_lineEdit_listenerAddr_textChanged(const QString &/*arg1*/)
 {
 	m_str_addr = ui->lineEdit_listenerAddr->text();
 }
 
-void DialogNetP2P::on_lineEdit_listenerPort_textChanged(const QString &arg1)
+void DialogNetP2P::on_lineEdit_listenerPort_textChanged(const QString &/*arg1*/)
 {
 	m_n_port = ui->lineEdit_listenerPort->text().toInt();
 }
@@ -186,7 +186,7 @@ void DialogNetP2P::slot_read_sock()
 	using namespace TASKBUS;
 	QByteArray arrData = m_sock->readAll();
 	m_package_array.append(arrData);
-	while (m_package_array.size()>=sizeof(subject_package_header))
+	while (static_cast<size_t>(m_package_array.size())>=sizeof(subject_package_header))
 	{
 		//检查独特码
 		int goodoff = 0;
@@ -199,7 +199,7 @@ void DialogNetP2P::slot_read_sock()
 		}
 		if (goodoff)
 			m_package_array.remove(0,goodoff);
-		if (m_package_array.size()<sizeof(subject_package_header))
+		if (static_cast<size_t>(m_package_array.size())<sizeof(subject_package_header))
 			break;
 		const subject_package_header * pheader = (const subject_package_header *)
 				m_package_array.constData();
@@ -217,10 +217,10 @@ void DialogNetP2P::slot_read_sock()
 			m_package_array.clear();
 			break;
 		}
-		if (m_package_array.size()<datalen+sizeof(subject_package_header))
+		if (static_cast<size_t>(m_package_array.size())<datalen+sizeof(subject_package_header))
 			break;
 		const unsigned int sub_num = cvendian(pheader->subject_id,false);
-		if (sub_num<m_vec_outport2ins.size())
+		if (static_cast<size_t>(sub_num)<static_cast<size_t>(m_vec_outport2ins.size()))
 		{
 			if (m_vec_outport2ins[sub_num]>0)
 			{

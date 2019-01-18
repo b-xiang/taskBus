@@ -1,4 +1,4 @@
-#include "dialogplots.h"
+﻿#include "dialogplots.h"
 #include "ui_dialogplots.h"
 #include "tb_interface.h"
 #include <algorithm>
@@ -180,7 +180,7 @@ void DialogPlots::deal_package(QByteArray package)
 
 	}
 
-	QChart *chart = m_chars[subid];
+	//QChart *chart = m_chars[subid];
 	QValueAxis * ax = m_char_axis_x[subid];
 	QValueAxis * ay = m_char_axis_y[subid];
 
@@ -221,10 +221,10 @@ void DialogPlots::on_pushButton_reset_clicked()
 	for (int subid=0;subid<nGs;++subid)
 	{
 		QXYSeries * serials = m_chat_serials[subid];
-		QChart *chart = m_chars[subid];
+		//QChart *chart = m_chars[subid];
 		QValueAxis * ax = m_char_axis_x[subid];
 		QValueAxis * ay = m_char_axis_y[subid];
-		QChartView * pv = m_chat_views[subid];
+		//QChartView * pv = m_chat_views[subid];
 		int oldsize = serials->points().size();
 		if (oldsize)
 		{

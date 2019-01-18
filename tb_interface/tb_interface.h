@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstdio>
 #include <cstring>
 #include <cassert>
@@ -99,8 +99,8 @@ namespace TASKBUS{
 	inline bool lendian()
 	{
 		static const short testv = 0x0102;
-		static const unsigned char * testp = reinterpret_cast<const unsigned char *>(&testv);
-		static const bool littled = (testp[0]==0x02)?true:false;
+		static auto testp = reinterpret_cast<const unsigned char *>(&testv);
+		static const bool littled = testp[0]==0x02;
 		return littled;
 	}
 
@@ -147,7 +147,7 @@ namespace TASKBUS{
 		fwrite(prefix,sizeof(char),4,stdout);
 		fwrite(&subject_id,sizeof(subject_id),1,stdout);
 		fwrite(&path_id,sizeof(path_id),1,stdout);
-		const unsigned int lenstr = strlen(dataptr)+1;
+		const unsigned int lenstr = static_cast<unsigned int>(strlen(dataptr)+1);
 		fwrite(&lenstr,sizeof(lenstr),1,stdout);
 		fwrite(dataptr,sizeof(unsigned char),lenstr,stdout);
 		fflush (stdout);

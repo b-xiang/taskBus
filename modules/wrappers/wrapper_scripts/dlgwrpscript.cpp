@@ -1,4 +1,4 @@
-#include "dlgwrpscript.h"
+﻿#include "dlgwrpscript.h"
 #include "ui_dlgwrpscript.h"
 #include <QSettings>
 #include <QProcessEnvironment>
@@ -106,7 +106,7 @@ bool DlgWrpScript::cmd_stop()
 	header.prefix[1] = 0x5A;
 	header.prefix[2] = 0x7E;
 	header.prefix[3] = 0x69;
-	header.data_length = strlen(cmd)+1;
+	header.data_length = static_cast<unsigned int>(strlen(cmd)+1);
 	header.path_id = 1;
 	header.subject_id = control_subect_id();
 	m_process->write((char *)&header,sizeof(subject_package_header));
@@ -153,7 +153,7 @@ void DlgWrpScript::slot_readyReadStandardError()
 
 }
 
-void DlgWrpScript::slot_sended(qint64 b)
+void DlgWrpScript::slot_sended(qint64/* b*/)
 {
 
 }

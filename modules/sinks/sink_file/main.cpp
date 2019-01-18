@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
 #include <string>
@@ -140,7 +140,7 @@ int do_sink_txt(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 				continue;
 			}
@@ -288,7 +288,7 @@ int do_sink_bin(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 				continue;
 			}

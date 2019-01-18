@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+﻿#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <map>
@@ -64,12 +64,12 @@ int do_fftw(const cmdlineParser & args)
 	using namespace TASKBUS;
 	int res = 0;
 	//获得平台告诉自己的实例名
-	int instance	  = args.toInt("instance",0);
-	int isource		  = args.toInt("signal",0);
-	int FFT		  = args.toInt("FFT",0);
-	int Spec = args.toInt("Spec",0);
-	int itmstamp_in  = args.toInt("tmstamp_in",0);
-	int itmstamp_out = args.toInt("tmstamp_out",0);
+	unsigned int instance	  = args.toInt("instance",0);
+	unsigned int isource	  = args.toInt("signal",0);
+	unsigned int FFT		  = args.toInt("FFT",0);
+	unsigned int Spec = args.toInt("Spec",0);
+	unsigned int itmstamp_in  = args.toUInt("tmstamp_in",0);
+	unsigned int itmstamp_out = args.toUInt("tmstamp_out",0);
 	//工作模式
 	const int sptype	=	args.toInt("sptype",0);					fprintf(stderr,"sptype is %d.",sptype);
 
