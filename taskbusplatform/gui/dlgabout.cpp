@@ -1,4 +1,4 @@
-#include "dlgabout.h"
+﻿#include "dlgabout.h"
 #include "ui_dlgabout.h"
 #include <QUrl>
 DlgAbout::DlgAbout(QWidget *parent) :

@@ -34,11 +34,9 @@ HEADERS += \
     listen_thread.h
 
 FORMS += \
-	dialognetp2p.ui \
-    dialognetp2p.ui
+	dialognetp2p.ui
 
 RESOURCES += \
-    resource.qrc \
     resource.qrc
 
 DISTFILES += \

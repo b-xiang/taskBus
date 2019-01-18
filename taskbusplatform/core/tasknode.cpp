@@ -1,4 +1,4 @@
-/*!
+﻿/*!
   @author goldenhawking@163.com
   @date 2016-09-12
   */
@@ -52,14 +52,14 @@ taskNode::~taskNode()
  * \param paras  参数表 Commandline parameters
  * \return 成功、失败   True when succeed
  */
-bool taskNode::cmd_start(QObject * node,QString cmd, QStringList paras)
+bool taskNode::cmd_start(QObject * node,QString cm, QStringList paras)
 {
 	if (node !=this)
 		return false;
 	if (m_process->state()!=QProcess::NotRunning)
 		return false;
 
-	const QString cmdline =cmd;
+	const QString cmdline =cm;
 	QStringList lstCmds = paras;
 	m_process->setProgram(cmdline);
 	m_process->setArguments(lstCmds);
@@ -170,9 +170,9 @@ void taskNode::slot_readyReadStandardOutput()
 	m_array_stdout.append(arred);
 	extern QAtomicInt  g_totalrev;
 	g_totalrev += arred.size();
-	while (m_array_stdout.size()>=sizeof(TASKBUS::subject_package_header))
+	while (m_array_stdout.size()>=static_cast<int>(sizeof(TASKBUS::subject_package_header)))
 	{
-		const TASKBUS::subject_package_header * header =
+		auto * header =
 				reinterpret_cast<const TASKBUS::subject_package_header *>
 				(m_array_stdout.constData());
 		//合法性 Legitimacy
