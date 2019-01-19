@@ -1,4 +1,4 @@
-#ifndef DLGABOUT_H
+﻿#ifndef DLGABOUT_H
 #define DLGABOUT_H
 
 #include <QDialog>
@@ -16,8 +16,6 @@ public:
 	~DlgAbout();
 
 private slots:
-	void on_pushButton_mainPage_clicked();
-	void on_pushButton_documents_clicked();
 	void on_pushButton_Next_clicked();
 	void on_pushButton_Close_clicked();
 

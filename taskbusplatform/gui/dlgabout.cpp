@@ -6,27 +6,17 @@ DlgAbout::DlgAbout(QWidget *parent) :
 	ui(new Ui::DlgAbout)
 {
 	ui->setupUi(this);
+	ui->textBrowser_About->
+			setText("Taskbus is a cross-platform"
+			 " multi-process cooperation framework for non-professional "
+			 "developers, with four features of process based, "
+			 "language independent, compiler independent, and architecture Independent.\n"
+			 "by goldenhawking@163.com, Colored Eagle Studio, 2016,2017,2018,2019");
 }
 
 DlgAbout::~DlgAbout()
 {
 	delete ui;
-}
-
-void DlgAbout::on_pushButton_mainPage_clicked()
-{
-	QStringList ls;
-	ls<<"https://github.com/";
-	ui->textBrowser_About->setSource(QUrl::fromStringList(ls).first());
-	ui->label->hide();
-}
-
-void DlgAbout::on_pushButton_documents_clicked()
-{
-	QStringList ls;
-	ls<<"https://github.com/";
-	ui->textBrowser_About->setSource(QUrl::fromStringList(ls).first());
-	ui->label->hide();
 }
 
 void DlgAbout::on_pushButton_Next_clicked()

@@ -1,11 +1,11 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
 #include <QFileInfo>
 #include "listen_thread.h"
 #include <QTextStream>
-#include <time.h>
+#include <ctime>
 #include <QList>
 #include <algorithm>
 #include <iterator>
@@ -39,7 +39,7 @@ int main(int argc , char * argv[])
 	if (args.contains("information"))
 	{
 		QFile fp(":/json/source_files."+QLocale::system().name()+".json");
-		if (fp.open(QIODevice::ReadOnly)==false)
+		if (!fp.open(QIODevice::ReadOnly))
 		{
 			fp.setFileName(":/json/source_files.json");
 			fp.open(QIODevice::ReadOnly);
@@ -72,7 +72,7 @@ int main(int argc , char * argv[])
 
 
 //枚举文件夹中的所有文件的函数，按照创建时间排序
-QList<QString> enum_files(QString folder, QString typestr)
+QList<QString> enum_files(const QString & folder, const QString & typestr)
 {
 	QList<QString> vec_str_files;
 	map<QDateTime,QList<QString> > map_files;
@@ -92,7 +92,7 @@ QList<QString> enum_files(QString folder, QString typestr)
 	return vec_str_files;
 }
 
-QList<QString> enum_files(QString folder, QString typestr,map<QDateTime,QList<QString> > * topMap)
+QList<QString> enum_files(const QString & folder, const QString & typestr,map<QDateTime,QList<QString> > * topMap)
 {
 	map<QDateTime,QList<QString> > map_files_curr;
 	map<QDateTime,QList<QString> > * map_files  = &map_files_curr;
@@ -119,7 +119,7 @@ QList<QString> enum_files(QString folder, QString typestr,map<QDateTime,QList<QS
 	{
 		if (info.isDir()==false)
 			continue;
-		if (info.fileName()=='.'||info.fileName()=="..")
+		if (info.fileName()=="."||info.fileName()=="..")
 			continue;
 		enum_files(info.absoluteFilePath(),typestr,map_files);
 	}
