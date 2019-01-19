@@ -38,6 +38,7 @@ public:
 	//Drag and drop events
 protected:
 	void dragEnterEvent(QDragEnterEvent *event) override;
+	void dragMoveEvent(QDragMoveEvent * event) override;
 	void dropEvent(QDropEvent * event) override;
 	void closeEvent(QCloseEvent *) override;
 

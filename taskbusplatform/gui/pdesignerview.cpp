@@ -212,6 +212,24 @@ void PDesignerView::dragEnterEvent(QDragEnterEvent *event)
 		event->acceptProposedAction();
 
 }
+
+void   PDesignerView::dragMoveEvent(QDragMoveEvent * event)
+{
+	QByteArray encodedData = event->mimeData()->data("application/vnd.text.list");
+	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	QStringList newItems;
+	int rows = 0;
+
+	while (!stream.atEnd()&& rows==0) {
+		QString text;
+		stream >> text;
+		newItems << text;
+		++rows;
+	}
+	if (newItems.size())
+		event->acceptProposedAction();
+}
+
 /*!
  * \brief PDesignerView::dropEvent 添加一个构件到当前场景。Drop a module into scene
  * \param event
