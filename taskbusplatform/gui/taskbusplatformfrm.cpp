@@ -48,13 +48,13 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 
 	QMenu * me = new QMenu(this);
 	me->addAction(ui->actionhideWindow);
-	me->addAction(ui->action_Exit);
+	me->addAction(ui->action_About);
+	m_pTrayIcon->setContextMenu(me);
+	connect(m_pTrayIcon,&QSystemTrayIcon::activated,this,&taskBusPlatformFrm::slot_traymessage);
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_message->toggleViewAction());
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_modules->toggleViewAction());
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_props->toggleViewAction());
 	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_watch->toggleViewAction());
-	m_pTrayIcon->setContextMenu(me);
-	connect(m_pTrayIcon,&QSystemTrayIcon::activated,this,&taskBusPlatformFrm::slot_traymessage);
 
 }
 

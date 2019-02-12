@@ -9,22 +9,20 @@
         <translation>关于本软件</translation>
     </message>
     <message>
-        <location filename="gui/dlgabout.ui" line="69"/>
         <source>Main &amp;page</source>
-        <translation>主页（&amp;P)</translation>
+        <translation type="vanished">主页（&amp;P)</translation>
     </message>
     <message>
-        <location filename="gui/dlgabout.ui" line="76"/>
         <source>&amp;Documents</source>
-        <translation>文档（&amp;D)</translation>
+        <translation type="vanished">文档（&amp;D)</translation>
     </message>
     <message>
-        <location filename="gui/dlgabout.ui" line="96"/>
+        <location filename="gui/dlgabout.ui" line="82"/>
         <source>&amp;About Qt</source>
         <translation>关于Qt（&amp;A)</translation>
     </message>
     <message>
-        <location filename="gui/dlgabout.ui" line="103"/>
+        <location filename="gui/dlgabout.ui" line="89"/>
         <source>&amp;Close</source>
         <translation>关闭（&amp;C)</translation>
     </message>
@@ -302,12 +300,12 @@
         <translation>项目已经编辑，放弃保存继续操作？</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="283"/>
+        <location filename="gui/pdesignerview.cpp" line="301"/>
         <source>Close without Saving?</source>
         <translation>不保存就关闭吗？</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="283"/>
+        <location filename="gui/pdesignerview.cpp" line="301"/>
         <source>Project has been modified, Close it anyway?</source>
         <translation>项目已经编辑了，是否不保存就继续关闭？</translation>
     </message>
@@ -316,18 +314,18 @@
         <translation type="vanished">项目已经被编辑，是否保存？</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="667"/>
-        <location filename="gui/pdesignerview.cpp" line="677"/>
-        <location filename="gui/pdesignerview.cpp" line="692"/>
-        <location filename="gui/pdesignerview.cpp" line="702"/>
+        <location filename="gui/pdesignerview.cpp" line="685"/>
+        <location filename="gui/pdesignerview.cpp" line="695"/>
+        <location filename="gui/pdesignerview.cpp" line="710"/>
+        <location filename="gui/pdesignerview.cpp" line="720"/>
         <source>Already at min</source>
         <translation>已经抵达底部</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="667"/>
-        <location filename="gui/pdesignerview.cpp" line="677"/>
-        <location filename="gui/pdesignerview.cpp" line="692"/>
-        <location filename="gui/pdesignerview.cpp" line="702"/>
+        <location filename="gui/pdesignerview.cpp" line="685"/>
+        <location filename="gui/pdesignerview.cpp" line="695"/>
+        <location filename="gui/pdesignerview.cpp" line="710"/>
+        <location filename="gui/pdesignerview.cpp" line="720"/>
         <source>Pin order value already at min, you can move other pins UP</source>
         <translation>管脚优先级已经最小。您可以增大其他管脚优先级来达到同样目的</translation>
     </message>
@@ -573,10 +571,6 @@
     <message>
         <source>taskBus</source>
         <translation type="vanished">进程总线工作室</translation>
-    </message>
-    <message>
-        <source>Used to orgnize process-based modules. by goldenhawking, 2018 for opensource usage.</source>
-        <translation type="vanished">本程序用于设计、管理进程任务总线相关的模块工程。goldenhawking@163.com。</translation>
     </message>
     <message>
         <location filename="gui/taskbusplatformfrm.cpp" line="184"/>
