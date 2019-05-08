@@ -1,4 +1,4 @@
-/*!
+﻿/*!
   * 本文件是类taskCell的实现文件。
   * taskBus中，一个独立的可执行文件称为一个模块。一个模块可以包含1个或多个功能。
   * taskCell存储这些功能的静态、动态信息。静态信息包括接口、参数表、功能本身的属性。
@@ -36,7 +36,7 @@ taskCell::~taskCell()
  * \param path EXEC file path
  * \return When succeeded, return true.
  */
-bool taskCell::initFromJson(const QByteArray json, const QString path)
+bool taskCell::initFromJson(const QByteArray & json, const QString & path)
 {
 	if (m_set_fullpaths.contains(path))
 			return true;
@@ -244,7 +244,7 @@ bool taskCell::initFromJson(const QByteArray json, const QString path)
 	return true;
 }
 
-QByteArray taskCell::toJson(const QString root)  const
+QByteArray taskCell::toJson(const QString & root)  const
 {
 	QMap<QString, QMap<QString, QMap<QString, QVariant> > > tarBlock;
 	if (m_mainBlock.contains(root))
@@ -277,7 +277,7 @@ void taskCell::clear()
 	m_idxparas.clear();
 	m_idxs.clear();
 }
-unsigned  int taskCell::function_instance(const QString func)  const
+unsigned  int taskCell::function_instance(const QString & func)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return -1;
@@ -288,7 +288,7 @@ unsigned  int taskCell::function_instance(const QString func)  const
 	return 	m_mainBlock[func]["instance"]["instance_value"].toUInt();
 }
 
-QString taskCell::function_exec(const QString func ) const
+QString taskCell::function_exec(const QString & func ) const
 {
 	if (m_mainBlock.contains(func) == false)
 		return "";
@@ -299,7 +299,7 @@ QString taskCell::function_exec(const QString func ) const
 	return 	m_mainBlock[func]["instance"]["exec"].toString();
 }
 
-QString taskCell::set_function_exec(const QString func , const QString execstr )
+QString taskCell::set_function_exec(const QString & func , const QString & execstr )
 {
 	QString old ;
 	if (m_mainBlock.contains(func) == false)
@@ -310,7 +310,7 @@ QString taskCell::set_function_exec(const QString func , const QString execstr )
 	m_mainBlock[func]["instance"]["exec"] = execstr;
 	return old;
 }
-const QString taskCell::function_class(const QString func) const
+const QString taskCell::function_class(const QString & func) const
 {
 	QStringList strV = func.split(QRegExp("[:_]"),QString::SkipEmptyParts);
 	if (strV.size()>1)
@@ -327,7 +327,7 @@ const QString taskCell::function_class(const QString func) const
 	}
 	return 	QObject::tr("Global");
 }
-QString taskCell::function_tooltip(const QString func ) const
+QString taskCell::function_tooltip(const QString & func ) const
 {
 	if (m_mainBlock.contains(func) == false)
 		return func;
@@ -337,7 +337,7 @@ QString taskCell::function_tooltip(const QString func ) const
 		return func;
 	return 	m_mainBlock[func]["name"]["name"].toString();
 }
-unsigned int taskCell::set_function_instance(const QString func,
+unsigned int taskCell::set_function_instance(const QString & func,
 											 unsigned int instance)
 {
 	unsigned int oldins = 0;
@@ -350,7 +350,7 @@ unsigned int taskCell::set_function_instance(const QString func,
 }
 
 //功能的所有接口
-const QStringList taskCell::in_subjects(const QString func) const
+const QStringList taskCell::in_subjects(const QString & func) const
 {
 	QStringList lst;
 	if (m_mainBlock.contains(func) == false)
@@ -359,7 +359,7 @@ const QStringList taskCell::in_subjects(const QString func) const
 		return lst;
 	return m_mainBlock[func]["input_subjects"].keys();
 }
-const QStringList taskCell::out_subjects(const QString func)  const
+const QStringList taskCell::out_subjects(const QString & func)  const
 {
 	QStringList lst;
 	if (m_mainBlock.contains(func) == false)
@@ -368,8 +368,8 @@ const QStringList taskCell::out_subjects(const QString func)  const
 		return lst;
 	return m_mainBlock[func]["output_subjects"].keys();
 }
-const QVariantMap taskCell::in_subject(const QString func,
-									   const QString name)  const
+const QVariantMap taskCell::in_subject(const QString & func,
+									   const QString & name)  const
 {
 	QVariantMap mp;
 	if (m_mainBlock.contains(func) == false)
@@ -383,8 +383,8 @@ const QVariantMap taskCell::in_subject(const QString func,
 	mp = m_mainBlock[func]["input_subjects"][name].toMap();
 	return mp;
 }
-const QVariantMap taskCell::out_subject(const QString func,
-										const QString name)  const
+const QVariantMap taskCell::out_subject(const QString & func,
+										const QString & name)  const
 {
 	QVariantMap mp;
 	if (m_mainBlock.contains(func) == false)
@@ -398,8 +398,8 @@ const QVariantMap taskCell::out_subject(const QString func,
 	mp = m_mainBlock[func]["output_subjects"][name].toMap();
 	return mp;
 }
-unsigned int taskCell::in_subject_instance(const QString func,
-										   const QString name)  const
+unsigned int taskCell::in_subject_instance(const QString & func,
+										   const QString & name)  const
 {
 	unsigned int ins = 0;
 	if (m_mainBlock.contains(func) == false)
@@ -415,8 +415,8 @@ unsigned int taskCell::in_subject_instance(const QString func,
 		return ins;
 	return mp["instance_value"].toUInt();
 }
-unsigned int taskCell::out_subject_instance(const QString func,
-											const QString name)  const
+unsigned int taskCell::out_subject_instance(const QString & func,
+											const QString & name)  const
 {
 	unsigned int ins = 0;
 	if (m_mainBlock.contains(func) == false)
@@ -432,8 +432,8 @@ unsigned int taskCell::out_subject_instance(const QString func,
 		return ins;
 	return mp["instance_value"].toUInt();
 }
-QString taskCell::in_subject_tooltip(const QString func,
-									 const QString name)  const
+QString taskCell::in_subject_tooltip(const QString & func,
+									 const QString & name)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return name;
@@ -448,8 +448,8 @@ QString taskCell::in_subject_tooltip(const QString func,
 		return name;
 	return mp["tooltip"].toString();
 }
-QString taskCell::out_subject_tooltip(const QString func,
-									  const QString name)  const
+QString taskCell::out_subject_tooltip(const QString & func,
+									  const QString & name)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return name;
@@ -465,8 +465,8 @@ QString taskCell::out_subject_tooltip(const QString func,
 	return mp["tooltip"].toString();
 }
 
-unsigned  int taskCell::set_in_subject_instance(const QString func,
-												const QString name,
+unsigned  int taskCell::set_in_subject_instance(const QString & func,
+												const QString & name,
 												unsigned int instance)
 {
 	unsigned int ins = 0;
@@ -484,8 +484,8 @@ unsigned  int taskCell::set_in_subject_instance(const QString func,
 	m_mainBlock[func]["input_subjects"][name] = mp;
 	return oldins;
 }
-unsigned int taskCell::set_out_subject_instance(const QString func,
-												const QString name,
+unsigned int taskCell::set_out_subject_instance(const QString & func,
+												const QString & name,
 												unsigned int instance)
 {
 	unsigned int ins = 0;
@@ -505,9 +505,9 @@ unsigned int taskCell::set_out_subject_instance(const QString func,
 }//设置输出接口实例标识
 
 
-QString taskCell::in_subject_item(const QString func,
-								  const QString name,
-								  const QString key)  const
+QString taskCell::in_subject_item(const QString & func,
+								  const QString & name,
+								  const QString & key)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return "";
@@ -522,9 +522,9 @@ QString taskCell::in_subject_item(const QString func,
 		return "";
 	return mp[key].toString();
 }
-QString taskCell::out_subject_item(const QString func,
-								   const QString name,
-								   const QString key)  const
+QString taskCell::out_subject_item(const QString & func,
+								   const QString & name,
+								   const QString & key)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return "";
@@ -540,7 +540,7 @@ QString taskCell::out_subject_item(const QString func,
 	return mp[key].toString();
 }
 
-const QStringList  taskCell::parameters(const QString func) const
+const QStringList  taskCell::parameters(const QString & func) const
 {
 	QStringList lst;
 	if (m_mainBlock.contains(func) == false)
@@ -549,8 +549,8 @@ const QStringList  taskCell::parameters(const QString func) const
 		return lst;
 	return m_mainBlock[func]["parameters"].keys();
 }
-const QVariantMap  taskCell::parameter(const QString func,
-									   const QString name)  const
+const QVariantMap  taskCell::parameter(const QString & func,
+									   const QString & name)  const
 {
 	QVariantMap mp;
 	if (m_mainBlock.contains(func) == false)
@@ -564,8 +564,8 @@ const QVariantMap  taskCell::parameter(const QString func,
 	mp = m_mainBlock[func]["parameters"][name].toMap();
 	return mp;
 }
-QVariant  taskCell::parameters_instance(const QString func,
-										const QString name)  const
+QVariant  taskCell::parameters_instance(const QString & func,
+										const QString & name)  const
 {
 	QVariant ins;
 	if (m_mainBlock.contains(func) == false)
@@ -581,9 +581,9 @@ QVariant  taskCell::parameters_instance(const QString func,
 		return ins;
 	return mp["instance_value"];
 }
-QVariant taskCell::set_parameters_instance(const QString func,
-										   const QString name,
-										   const QVariant instance)
+QVariant taskCell::set_parameters_instance(const QString & func,
+										   const QString & name,
+										   const QVariant & instance)
 {
 	QVariant ins;
 	if (m_mainBlock.contains(func) == false)
@@ -616,7 +616,7 @@ QVariant taskCell::set_parameters_instance(const QString func,
  * \param func 待获取的功能名 Function Name
  * \return  map
  */
-QMap<QString,QVariant> taskCell::additional_paras(const QString func) const
+QMap<QString,QVariant> taskCell::additional_paras(const QString & func) const
 {
 	QMap<QString,QVariant> mp;
 	if (m_mainBlock.contains(func) == false)
@@ -637,7 +637,7 @@ QMap<QString,QVariant> taskCell::additional_paras(const QString func) const
  * \see taskCell::additional_paras
  * \see taskCell::map_to_string
  */
-void taskCell::set_additional_paras(const QString func,
+void taskCell::set_additional_paras(const QString & func,
 									const QMap<QString,QVariant> & p)
 {
 	if (m_mainBlock.contains(func) == false)
@@ -667,7 +667,7 @@ void taskCell::set_additional_paras(const QString func,
  * \param vtdef 待转换的变量 Variables to convert
  * \return 转换后的变量 The converted Variable
  */
-QVariant taskCell::internal_to_view(const QVariant vtdef)
+QVariant taskCell::internal_to_view(const QVariant & vtdef)
 {
 	QVariant vret;
 	if (vtdef.type()==QVariant::Map)
@@ -700,7 +700,7 @@ QVariant taskCell::internal_to_view(const QVariant vtdef)
  * \param targetType 转换后的变量 The converted Variable
  * \return
  */
-QVariant taskCell::view_to_internal(const QVariant vtdef
+QVariant taskCell::view_to_internal(const QVariant & vtdef
 									, QVariant::Type targetType)
 {
 	QVariant vret;
@@ -736,7 +736,7 @@ QVariant taskCell::view_to_internal(const QVariant vtdef
  * \param v 完整名称 full name with class names
  * \return  简单名称 pure function name
  */
-QString taskCell::pureName(const QVariant v)
+QString taskCell::pureName(const QVariant &  v)
 {
 	QString sv = v.toString();
 	QStringList ls = sv.split(QRegExp("[:_]"),QString::SkipEmptyParts);
@@ -755,7 +755,7 @@ QString taskCell::pureName(const QVariant v)
  * \param v 完整名称 full name with class names
  * \return  类名称 class name
  */
-QString taskCell::className(const QVariant v)
+QString taskCell::className(const QVariant & v)
 {
 	QString sv = v.toString();
 	QStringList ls = sv.split(QRegExp("[:_]"),QString::SkipEmptyParts);

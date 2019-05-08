@@ -65,17 +65,17 @@ protected:
 	QSet<QString> m_set_fullpaths;
 public:
 	//工具函数 toolkit funtions
-	static QString pureName(const QVariant v) ;
-	static QString className(const QVariant v) ;
-	static QVariant internal_to_view(const QVariant v)  ;
-	static QVariant view_to_internal(const QVariant v,
+	static QString pureName(const QVariant & v) ;
+	static QString className(const QVariant & v) ;
+	static QVariant internal_to_view(const QVariant & v)  ;
+	static QVariant view_to_internal(const QVariant & v,
 									 QVariant::Type targetType) ;
 	static 	QString map_to_string(const QMap<QString, QVariant> & m);
 	static  QMap<QString, QVariant> string_to_map(const QString & s);
 public:
 	//JSON对象转化 Creating objects from JSON and convert it to JSON
-	virtual bool initFromJson(const QByteArray json, const QString path = "");
-	virtual QByteArray toJson(const QString root) const;
+	virtual bool initFromJson(const QByteArray & json, const QString & path = "");
+	virtual QByteArray toJson(const QString & root) const;
 	//清理 Cleaning
 	virtual void clear();
 	//获取主属性数据结构 Get the main attribute data structure
@@ -94,59 +94,59 @@ public:
 	{
 		return block().keys().empty()?QString():block().keys().first();
 	}
-	virtual const QString function_class(const QString func) const;
+	virtual const QString function_class(const QString & func) const;
 	//获取模块实例标识 Get the module instance ID
-	virtual unsigned int function_instance(const QString func)  const ;
+	virtual unsigned int function_instance(const QString & func)  const ;
 	//设置模块实例标识 Set the module instance ID
-	virtual unsigned int set_function_instance(const QString func
+	virtual unsigned int set_function_instance(const QString & func
 											   , unsigned  int instance) ;
 	//获取模块功能的友好信息 Get friendly information on module functions
-	virtual QString function_tooltip(const QString func ) const;
+	virtual QString function_tooltip(const QString & func ) const;
 	//获取模块功能的可执行文件路径 Get the executable file path for module
-	virtual QString function_exec(const QString func ) const;
+	virtual QString function_exec(const QString & func ) const;
 	//设置模块功能的可执行文件路径 Set the executable file path for module
-	virtual QString set_function_exec(const QString func
-									  , const QString execstr);
+	virtual QString set_function_exec(const QString & func
+									  , const QString & execstr);
 	/*!
 	  *接口属性读写
 	  * Module interface Properties read/write
 	  */
 public:
 	//获取所有输入接口名 Get all input interface names
-	virtual const QStringList in_subjects(const QString func) const ;
+	virtual const QStringList in_subjects(const QString & func) const ;
 	//获取所有输出接口名 Get all output interface names
-	virtual const QStringList out_subjects(const QString func)  const ;
+	virtual const QStringList out_subjects(const QString & func)  const ;
 	//获取输入接口的所有信息 Get all the information for the input interface
-	virtual const QVariantMap in_subject(const QString func,
-										 const QString name)  const ;
+	virtual const QVariantMap in_subject(const QString & func,
+										 const QString & name)  const ;
 	//获取输出接口的所有信息 Get all the information for the output interface
-	virtual const QVariantMap out_subject(const QString func,
-										  const QString name)  const ;
+	virtual const QVariantMap out_subject(const QString & func,
+										  const QString & name)  const ;
 	//获取输入接口实例标识 Get the input interface instance ID
-	virtual unsigned int in_subject_instance(const QString func,
-											 const QString name)  const ;
+	virtual unsigned int in_subject_instance(const QString & func,
+											 const QString & name)  const ;
 	//获取输出接口实例标识 Get the output interface instance ID
-	virtual unsigned int out_subject_instance(const QString func,
-											  const QString name)  const ;
+	virtual unsigned int out_subject_instance(const QString & func,
+											  const QString & name)  const ;
 	//获取输入接口友好信息 Get the input interface friendly information
-	virtual QString in_subject_tooltip(const QString func,
-									   const QString name)  const ;
+	virtual QString in_subject_tooltip(const QString & func,
+									   const QString & name)  const ;
 	//获取输出接口友好信息 Get the output interface friendly information
-	virtual QString out_subject_tooltip(const QString func,
-										const QString name)  const ;
+	virtual QString out_subject_tooltip(const QString & func,
+										const QString & name)  const ;
 	//获取输入接口属性值
-	virtual QString in_subject_item(const QString func,const QString name,
-									const QString key)  const ;
+	virtual QString in_subject_item(const QString & func,const QString & name,
+									const QString & key)  const ;
 	//获取输出接口属性值
-	virtual QString out_subject_item(const QString func,const QString name,
-									 const QString key)  const ;
+	virtual QString out_subject_item(const QString & func,const QString & name,
+									 const QString & key)  const ;
 	//设置输入接口实例标识 Setting the input interface instance ID
-	virtual unsigned int set_in_subject_instance(const QString func,
-												 const QString name,
+	virtual unsigned int set_in_subject_instance(const QString & func,
+												 const QString & name,
 												 unsigned int instance);
 	//设置输出接口实例标识 Setting the output interface instance ID
-	virtual unsigned int set_out_subject_instance(const QString func,
-												  const QString name,
+	virtual unsigned int set_out_subject_instance(const QString & func,
+												  const QString & name,
 												  unsigned int instance);
 	/*!
 	  *静态参数属性读写
@@ -154,22 +154,22 @@ public:
 	  */
 public:
 	//获取所有参数名 Get all parameter names
-	virtual const QStringList parameters(const QString func) const ;
+	virtual const QStringList parameters(const QString & func) const ;
 	//获取参数的所有信息 Get all information about a parameter
-	virtual const QVariantMap parameter(const QString func,
-										const QString name)  const ;
+	virtual const QVariantMap parameter(const QString & func,
+										const QString & name)  const ;
 	//获取参数实例标识 Get parameter Instance ID
-	virtual QVariant parameters_instance(const QString func,
-										 const QString name)  const ;
+	virtual QVariant parameters_instance(const QString & func,
+										 const QString & name)  const ;
 	//设置参数实例标识 Set parameter Instance ID
-	virtual QVariant set_parameters_instance(const QString func,
-											 const QString name,
-											 const QVariant instance);
+	virtual QVariant set_parameters_instance(const QString & func,
+											 const QString & name,
+											 const QVariant & instance);
 
 	//获取额外参数 Get extra parameters
-	virtual QMap<QString,QVariant> additional_paras(const QString func) const;
+	virtual QMap<QString,QVariant> additional_paras(const QString & func) const;
 	//设置额外参数 Setting Additional parameters
-	virtual void set_additional_paras(const QString func,
+	virtual void set_additional_paras(const QString & func,
 									  const QMap<QString,QVariant> & p);
 };
 
