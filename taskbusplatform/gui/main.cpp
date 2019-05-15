@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	//init ProfileLog
 	profile_log::init();
 	//If you want to do profile test, please turn this on (true)
-	profile_log::set_log_state(false);
+	profile_log::set_log_state(true);
 	LOG_PROFILE("Program","Main Start.");
 	//Init watchdog
 	tb_watch_dog().watch();
@@ -73,11 +73,11 @@ int main(int argc, char *argv[])
 	g_totalsent = 0;
 
 	LOG_PROFILE("Program","Main Inited.");
+	if (profile_log::log_state())
+		qDebug() << "Log File:"<<profile_log::url();
 
 	int ret = app.exec();
 	LOG_PROFILE("Program",QString("Main End with return value %1.").arg(ret));
-	if (profile_log::log_state())
-		qDebug() << "Log File:"<<profile_log::url();
 
 	return ret;
 }

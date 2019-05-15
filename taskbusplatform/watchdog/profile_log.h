@@ -14,6 +14,7 @@
 #include <QDateTime>
 #include <QMutex>
 #include <QUuid>
+#include <QCoreApplication>
 #include <memory>
 
 #define LOG_PROFILE(SUBJECT,DETAILED) profile_log::log(\
@@ -70,7 +71,11 @@ public:
 	}
 protected:
 	profile_log(){
-		m_url = QDir::tempPath()+"/"+QUuid::createUuid().toString()+".csv";
+		//m_url = QDir::tempPath()+"/"+QUuid::createUuid().toString()+".csv";
+		m_url = QCoreApplication::applicationDirPath()+"/log/";
+		QDir dir;
+		dir.mkpath(m_url);
+		m_url += "/" + QUuid::createUuid().toString()+".csv";
 		QFile * fp  = new QFile(m_url);
 		if(fp->open(QIODevice::WriteOnly))
 		{
@@ -103,6 +108,11 @@ public:
 				m_pDev->close();
 			m_pDev->deleteLater();
 		}
+		if (!m_bLogOn)
+			if (m_url.length())
+				QFile::remove(m_url);
+
+
 	}
 	static inline bool write_title()
 	{
@@ -144,8 +154,5 @@ private:
 	bool	m_bLogOn = true;
 	QMutex  m_mutex;
 };
-
-
-
 
 #endif // PROFILE_LOG_H
