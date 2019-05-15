@@ -14,7 +14,7 @@
 #include <QTimerEvent>
 #include <algorithm>
 #include "process_prctl.h"
-
+#include "../watchdog/profile_log.h"
 QSet<quint32> taskProject::m_instance_set;
 taskProject::taskProject(QObject * parent ):
 	QObject(parent),
@@ -230,6 +230,7 @@ void taskProject::set_outside_id_out (QString name, unsigned int ins)
  */
 void taskProject::refresh_idxes()
 {
+	LOG_PROFILE("CORE","rebuild indexes.");
 	m_idx_instance2vec.clear();
 	m_idx_in2instances.clear();
 	m_idx_in2names.clear();
@@ -375,6 +376,7 @@ void taskProject::refresh_idxes()
 	//回调函数，用来通知图形界面刷新。
 	//callback function to notify the graphical interface to refresh.
 	m_fIndexRefreshed();
+	LOG_PROFILE("CORE","rebuild indexes finished.");
 }
 /*!
  * \brief taskProject::toJson conver to JSON
@@ -535,6 +537,7 @@ QStringList taskProject::cmdlineParas(taskCell * model)
  */
 void taskProject::slot_new_package(QByteArrayList pkgs)
 {
+	LOG_PROFILE("IO","Start Dealing packs.");
 	foreach (QByteArray pkg, pkgs)
 	{
 		if (static_cast<size_t>(pkg.size())<sizeof(TASKBUS::subject_package_header))
@@ -642,6 +645,7 @@ void taskProject::slot_new_package(QByteArrayList pkgs)
 		if (blocked)
 			push_msg(QString("Blocked by later process."));
 	}
+	LOG_PROFILE("IO","End Dealing packs.");
 }
 /*!
  * \brief taskProject::slot_new_command commands is another way to handover messages.
@@ -671,7 +675,7 @@ void taskProject::slot_new_package(QByteArrayList pkgs)
 void taskProject::slot_new_command(QMap<QString,QVariant> cmd)
 {
 	if (cmd.size())
-	{		
+	{
 		QString source;
 		if (cmd.contains("source"))
 			source = cmd["source"].toString().trimmed();

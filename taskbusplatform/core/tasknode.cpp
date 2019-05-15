@@ -13,6 +13,7 @@
 #include "tb_interface.h"
 #include "process_prctl.h"
 #include "../watchdog/tbwatchdog.h"
+#include "../watchdog/profile_log.h"
 taskNode::taskNode(QObject *parent)
 	: QObject(parent)
 	,m_process(new QProcess(this))
@@ -166,6 +167,7 @@ void taskNode::slot_readyReadStandardOutput()
 {
 	if (m_bBP_blocked)
 		return;
+	LOG_PROFILE("IO","Start Recieving packs.");
 	QByteArray arred = m_process->readAllStandardOutput();
 	m_array_stdout.append(arred);
 	extern QAtomicInt  g_totalrev;
@@ -194,7 +196,7 @@ void taskNode::slot_readyReadStandardOutput()
 
 				QByteArray arr(m_array_stdout.constData(),
 							   sizeof(TASKBUS::subject_package_header)
-							   +header->data_length);				
+							   +header->data_length);
 				m_array_stdout.remove(0,sizeof(TASKBUS::subject_package_header)
 									  +header->data_length);
 				//Analyse cab.
@@ -234,6 +236,7 @@ void taskNode::slot_readyReadStandardOutput()
 			}
 		}
 	}
+	LOG_PROFILE("IO","End Recieving packs.");
 }
 
 /*!

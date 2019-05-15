@@ -76,6 +76,7 @@ HEADERS += \
     core/process_prctl.h \
     ../tb_interface/cmdlineparser.h \
     ../tb_interface/tb_interface.h \
+    watchdog/profile_log.h \
     watchdog/tbwatchdog.h \
     watchdog/watchmemmodule.h
 

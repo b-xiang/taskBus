@@ -1,5 +1,6 @@
-#include "taskbusplatformfrm.h"
+﻿#include "taskbusplatformfrm.h"
 #include <QApplication>
+#include <QDebug>
 #include <QLibraryInfo>
 #include <QTranslator>
 #ifdef WIN32
@@ -14,12 +15,18 @@
 #include <QPixmap>
 #include <QDir>
 #include "watchdog/tbwatchdog.h"
+#include "watchdog/profile_log.h"
 //全局吞吐量 global IO speed recorder
 QAtomicInt  g_totalrev (0), g_totalsent (0);
 void create_custom_item_editor();
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
+	//init ProfileLog
+	profile_log::init();
+	//If you want to do profile test, please turn this on (true)
+	profile_log::set_log_state(false);
+	LOG_PROFILE("Program","Main Start.");
 	//Init watchdog
 	tb_watch_dog().watch();
 	//Change CurrentDir
@@ -65,5 +72,12 @@ int main(int argc, char *argv[])
 	g_totalrev = 0;
 	g_totalsent = 0;
 
-	return app.exec();
+	LOG_PROFILE("Program","Main Inited.");
+
+	int ret = app.exec();
+	LOG_PROFILE("Program",QString("Main End with return value %1.").arg(ret));
+	if (profile_log::log_state())
+		qDebug() << "Log File:"<<profile_log::url();
+
+	return ret;
 }

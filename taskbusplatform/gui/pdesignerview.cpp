@@ -20,7 +20,7 @@
 #include "tgraphicstaskitem.h"
 #include "tb_interface.h"
 #include "core/process_prctl.h"
-
+#include "watchdog/profile_log.h"
 
 int PDesignerView::m_nextCV = 1;
 
@@ -323,6 +323,7 @@ void PDesignerView::show_prop_page(QObject * model)
  */
 void PDesignerView::update_paths()
 {
+	LOG_PROFILE("UI","Calc the connection lines start.");
 	m_idx_in2pos.clear();
 	m_idx_out2pos.clear();
 	m_idx_in2color.clear();
@@ -417,6 +418,7 @@ void PDesignerView::update_paths()
 			}
 		}
 	}
+	LOG_PROFILE("UI","Calc the connection lines finished.");
 }
 int PDesignerView::selectedNode()
 {
