@@ -1,4 +1,4 @@
-/*! 基于封装的概念，一个工程可以作为一个整体，封装为一个模块。这个模块本身就是一系
+﻿/*! 基于封装的概念，一个工程可以作为一个整体，封装为一个模块。这个模块本身就是一系
  * 列的原模块（exe）连接而成。所有悬空的管脚都会被暴露出来。管脚的标号是局部的，
  * 所以模块外部的接口编号与模块内部是不冲突的。通路的标号却是全局的，因为通路代表了
  * 一组数据的完整性。这个EXE将被手工改为模块工程名一样的exe，比如模块为 sample.tbj,
@@ -30,6 +30,7 @@
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 #include "listen_thread.h"
+#include "watchdog/profile_log.h"
 QAtomicInt  g_totalrev (0), g_totalsent (0);
 //读取模块 Read Module
 void load_modules(QStringList newfms, taskCell * cell);
@@ -41,6 +42,11 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 	init_client();
+	//init ProfileLog
+	profile_log::init();
+	//If you want to do profile test, please turn this on (true)
+	profile_log::set_log_state(false);
+	LOG_PROFILE("Program","Main Start.");
 
 	//接收线程 Receive thread
 	reciv_thread * th_reciv = new reciv_thread(&a);
