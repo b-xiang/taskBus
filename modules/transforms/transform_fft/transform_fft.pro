@@ -14,11 +14,11 @@ DISTFILES += \
 win32{
     mkoptions = $$find(QMAKESPEC, "vc")
     count(mkoptions, 1){
-    INCLUDEPATH +=$$PWD/win32/fftw
+    INCLUDEPATH +="$$PWD/../../3rdlibs/win32/fftw"
     contains(QT_ARCH, i386) {
-	LIBS+=-L$$PWD/"win32/fftw/x86" -llibfftw3-3
+	LIBS+=-L"$$PWD/../../3rdlibs/win32/fftw/x86" -llibfftw3-3
     } else {
-	LIBS+=-L$$PWD/"win32/fftw/x64" -llibfftw3-3
+	LIBS+=-L"$$PWD/../../3rdlibs/win32/fftw/x64" -llibfftw3-3
     }
     } else: LIBS+=-lfftw3
 }else: LIBS+=-lfftw3
