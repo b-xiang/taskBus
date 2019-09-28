@@ -1,4 +1,4 @@
-{
+﻿{
     "sink_plots":{
         "name":"plots",
         "version":"1,1,0",
@@ -27,9 +27,9 @@
                 "type":"byte",
                 "tooltip":"double input"
             },
-            "plot4":{
+            "spectroinput":{
                 "type":"byte",
-                "tooltip":"double input"
+                "tooltip":"波谱图输入(short)"
             }
         },
         "output_subjects":{

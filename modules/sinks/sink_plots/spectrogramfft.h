@@ -36,7 +36,15 @@ namespace SPECGRAM_CORE {
 		//dark bottom
 		double m_dDBBottom = -40;
 		double m_dDBTop = 120;
-		std::vector<short>	m_vec_rawbuf;
+	public:
+		void appendBuf(const short * p, const size_t sz);
+		long long bufStart() const {return m_currBufStart;}
+		long long bufEnd() const {return m_currBufStart +m_vecRawBuf.size();}
+	private:
+		//Data buffer
+		long m_maxRawSize = 128*1024*1024;
+		std::vector<short> m_vecRawBuf;
+		long long m_currBufStart = 0;
 	};
 }
 

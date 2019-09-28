@@ -6,12 +6,17 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	QDialog(parent),
 	m_cmd(cmd),
 	ui(new Ui::DialogPlots),
-	m_rthread(new reciv_thread(this))
+	m_rthread(new reciv_thread(this)),
+	m_pFFTSzMd(new QStandardItemModel())
 {
 	ui->setupUi(this);
 	connect(m_rthread,&reciv_thread::sig_quit,this,&DialogPlots::close);
 	connect(m_rthread,&reciv_thread::new_package,this,&DialogPlots::deal_package);
 	connect(m_rthread,&reciv_thread::new_textcmd,ui->lineEdit_messages,&QLineEdit::setText);
+	connect(m_rthread,&reciv_thread::sig_setSampleRate,[&](double v)->void{
+		ui->spectrogram->setSampleRate(v);
+		ui->lineEdit_spr->setText(QString("%1").arg(v,0,'f',15));
+	});
 	Qt::WindowFlags flg = windowFlags();
 	flg |= Qt::WindowMinMaxButtonsHint;
 	setWindowFlags(flg);
@@ -35,6 +40,20 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 		if (ins!=0)
 			m_plot_idxes[ins] = i;
 	}
+	m_nSpecFunc = m_cmd->toInt("spectroinput",0);
+	m_pFFTSzMd->appendRow(new QStandardItem("64"));
+	m_pFFTSzMd->appendRow(new QStandardItem("128"));
+	m_pFFTSzMd->appendRow(new QStandardItem("256"));
+	m_pFFTSzMd->appendRow(new QStandardItem("512"));
+	m_pFFTSzMd->appendRow(new QStandardItem("1024"));
+	m_pFFTSzMd->appendRow(new QStandardItem("2048"));
+	m_pFFTSzMd->appendRow(new QStandardItem("4096"));
+	m_pFFTSzMd->appendRow(new QStandardItem("8192"));
+	m_pFFTSzMd->appendRow(new QStandardItem("16384"));
+	m_pFFTSzMd->appendRow(new QStandardItem("32768"));
+	m_pFFTSzMd->appendRow(new QStandardItem("65536"));
+	ui->comboBox_fft->setModel(m_pFFTSzMd);
+	ui->comboBox_fft->setCurrentIndex(4);
 }
 
 DialogPlots::~DialogPlots()
@@ -52,166 +71,161 @@ void DialogPlots::deal_package(QByteArray package)
 
 	const subject_package_header * pheader = (const subject_package_header *)
 			package.constData();
-	if (m_plot_idxes.contains(pheader->subject_id)==false)
-		return;
 
-	const int nSub = m_plot_idxes[pheader->subject_id];
-	const int channels = nSub<m_plot_chans.size()?m_plot_chans[nSub]:1;
-
-	const int pts = pheader->data_length/sizeof(double)/channels;
-	const double * fdata =  (const double *)(package.constData()+sizeof(subject_package_header));
-	if (pts<1)
-		return;
-
-
-	const quint64 hash_subidx = ((quint64(pheader->subject_id))<<32)+quint64(pheader->path_id);
-
-	if (m_subidxs.contains(hash_subidx)==false)
+	if (m_nSpecFunc==pheader->subject_id)
 	{
-		if (tid==-1)
-			tid=startTimer(1000);
-		QChartView * pv = new QChartView(this);
-		m_chat_views.push_back(pv);
-		m_subidxs[hash_subidx] = m_chat_views.size()-1;
+		const short * nData =  (const short *)(package.constData()+sizeof(subject_package_header));
+		const int pts = pheader->data_length/sizeof(short);
+		ui->spectrogram->append(nData,pts);
 
-		QXYSeries * serials = nullptr;
-		if (channels==1)
-		{
-			serials = new QLineSeries(this);
-		}
-		else
-		{
-			QScatterSeries * nserials = new QScatterSeries(this);
-			nserials->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-			nserials->setMarkerSize(1);
-			serials = nserials;
-		}
-		m_chat_serials.push_back(serials);
-
-		QValueAxis * ax = new QValueAxis(this);
-		ax->setGridLineVisible(true);
-		m_char_axis_x.push_back(ax);
-		QValueAxis * ay = new QValueAxis(this);
-		m_char_axis_y.push_back(ay);
-		ay->setGridLineVisible(true);
-
-		QChart *chart = new QChart();
-		chart->legend()->hide();
-		chart->addAxis(ax,Qt::AlignBottom);
-		chart->addAxis(ay,Qt::AlignLeft);
-		m_chars.push_back(chart);
-
-		chart->setTheme(QChart::ChartThemeDark);
-
-		pv->setChart(chart);
-		chart->setTitle(QString("SUB%1 PATH%2").arg(pheader->subject_id).arg(pheader->path_id));
-
-		pv->setRubberBand(QChartView::RectangleRubberBand);
-
-		int rc = 0;
-		int cc = 0;
-		int kt = 1;
-		while (kt < m_chars.size())
-		{
-			++kt;
-			if (rc < cc)
-			{
-				++rc;
-				cc = 0;
-			}
-			else
-			{
-				++cc;
-				//rc = 0;
-			}
-		}
-
-		chart->addSeries(serials);
-		serials->attachAxis(ax);
-		serials->attachAxis(ay);
-
-
-		pv->show();
-		ui->gridLayout->addWidget(pv,rc,cc);
-	}
-	const int subid = m_subidxs[hash_subidx];
-	QXYSeries * serials = m_chat_serials[subid];
-	double max_x = 0, max_y =  fdata[0];
-	double min_x = 0, min_y =  fdata[0];
-
-	if (serials->points().size()>4096 || pts>1)
-	{
-		QVector<QPointF> vec_points;
-		for (int i=0;i<pts;++i)
-		{
-			double x,y;
-			if (channels==1)
-				x = i,y=fdata[i];
-			else
-				x = fdata[i*2], y = fdata[i*2+1];
-			vec_points.push_back(QPointF(x,y));
-
-			if (x>max_x)					max_x = x;
-			if (x<min_x)					min_x = x;
-			if (y>max_y)					max_y = y;
-			if (y<min_y)					min_y = y;
-
-		}
-		serials->replace(vec_points);
 	}
 	else
 	{
-		QList<QPointF> lstpts = serials->points();
-		const int rawsz = serials->points().size();
-		for (int i=0;i<pts;++i)
-			lstpts.push_back(QPointF(i+rawsz,fdata[i]));
+		if (m_plot_idxes.contains(pheader->subject_id)==false)
+			return;
 
-		foreach(QPointF p, lstpts)
+		const int nSub = m_plot_idxes[pheader->subject_id];
+		const int channels = nSub<m_plot_chans.size()?m_plot_chans[nSub]:1;
+
+		const int pts = pheader->data_length/sizeof(double)/channels;
+		const double * fdata =  (const double *)(package.constData()+sizeof(subject_package_header));
+		if (pts<1)
+			return;
+
+
+		const quint64 hash_subidx = ((quint64(pheader->subject_id))<<32)+quint64(pheader->path_id);
+
+		if (m_subidxs.contains(hash_subidx)==false)
 		{
-			double x = p.x(), y = p.y();
-			if (x>max_x)					max_x = x;
-			if (x<min_x)					min_x = x;
-			if (y>max_y)					max_y = y;
-			if (y<min_y)					min_y = y;
+			QString strName = tr("Sub%1 Path%2").arg(pheader->subject_id).arg(pheader->path_id);
+			if (tid==-1)
+				tid=startTimer(1000);
+			QChartView * pv = new QChartView(this);
+			m_chat_views.push_back(pv);
+			m_subidxs[hash_subidx] = m_chat_views.size()-1;
+
+			QXYSeries * serials = nullptr;
+			if (channels==1)
+			{
+				serials = new QLineSeries(this);
+			}
+			else
+			{
+				QScatterSeries * nserials = new QScatterSeries(this);
+				nserials->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+				nserials->setMarkerSize(1);
+				serials = nserials;
+			}
+			m_chat_serials.push_back(serials);
+
+			QValueAxis * ax = new QValueAxis(this);
+			ax->setGridLineVisible(true);
+			m_char_axis_x.push_back(ax);
+			QValueAxis * ay = new QValueAxis(this);
+			m_char_axis_y.push_back(ay);
+			ay->setGridLineVisible(true);
+
+			QChart *chart = new QChart();
+			chart->legend()->hide();
+			chart->addAxis(ax,Qt::AlignBottom);
+			chart->addAxis(ay,Qt::AlignLeft);
+			m_chars.push_back(chart);
+
+			chart->setTheme(QChart::ChartThemeDark);
+
+			pv->setChart(chart);
+			chart->setTitle(QString("SUB%1 PATH%2").arg(pheader->subject_id).arg(pheader->path_id));
+
+			pv->setRubberBand(QChartView::RectangleRubberBand);
+
+			chart->addSeries(serials);
+			serials->attachAxis(ax);
+			serials->attachAxis(ay);
+			pv->show();
+			ui->tabWidget_outputs->addTab(pv,strName);
+
+		}
+		const int subid = m_subidxs[hash_subidx];
+		QXYSeries * serials = m_chat_serials[subid];
+		double max_x = 0, max_y =  fdata[0];
+		double min_x = 0, min_y =  fdata[0];
+
+		if (serials->points().size()>4096 || pts>1)
+		{
+			QVector<QPointF> vec_points;
+			for (int i=0;i<pts;++i)
+			{
+				double x,y;
+				if (channels==1)
+					x = i,y=fdata[i];
+				else
+					x = fdata[i*2], y = fdata[i*2+1];
+				vec_points.push_back(QPointF(x,y));
+
+				if (x>max_x)					max_x = x;
+				if (x<min_x)					min_x = x;
+				if (y>max_y)					max_y = y;
+				if (y<min_y)					min_y = y;
+
+			}
+			serials->replace(vec_points);
+		}
+		else
+		{
+			QList<QPointF> lstpts = serials->points();
+			const int rawsz = serials->points().size();
+			for (int i=0;i<pts;++i)
+				lstpts.push_back(QPointF(i+rawsz,fdata[i]));
+
+			foreach(QPointF p, lstpts)
+			{
+				double x = p.x(), y = p.y();
+				if (x>max_x)					max_x = x;
+				if (x<min_x)					min_x = x;
+				if (y>max_y)					max_y = y;
+				if (y<min_y)					min_y = y;
+
+			}
+
+			serials->replace(lstpts);
 
 		}
 
-		serials->replace(lstpts);
+		//QChart *chart = m_chars[subid];
+		QValueAxis * ax = m_char_axis_x[subid];
+		QValueAxis * ay = m_char_axis_y[subid];
 
-	}
+		const double seed_x = max_x - min_x;
+		const double seed_y = max_y - min_y;
+		double new_max_x = ax->max(), new_max_y = ay->max();
+		double new_min_x = ax->min(), new_min_y = ay->min();
 
-	//QChart *chart = m_chars[subid];
-	QValueAxis * ax = m_char_axis_x[subid];
-	QValueAxis * ay = m_char_axis_y[subid];
+		bool needup_x = false,needup_y = false;
 
-	const double seed_x = max_x - min_x;
-	const double seed_y = max_y - min_y;
-	double new_max_x = ax->max(), new_max_y = ay->max();
-	double new_min_x = ax->min(), new_min_y = ay->min();
+		if (max_x > new_max_x)	new_max_x = max_x + seed_x * 0.2,needup_x=true;
+		if (max_x *1.2 < new_max_x)	new_max_x = max_x + seed_x * 0.2,needup_x=true;
 
-	bool needup_x = false,needup_y = false;
+		if (max_y > new_max_y)	new_max_y = max_y + seed_y * 0.2,needup_y=true;
+		if (max_y *1.2 < new_max_y)	new_max_y = max_y + seed_y * 0.2,needup_y=true;
 
-	if (max_x > new_max_x)	new_max_x = max_x + seed_x * 0.2,needup_x=true;
-	if (max_x *1.2 < new_max_x)	new_max_x = max_x + seed_x * 0.2,needup_x=true;
+		if (min_x < new_min_x)	new_min_x = min_x,needup_x=true;
+		if (min_x > new_min_x * 1.2)	new_min_x = min_x,needup_x=true;
 
-	if (max_y > new_max_y)	new_max_y = max_y + seed_y * 0.2,needup_y=true;
-	if (max_y *1.2 < new_max_y)	new_max_y = max_y + seed_y * 0.2,needup_y=true;
-
-	if (min_x < new_min_x)	new_min_x = min_x,needup_x=true;
-	if (min_x > new_min_x * 1.2)	new_min_x = min_x,needup_x=true;
-
-	if (min_y < new_min_y)	new_min_y = min_y,needup_y=true;
-	if (min_y > new_min_y * 1.2)	new_min_y = min_y,needup_y=true;
+		if (min_y < new_min_y)	new_min_y = min_y,needup_y=true;
+		if (min_y > new_min_y * 1.2)	new_min_y = min_y,needup_y=true;
 
 
-	if (ui->checkBox_auto_reser->isChecked())
-	{
-		if (needup_x==true)
-			ax->setRange(new_min_x,new_max_x);
-		if (needup_y==true)
-			ay->setRange(new_min_y,new_max_y);
+		if (ui->checkBox_auto_reser->isChecked())
+		{
+			if (needup_x==true)
+				ax->setRange(new_min_x,new_max_x);
+			if (needup_y==true)
+				ay->setRange(new_min_y,new_max_y);
 
-	}
+		}
+	}//end if plots
+
+
 
 }
 
@@ -279,5 +293,13 @@ void DialogPlots::timerEvent(QTimerEvent *event)
 		killTimer(tid);
 		tid = -1;
 		on_pushButton_reset_clicked();
+	}
+}
+
+void DialogPlots::on_comboBox_fft_currentIndexChanged(int index)
+{
+	if (index>=0 && index<=10)
+	{
+		ui->spectrogram->setTransSize((1<<(index+6)));
 	}
 }

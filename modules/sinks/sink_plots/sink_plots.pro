@@ -29,16 +29,19 @@ SOURCES += \
     dialogplots.cpp \
     listen_thread.cpp \
     main.cpp \
+    spectrogramctrl.cpp \
     spectrogramfft.cpp
 
 HEADERS += \
     dialogplots.h \
     listen_thread.h \
     spectrogramcore.h \
+    spectrogramctrl.h \
     spectrogramfft.h
 
 FORMS += \
-	dialogplots.ui
+	dialogplots.ui \
+	spectrogramctrl.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

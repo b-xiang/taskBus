@@ -1,4 +1,4 @@
-#ifndef DIALOGSOUNDCARD_H
+﻿#ifndef DIALOGSOUNDCARD_H
 #define DIALOGSOUNDCARD_H
 
 #include <QDialog>
@@ -22,7 +22,7 @@ public:
 	explicit DialogSoundCard(QWidget *parent = nullptr);
 	explicit DialogSoundCard(const TASKBUS::cmdlineParser * pline,QWidget *parent = nullptr);
 	~DialogSoundCard();
-
+	void setInstance(const int i){m_n_instance = i;}
 private:
 	Ui::DialogSoundCard *ui;
 	QList<QAudioDeviceInfo> m_devInputlist;
@@ -42,6 +42,7 @@ private slots:
 	void OnTimeOut();
 
 private:
+	int m_n_instance = 0;
 	int m_batch_size = 0;
 	int miVolume;
 	int miMaxValue;

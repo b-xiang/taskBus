@@ -172,11 +172,14 @@ namespace SPECGRAM_CORE{
 			else
 			{
 				std::vector<tp_raw> vec_raw = fetch_raw(raw_pt_center);
-				std::vector<tp_trans> & vec_trans
-						= m_trans_buf[raw_group_center]
-						= transform(vec_raw);
-				v_res = trans_value_to_rgb(vec_trans);
-				vec_trans.shrink_to_fit();
+				if (vec_raw.size())
+				{
+					std::vector<tp_trans> & vec_trans
+							= m_trans_buf[raw_group_center]
+							= transform(vec_raw);
+					v_res = trans_value_to_rgb(vec_trans);
+					vec_trans.shrink_to_fit();
+				}
 			}
 
 		}
@@ -203,16 +206,20 @@ namespace SPECGRAM_CORE{
 					const long long currgp_centerPoints =  static_cast<long long>(
 								g * m_nStepSize + m_nStepSize /2.0+.5);
 					std::vector<tp_raw> vec_raw = fetch_raw(currgp_centerPoints);
-					m_trans_buf[g]
-							= transform(vec_raw);
-					const size_t szTrans = target_trans.size();
-					std::vector<tp_trans> & vec_currtrans = m_trans_buf[g];
-					const size_t szCurr = vec_currtrans.size();
-					size_t sz = std::min(szCurr,szTrans);
-					for (size_t i = 0;i<sz;++i)
-						if (target_trans[i]<vec_currtrans[i])
-							target_trans[i] = vec_currtrans[i];
-					vec_currtrans.shrink_to_fit();
+					if (vec_raw.size())
+					{
+						m_trans_buf[g]
+								= transform(vec_raw);
+						const size_t szTrans = target_trans.size();
+						std::vector<tp_trans> & vec_currtrans = m_trans_buf[g];
+						const size_t szCurr = vec_currtrans.size();
+						size_t sz = std::min(szCurr,szTrans);
+						for (size_t i = 0;i<sz;++i)
+							if (target_trans[i]<vec_currtrans[i])
+								target_trans[i] = vec_currtrans[i];
+						vec_currtrans.shrink_to_fit();
+					}
+
 				}
 			}//end for
 			v_res=trans_value_to_rgb(target_trans);
@@ -241,16 +248,20 @@ namespace SPECGRAM_CORE{
 					const long long currgp_centerPoints =  static_cast<long long>(
 								g * m_nStepSize + m_nStepSize /2.0+.5);
 					std::vector<tp_raw> vec_raw = fetch_raw(currgp_centerPoints);
-					m_trans_buf[g]
-							= transform(vec_raw);
-					const size_t szTrans = target_trans.size();
-					std::vector<tp_trans> & vec_currtrans = m_trans_buf[g];
-					const size_t szCurr = vec_currtrans.size();
-					size_t sz = std::min(szCurr,szTrans);
-					for (size_t i = 0;i<sz;++i)
-						target_trans[i] += vec_currtrans[i];
-					vec_currtrans.shrink_to_fit();
-					++nn;
+					if (vec_raw.size())
+					{
+						m_trans_buf[g]
+								= transform(vec_raw);
+						const size_t szTrans = target_trans.size();
+						std::vector<tp_trans> & vec_currtrans = m_trans_buf[g];
+						const size_t szCurr = vec_currtrans.size();
+						size_t sz = std::min(szCurr,szTrans);
+						for (size_t i = 0;i<sz;++i)
+							target_trans[i] += vec_currtrans[i];
+						vec_currtrans.shrink_to_fit();
+						++nn;
+					}
+
 				}
 			}//end for
 			const size_t szTrans = target_trans.size();

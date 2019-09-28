@@ -1,4 +1,4 @@
-#include "listen_thread.h"
+﻿#include "listen_thread.h"
 #include "tb_interface.h"
 #include <QByteArray>
 #include <QCoreApplication>
@@ -31,7 +31,8 @@ void reciv_thread::run()
 		if ( is_control_subject(header) && packagedta.size())
 		{
 			//收到命令进程退出的广播消息,退出
-			if (strstr(control_subject(header,packagedta).c_str(),"function=quit;"))
+			std::string cmd = control_subject(header,packagedta);
+			if (strstr(cmd.c_str(),"function=quit;"))
 			{
 				bfinished = true;
 				qDebug()<<"Quit!";
@@ -40,6 +41,10 @@ void reciv_thread::run()
 			packagedta.push_back(0);
 			QString text = QString::fromUtf8((char *)packagedta.data());
 			emit new_textcmd(text);
+			std::map<std::string,std::string> mp = string_to_map(cmd);
+			double spr = atof(mp["spr"].c_str());
+			if (spr>0.0001)
+					emit sig_setSampleRate(spr);
 
 		}
 		else

@@ -1,9 +1,9 @@
-#include "dialogplots.h"
+﻿#include "dialogplots.h"
 #include <QApplication>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 using namespace TASKBUS;
-//#define OFFLINEDEBUG
+#define OFFLINEDEBUG
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 	init_client();
 #ifdef OFFLINEDEBUG
 	FILE * old_stdin, *old_stdout;
-	auto ars = debug("D:\\GoldEagleStudio\\pid1121",&old_stdin,&old_stdout);
+	auto ars = debug("U:/taskBus/taskbus_bin64/bin/debug/pid3604",&old_stdin,&old_stdout);
 	const  cmdlineParser args (ars);
 #else
 	const cmdlineParser args (argc,argv);

@@ -1,4 +1,4 @@
-{
+﻿{
     "sink_plots":{
         "name":"plots",
         "version":"1,1,0",
@@ -9,7 +9,7 @@
                 "tooltip":"channels",
                 "range":{"tip":"1 or 2"}
             }
-        },
+         },
         "input_subjects":{
             "plot0":{
                 "type":"byte",
@@ -27,9 +27,9 @@
                 "type":"byte",
                 "tooltip":"double input"
             },
-            "plot4":{
+            "spectroinput":{
                 "type":"byte",
-                "tooltip":"double input"
+                "tooltip":"short input for spectrogram"
             }
         },
         "output_subjects":{

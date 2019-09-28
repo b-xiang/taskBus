@@ -19,7 +19,15 @@ namespace SPECGRAM_CORE {
 	}
 	std::vector<short> spectroGramFFT::fetch_raw(long long centerPoint)
 	{
-
+		std::vector<short> ret;
+		if (centerPoint - m_nTransSize/2 - 1 < bufStart() ||
+				centerPoint + m_nTransSize/2+1 > bufEnd())
+			return ret;
+		const int beginPt = centerPoint -  m_nTransSize/2 - bufStart();
+		std::copy(m_vecRawBuf.begin()+beginPt,
+				  m_vecRawBuf.begin()+m_nTransSize,
+				  std::back_inserter(ret));
+		return ret;
 	}
 	void spectroGramFFT::reset()
 	{
@@ -173,4 +181,22 @@ namespace SPECGRAM_CORE {
 		return v * m_nTransSize / m_dSampleRate + .5;
 	}
 
+	void spectroGramFFT::appendBuf(const short * p, const size_t sz)
+	{
+		size_t szB = m_vecRawBuf.size();
+		if (szB+sz >= m_maxRawSize)
+		{
+			if (szB <=sz)
+			{
+				m_vecRawBuf.clear();
+				m_currBufStart += szB;
+			}
+			else
+			{
+				m_vecRawBuf.erase(m_vecRawBuf.begin(),m_vecRawBuf.begin()+sz);
+				m_currBufStart += sz;
+			}
+		}
+		std::copy(p,p+sz,std::back_inserter(m_vecRawBuf));
+	}
 }

@@ -1,4 +1,4 @@
-#ifndef DIALOGPLOTS_H
+﻿#ifndef DIALOGPLOTS_H
 #define DIALOGPLOTS_H
 
 #include <QDialog>
@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QVector>
 #include <QtCharts>
+#include <QStandardItemModel>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 #include "listen_thread.h"
@@ -36,9 +37,13 @@ private:
 	QMap<int,int> m_plot_idxes;
 	QVector<int> m_plot_chans;
 	int tid = -1;
+	//FFT spec
+	int m_nSpecFunc = 0;
+	QStandardItemModel * m_pFFTSzMd;
 private slots:
 	void deal_package(QByteArray);
 	void on_pushButton_reset_clicked();
+	void on_comboBox_fft_currentIndexChanged(int index);
 };
 
 #endif // DIALOGPLOTS_H
