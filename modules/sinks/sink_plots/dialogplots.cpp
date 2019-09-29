@@ -53,7 +53,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	m_pFFTSzMd->appendRow(new QStandardItem("32768"));
 	m_pFFTSzMd->appendRow(new QStandardItem("65536"));
 	ui->comboBox_fft->setModel(m_pFFTSzMd);
-	ui->comboBox_fft->setCurrentIndex(4);
+	ui->comboBox_fft->setCurrentIndex(2);
 }
 
 DialogPlots::~DialogPlots()

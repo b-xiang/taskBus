@@ -45,7 +45,8 @@ void reciv_thread::run()
 			double spr = atof(mp["spr"].c_str());
 			if (spr>0.0001)
 					emit sig_setSampleRate(spr);
-
+			//DEBUG
+			//QThread::msleep(100);
 		}
 		else
 		{
@@ -56,6 +57,8 @@ void reciv_thread::run()
 				arrHead.append(arrPackage);
 			}
 			emit new_package(arrHead);
+			//DEBUG
+			//QThread::msleep(100);
 		}
 	}
 	return ;

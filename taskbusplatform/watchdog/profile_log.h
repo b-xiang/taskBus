@@ -144,6 +144,8 @@ public:
 		st_out	<<	",\"" << QThread::currentThreadId() <<"\"";
 		st_out	<<	",\"" << QDateTime::currentDateTimeUtc().toString("yyyy-MM-ddTHH:mm:ss.zzz") <<"\"";
 		st_out	<<	",\"" << clock() <<"\"\n";
+		//BUG Sloved: Multithread operation need buffer to be flushed immediately.
+		st_out.flush();
 		instance()->m_mutex.unlock();
 		return true;
 	}

@@ -25,7 +25,7 @@ namespace SPECGRAM_CORE {
 			return ret;
 		const int beginPt = centerPoint -  m_nTransSize/2 - bufStart();
 		std::copy(m_vecRawBuf.begin()+beginPt,
-				  m_vecRawBuf.begin()+m_nTransSize,
+				  m_vecRawBuf.begin()+beginPt+m_nTransSize,
 				  std::back_inserter(ret));
 		return ret;
 	}
@@ -123,7 +123,7 @@ namespace SPECGRAM_CORE {
 					r = 255;
 					g =(dc-0.66667)/.3*255;
 				}
-				rgb32.push_back((b<<16)+(g<<8)+(r));
+				rgb32.push_back((r<<16)+(g<<8)+(b));
 			}
 
 		}

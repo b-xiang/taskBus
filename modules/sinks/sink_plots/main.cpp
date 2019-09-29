@@ -3,7 +3,7 @@
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 using namespace TASKBUS;
-#define OFFLINEDEBUG
+//#define OFFLINEDEBUG
 
 int main(int argc, char *argv[])
 {
