@@ -26,6 +26,16 @@ void spectroGramCtrl::append(const short * p, const size_t sz)
 	}
 
 }
+void spectroGramCtrl::setLineSeconds(double s)
+{
+	m_lineSeconds = s;
+	update();
+}
+void spectroGramCtrl::setLineOffset(double s)
+{
+	m_lineOffset = s;
+	update();
+}
 void spectroGramCtrl::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
@@ -41,9 +51,10 @@ void spectroGramCtrl::paintEvent(QPaintEvent *event)
 		m_image = QImage(imwidht,rect.height(),QImage::Format_RGB32);
 
 	int lines = rect.height();
+	m_image.fill(0x00000000);
 	for (int i=0;i<lines;++i)
 	{
-		double tmCenter = (m_currTopLine - i) * m_lineSeconds;
+		double tmCenter = (m_currTopLine - i) * m_lineSeconds - m_lineOffset;
 		std::vector<unsigned int> rgb = m_spfft.get_line(tmCenter,m_lineSeconds);
 		if (rgb.size())
 		{

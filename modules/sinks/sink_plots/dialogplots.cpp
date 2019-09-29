@@ -15,7 +15,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	connect(m_rthread,&reciv_thread::new_textcmd,ui->lineEdit_messages,&QLineEdit::setText);
 	connect(m_rthread,&reciv_thread::sig_setSampleRate,[&](double v)->void{
 		ui->spectrogram->setSampleRate(v);
-		ui->lineEdit_spr->setText(QString("%1").arg(v,0,'f',15));
+		ui->doubleSpinBox_spr->setValue(v);
 	});
 	Qt::WindowFlags flg = windowFlags();
 	flg |= Qt::WindowMinMaxButtonsHint;
@@ -51,7 +51,6 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	m_pFFTSzMd->appendRow(new QStandardItem("8192"));
 	m_pFFTSzMd->appendRow(new QStandardItem("16384"));
 	m_pFFTSzMd->appendRow(new QStandardItem("32768"));
-	m_pFFTSzMd->appendRow(new QStandardItem("65536"));
 	ui->comboBox_fft->setModel(m_pFFTSzMd);
 	ui->comboBox_fft->setCurrentIndex(2);
 }
@@ -77,7 +76,6 @@ void DialogPlots::deal_package(QByteArray package)
 		const short * nData =  (const short *)(package.constData()+sizeof(subject_package_header));
 		const int pts = pheader->data_length/sizeof(short);
 		ui->spectrogram->append(nData,pts);
-
 	}
 	else
 	{
@@ -302,4 +300,25 @@ void DialogPlots::on_comboBox_fft_currentIndexChanged(int index)
 	{
 		ui->spectrogram->setTransSize((1<<(index+6)));
 	}
+}
+
+void DialogPlots::on_doubleSpinBox_timeSocpe_valueChanged(double arg1)
+{
+	ui->spectrogram->setLineSeconds (arg1/1000.0/500.0);
+}
+
+void DialogPlots::on_doubleSpinBox_spr_valueChanged(double arg1)
+{
+	ui->spectrogram->setSampleRate(arg1);
+}
+
+void DialogPlots::on_horizontalSlider_pos_valueChanged(int value)
+{
+	const long long bfs = ui->spectrogram->m_spfft.bufStart();
+	const long long bfe = ui->spectrogram->m_spfft.bufEnd();
+	const long long timeAll = bfe-bfs;
+	const double vr = value*1.0/1000* (bfe - bfs);
+	const long long currMinuse = vr / ui->spectrogram->sampleRate();
+	ui->spectrogram->setLineOffset(currMinuse);
+
 }
