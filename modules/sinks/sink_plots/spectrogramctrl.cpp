@@ -61,7 +61,7 @@ void spectroGramCtrl::paintEvent(QPaintEvent *event)
 			uchar * u = m_image.scanLine(i);
 			if (u)
 			{
-				memcpy_s(u,m_image.width()*4,rgb.data(),rgb.size()*4);
+				memcpy(u,rgb.data(),rgb.size()*4);
 			}
 		}
 	}
