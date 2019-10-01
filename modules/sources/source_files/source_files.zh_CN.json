@@ -2,15 +2,15 @@
     "source_files":{
         "name":"sourcefiles",
         "parameters":{
-		     "folder":{
+             "folder":{
                 "type":"string",
                 "tooltip":"监视文件夹",
-                "default":"."                
+                "default":"."
             },
-		     "type":{
+             "type":{
                 "type":"string",
                 "tooltip":"文件类型",
-                "default":"*.pcm"                
+                "default":"*.pcm"
             },
             "encode":{
                 "type":"enum",
@@ -21,21 +21,21 @@
                     "1":"UTF-8"
                 }
             },
-		     "mode":{
+             "mode":{
                 "type":"enum",
                 "tooltip":"工作模式",
                 "default":0,
-				 "range":{
+                 "range":{
                     "0":"顺序处理文件",
-                    "1":"循环处理文件"                    
-                }                
+                    "1":"循环处理文件"
+                }
             },
-		     "auto_del":{
+             "auto_del":{
                 "type":"bool",
                 "tooltip":"自动删除处理后的文件",
                 "default":0
             },
-		     "frame_contines":{
+             "frame_contines":{
                 "type":"bool",
                 "tooltip":"前后两个文件接续帧",
                 "default":1
@@ -50,7 +50,7 @@
                 "tooltip":"帧长(字节)",
                 "default":1
             },
-			"read_jump":{
+            "read_jump":{
                 "type":"int",
                 "tooltip":"每两次读取之间的间隔字节",
                 "default":1
@@ -61,7 +61,12 @@
                 "tooltip":"帧速率(帧/秒)",
                 "default":100
             },
-			"keep_last":{
+            "sample_rate":{
+                "type":"float",
+                "tooltip":"采样率(Hz)",
+                "default":8000.000
+            },
+            "keep_last":{
                 "type":"bool",
                 "tooltip":"保留最新的一个文件不处理(避免冲突)",
                 "default":1

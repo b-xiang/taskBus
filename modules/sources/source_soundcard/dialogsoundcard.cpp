@@ -151,7 +151,7 @@ void DialogSoundCard::CreateAudioInput()
 						  QString("source=%1.soundcard.taskbus;"
 								  "destin=all;"
 								  "function=samplerate;"
-								  "spr=%2;"
+								  "sample_rate=%2;"
 								  )
 						  .arg(m_n_instance)
 						  .arg(mFormatSound.sampleRate()).toStdString().c_str());

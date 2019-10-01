@@ -322,3 +322,13 @@ void DialogPlots::on_horizontalSlider_pos_valueChanged(int value)
 	ui->spectrogram->setLineOffset(currMinuse);
 
 }
+
+void DialogPlots::on_spinBox_rangeBtm_valueChanged(int arg1)
+{
+	ui->spectrogram->m_spfft.setDBBottom(arg1);
+}
+
+void DialogPlots::on_spinBox_range_Top_valueChanged(int arg1)
+{
+	ui->spectrogram->m_spfft.setDBTop(arg1);
+}

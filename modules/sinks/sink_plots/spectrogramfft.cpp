@@ -123,6 +123,12 @@ namespace SPECGRAM_CORE {
 					r = 255;
 					g =(dc-0.66667)/.3*255;
 				}
+				if (b<0) b = 0;
+				if (b>255) b = 255;
+				if (r<0) r = 0;
+				if (r>255) r = 255;
+				if (g<0) g = 0;
+				if (g>255) g = 255;
 				rgb32.push_back((r<<16)+(g<<8)+(b));
 			}
 

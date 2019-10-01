@@ -42,7 +42,7 @@ void reciv_thread::run()
 			QString text = QString::fromUtf8((char *)packagedta.data());
 			emit new_textcmd(text);
 			std::map<std::string,std::string> mp = string_to_map(cmd);
-			double spr = atof(mp["spr"].c_str());
+			double spr = atof(mp["sample_rate"].c_str());
 			if (spr>0.0001)
 					emit sig_setSampleRate(spr);
 			//DEBUG

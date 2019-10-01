@@ -172,6 +172,9 @@ int do_source(const cmdlineParser & args)
 	const int read_jump	=  args.toInt("read_jump",1);
 	//递归
 	const int recursive =  args.toInt("recursive",0);
+	//递归
+	const double sample_rate =  args.toDouble("sample_rate",8000.000);
+
 
 	long long initial_offset = args.toInt64("initial_offset",0);
 
@@ -196,6 +199,15 @@ int do_source(const cmdlineParser & args)
 	}
 	//保留最新的文件
 	const int keep_last =  args.toInt("keep_last",1);
+	//Broadcast sample rates
+	TASKBUS::push_subject(0xffffffff,0,
+						  QString("source=%1.source_files.taskbus;"
+								  "destin=all;"
+								  "function=samplerate;"
+								  "sample_rate=%2;"
+								  )
+						  .arg(instance)
+						  .arg(sample_rate).toStdString().c_str());
 
 	try{
 		//判断参数合法性

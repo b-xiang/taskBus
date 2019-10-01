@@ -2,12 +2,12 @@
     "source_files":{
         "name":"sourcefiles",
         "parameters":{
-		     "folder":{
+             "folder":{
                 "type":"string",
                 "tooltip":"watching folder",
-                "default":"."                
+                "default":"."
             },
-		     "type":{
+             "type":{
                 "type":"string",
                 "tooltip":"watching file filter",
                 "default":"*.dat"
@@ -21,21 +21,21 @@
                     "1":"UTF-8"
                 }
             },
-		     "mode":{
+             "mode":{
                 "type":"enum",
                 "tooltip":"working mod",
                 "default":0,
-				 "range":{
+                 "range":{
                     "0":"normal",
                     "1":"repeat"
-                }                
+                }
             },
-		     "auto_del":{
+             "auto_del":{
                 "type":"bool",
                 "tooltip":"auto delete files",
                 "default":0
             },
-		     "frame_contines":{
+             "frame_contines":{
                 "type":"bool",
                 "tooltip":"treate files as continues frames",
                 "default":1
@@ -50,7 +50,7 @@
                 "tooltip":"frame length in bytes",
                 "default":1
             },
-			"read_jump":{
+            "read_jump":{
                 "type":"int",
                 "tooltip":"reading step in bytes",
                 "default":1
@@ -65,7 +65,12 @@
                 "tooltip":"frame rate(frames/seconds)",
                 "default":100
             },
-			"keep_last":{
+            "sample_rate":{
+                "type":"float",
+                "tooltip":"sample rate(Hz)",
+                "default":8000.000
+            },
+            "keep_last":{
                 "type":"bool",
                 "tooltip":"leave last file undealed",
                 "default":1

@@ -7,6 +7,7 @@ spectroGramCtrl::spectroGramCtrl(QWidget *parent) :
 	ui(new Ui::spectroGramCtrl)
 {
 	ui->setupUi(this);
+	m_nTimerID = startTimer(100);
 }
 
 spectroGramCtrl::~spectroGramCtrl()
@@ -18,23 +19,27 @@ void spectroGramCtrl::append(const short * p, const size_t sz)
 	m_spfft.appendBuf(p,sz);
 	m_totalTime += sz;
 	int topline = m_totalTime / m_spfft.sampleRate()/m_lineSeconds;
-
 	if (topline != m_currTopLine)
-	{
-		update();
 		m_currTopLine = topline;
-	}
 
 }
 void spectroGramCtrl::setLineSeconds(double s)
 {
 	m_lineSeconds = s;
-	update();
 }
 void spectroGramCtrl::setLineOffset(double s)
 {
 	m_lineOffset = s;
-	update();
+}
+
+void spectroGramCtrl::timerEvent(QTimerEvent * e)
+{
+	if (e->timerId()==m_nTimerID && m_nUpdateQueue==0)
+	{
+		++m_nUpdateQueue;
+		update();
+	}
+	QWidget::timerEvent(e);
 }
 void spectroGramCtrl::paintEvent(QPaintEvent *event)
 {
@@ -68,4 +73,7 @@ void spectroGramCtrl::paintEvent(QPaintEvent *event)
 	QRectF target(0,0, rect.width(), rect.height());
 	QRectF source(0.0, 0.0, m_image.width(),m_image.height());
 	painter.drawImage(target, m_image, source);
+	if (m_nUpdateQueue)
+		m_nUpdateQueue = 0;
+
 }

@@ -19,10 +19,19 @@ public:
 	double lineOffset() const {return m_lineOffset;}
 	double sampleRate() const {return m_spfft.sampleRate();}
 
+
+
 public:
 	SPECGRAM_CORE::spectroGramFFT m_spfft;
+
+protected:
+	void timerEvent(QTimerEvent * e) override;
+
 private:
 	Ui::spectroGramCtrl *ui;
+	int m_nTimerID = 0;
+	int m_nUpdateQueue = 0;
+protected:
 	double m_lineSeconds = 0.1;
 	double m_lineOffset = 0;
 	int m_currTopLine = 0;
@@ -33,11 +42,9 @@ public slots:
 	void setLineOffset(double of);
 	void setSampleRate(double v){
 		m_spfft.setSampleRate(v);
-		update();
 	}
 	void setTransSize(int v){
 		m_spfft.setDataPara(v);
-		update();
 	}
 	void append(const short * p, const size_t sz);
 };
