@@ -10,22 +10,22 @@ namespace SPECGRAM_CORE {
 		spectroGramFFT();
 		~spectroGramFFT() override;
 	protected:
-		virtual void reset() override;
-		virtual std::vector<short> fetch_raw(long long centerPoint) override;
-		virtual std::vector<double> transform(const std::vector<short> & raw) override;
-		virtual std::vector<unsigned int> trans_value_to_rgb(const std::vector<double> & v) const  override;
+		void reset() override;
+		std::vector<short> fetch_raw(long long centerPoint) override;
+		std::vector<double> transform(const std::vector<short> & raw) override;
+		std::vector<unsigned int> trans_value_to_rgb(const std::vector<double> & v) const  override;
 	public:
-		virtual double raw_pt_to_coord(const long long v) const  override;
-		virtual long long raw_coord_to_pt(const double v) const  override;
-		virtual double trans_pt_to_coord(const long long v) const override;
-		virtual long long trans_coord_to_pt(const double v) const  override;
+		double raw_pt_to_coord(const long long v) const  override;
+		long long raw_coord_to_pt(const double v) const  override;
+		double trans_pt_to_coord(const long long v) const override;
+		long long trans_coord_to_pt(const double v) const  override;
 	public:
-		double sampleRate()const {return m_dSampleRate;}
-		void setSampleRate(double s){m_dSampleRate = s;}
-		double DBBottom()const  {return m_dDBBottom;}
-		void setDBBottom(double s){m_dDBBottom = s;}
-		double DBTop() const {return m_dDBTop;}
-		void setDBTop(double s){m_dDBTop = s;}
+		virtual double sampleRate()const {return m_dSampleRate;}
+		virtual void setSampleRate(double s){m_dSampleRate = s;}
+		virtual double DBBottom()const  {return m_dDBBottom;}
+		virtual void setDBBottom(double s){m_dDBBottom = s;}
+		virtual double DBTop() const {return m_dDBTop;}
+		virtual void setDBTop(double s){m_dDBTop = s;}
 	private:
 		fftw_complex * m_out = nullptr;
 		fftw_complex * m_in = nullptr ;
@@ -42,7 +42,7 @@ namespace SPECGRAM_CORE {
 		long long bufEnd() const {return m_currBufStart +m_vecRawBuf.size();}
 	private:
 		//Data buffer
-		long m_maxRawSize = 128*1024*1024;
+		long m_maxRawSize = 32*1024*1024;
 		std::vector<short> m_vecRawBuf;
 		long long m_currBufStart = 0;
 	};

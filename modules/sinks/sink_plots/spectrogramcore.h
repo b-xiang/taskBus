@@ -43,12 +43,12 @@ namespace SPECGRAM_CORE{
 		spectroGramCore();
 		virtual ~spectroGramCore();
 	public:
-		bool setDataPara(
+		virtual bool setDataPara(
 				const int TransSize,	//transform size.变换域点数
 				const int StepSize = 0//原始域步进， TransSize/16
 				);
-		void setDownSampleMethod(enum_DownSpMethod enumDownMethod);
-		void setRawType(enum_RawType rt){m_enumRawType = rt;}
+		virtual void setDownSampleMethod(enum_DownSpMethod enumDownMethod);
+		virtual void setRawType(enum_RawType rt){m_enumRawType = rt;}
 		//return a single line
 		std::vector<tp_rgb> get_line(const double raw_coord, const double widthcoord = 0, const bool force = false);
 		//shrink buffer to time range
@@ -74,7 +74,7 @@ namespace SPECGRAM_CORE{
 		int transSize() const {return m_nTransSize;}
 		int StepSize() const {return m_nStepSize;}
 	protected://Data manage
-		enum_DownSpMethod m_enumDownMethod = DS_MAX;
+		enum_DownSpMethod m_enumDownMethod = DS_AVG;
 		enum_RawType m_enumRawType = RT_REAL;
 		/*!
 		 * \brief m_trans_buf
@@ -92,7 +92,7 @@ namespace SPECGRAM_CORE{
 		//Raw data Group Size 原始域的组大小。
 		int m_nStepSize = 0;
 	private:
-		long long m_nBufMax = 1024*1024*256;
+		long long m_nBufMax = 1024*1024*16;
 		long long m_last_center = 0;
 	};
 	template <typename tp_raw, typename tp_trans, typename tp_rgb>
@@ -122,7 +122,7 @@ namespace SPECGRAM_CORE{
 			const int StepSize //= 0 default  as RawWinSize/16 .变换域点数,默认为 RawWinSize/16
 			)
 	{
-		const int newGroupTest = StepSize==0?TransSize/16:StepSize;
+		const int newGroupTest = StepSize==0?TransSize/4:StepSize;
 		const int newGroupS = newGroupTest==0?1:newGroupTest;
 		if (TransSize==m_nTransSize&& newGroupS==m_nStepSize)
 			return true;
@@ -231,6 +231,7 @@ namespace SPECGRAM_CORE{
 			{
 				if (m_trans_buf.find(g)!=m_trans_buf.end()&&!force)
 				{
+					++nn;
 					if (!target_trans.size())
 						target_trans = m_trans_buf[g];
 					else {
@@ -240,7 +241,6 @@ namespace SPECGRAM_CORE{
 						size_t sz = std::min(szCurr,szTrans);
 						for (size_t i = 0;i<sz;++i)
 							target_trans[i] += vec_currtrans[i];
-						++nn;
 					}
 				}
 				else

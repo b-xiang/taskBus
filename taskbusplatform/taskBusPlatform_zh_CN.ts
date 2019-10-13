@@ -314,18 +314,18 @@
         <translation type="vanished">项目已经被编辑，是否保存？</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="685"/>
-        <location filename="gui/pdesignerview.cpp" line="695"/>
-        <location filename="gui/pdesignerview.cpp" line="710"/>
-        <location filename="gui/pdesignerview.cpp" line="720"/>
+        <location filename="gui/pdesignerview.cpp" line="687"/>
+        <location filename="gui/pdesignerview.cpp" line="697"/>
+        <location filename="gui/pdesignerview.cpp" line="712"/>
+        <location filename="gui/pdesignerview.cpp" line="722"/>
         <source>Already at min</source>
         <translation>已经抵达底部</translation>
     </message>
     <message>
-        <location filename="gui/pdesignerview.cpp" line="685"/>
-        <location filename="gui/pdesignerview.cpp" line="695"/>
-        <location filename="gui/pdesignerview.cpp" line="710"/>
-        <location filename="gui/pdesignerview.cpp" line="720"/>
+        <location filename="gui/pdesignerview.cpp" line="687"/>
+        <location filename="gui/pdesignerview.cpp" line="697"/>
+        <location filename="gui/pdesignerview.cpp" line="712"/>
+        <location filename="gui/pdesignerview.cpp" line="722"/>
         <source>Pin order value already at min, you can move other pins UP</source>
         <translation>管脚优先级已经最小。您可以增大其他管脚优先级来达到同样目的</translation>
     </message>
@@ -559,12 +559,12 @@
         <translation>所有</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="182"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="183"/>
         <source>Init Modules...</source>
         <translation>初始化...</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="182"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="183"/>
         <source>Init modules from default_mods.text</source>
         <translation>正在从 default_mods.text 加载模块</translation>
     </message>
@@ -573,32 +573,32 @@
         <translation type="vanished">进程总线工作室</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="184"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="185"/>
         <source>Succeed.</source>
         <translation>成功。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="184"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="185"/>
         <source>Init modules from default_mods.text succeed!</source>
         <translation>成功从default_mods.text加载模块！</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="287"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="288"/>
         <source>Still running</source>
         <translation>项目仍在运行中</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="287"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="288"/>
         <source>Project is still running, please stop all projects first.</source>
         <translation>项目仍在运行，请先关闭后再退出。</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="293"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="294"/>
         <source>Close without saving?</source>
         <translation>不保存就关闭吗？</translation>
     </message>
     <message>
-        <location filename="gui/taskbusplatformfrm.cpp" line="293"/>
+        <location filename="gui/taskbusplatformfrm.cpp" line="294"/>
         <source>Project has been modified, Close it anyway?</source>
         <translation>项目已经编辑了，是否不保存就继续关闭？</translation>
     </message>
@@ -687,36 +687,36 @@
 <context>
     <name>taskProject</name>
     <message>
-        <location filename="core/taskproject.cpp" line="439"/>
+        <location filename="core/taskproject.cpp" line="441"/>
         <source>Mod %1 does not exists.</source>
         <translation>模块 %1 尚未在平台注册。</translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="569"/>
+        <location filename="core/taskproject.cpp" line="572"/>
         <source>source instance %1 is not a valid producer for subject %2.</source>
         <translatorcomment>来源实例%1不是专题%2的生产者。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="576"/>
+        <location filename="core/taskproject.cpp" line="579"/>
         <source>input subject %1 has no valid recievers.</source>
         <translatorcomment>专题%1没有已登记的接收者。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="623"/>
+        <location filename="core/taskproject.cpp" line="626"/>
         <source>output subject &quot;%1&quot; does not exits.</source>
         <translatorcomment>专题%1不存在。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="906"/>
+        <location filename="core/taskproject.cpp" line="910"/>
         <source>No valid inside maps for inid %1 .</source>
         <translatorcomment>输入专题%1没有备选的内部映射。</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="core/taskproject.cpp" line="923"/>
+        <location filename="core/taskproject.cpp" line="927"/>
         <source>outside input subject &quot;%1&quot; does not exits.</source>
         <translatorcomment>输出专题%1不存在。</translatorcomment>
         <translation></translation>

@@ -61,13 +61,11 @@ void spectroGramCtrl::paintEvent(QPaintEvent *event)
 	{
 		double tmCenter = (m_currTopLine - i) * m_lineSeconds - m_lineOffset;
 		std::vector<unsigned int> rgb = m_spfft.get_line(tmCenter,m_lineSeconds);
-		if (rgb.size())
+		if (rgb.size()<=m_image.width())
 		{
 			uchar * u = m_image.scanLine(i);
 			if (u)
-			{
 				memcpy(u,rgb.data(),rgb.size()*4);
-			}
 		}
 	}
 	QRectF target(0,0, rect.width(), rect.height());
