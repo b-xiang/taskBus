@@ -1,0 +1,38 @@
+﻿{
+    "source_plutosdr":{
+	"name":"source_plutosdr",
+	"parameters":{
+	     "uri":{
+		"type":"string",
+		"tooltip":"uri returned by iio_info -s",
+		"default":"ip:192.168.2.1"
+	    },
+	     "rf":{
+		"type":"double",
+		"tooltip":"center freq in MHz",
+		"default":"1800.000000"
+	    },
+	    "bw":{
+		"type":"double",
+		"tooltip":"bw in MHz",
+		"default":2.0,
+		 "range":"1-60MHz"
+	    },
+	     "sprate":{
+		"type":"int",
+		"tooltip":"sample_rate in MHz",
+		"default":2.5
+	    }
+	},
+	"output_subjects":{
+	    "source":{
+		"type":"byte",
+		"tooltip":"data output"
+	    },
+	    "timestamp":{
+		"type":"unsigned long long",
+		"tooltip":"timestamp in bytes"
+	    }
+	}
+    }
+}

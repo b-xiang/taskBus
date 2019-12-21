@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 #main framework project
-SUBDIRS  += \ 
+SUBDIRS  += sources/source_plutosdr \
     sources/source_soundcard \
     transforms/transform_fft \
     sources/source_files \
