@@ -13,10 +13,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	connect(m_rthread,&reciv_thread::sig_quit,this,&DialogPlots::close);
 	connect(m_rthread,&reciv_thread::new_package,this,&DialogPlots::deal_package);
 	connect(m_rthread,&reciv_thread::new_textcmd,ui->lineEdit_messages,&QLineEdit::setText);
-	connect(m_rthread,&reciv_thread::sig_setSampleRate,[&](double v)->void{
-		ui->spectrogram->setSampleRate(v);
-		ui->doubleSpinBox_spr->setValue(v);
-	});
+
 	Qt::WindowFlags flg = windowFlags();
 	flg |= Qt::WindowMinMaxButtonsHint;
 	setWindowFlags(flg);
@@ -40,19 +37,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 		if (ins!=0)
 			m_plot_idxes[ins] = i;
 	}
-	m_nSpecFunc = m_cmd->toInt("spectroinput",0);
-	m_pFFTSzMd->appendRow(new QStandardItem("64"));
-	m_pFFTSzMd->appendRow(new QStandardItem("128"));
-	m_pFFTSzMd->appendRow(new QStandardItem("256"));
-	m_pFFTSzMd->appendRow(new QStandardItem("512"));
-	m_pFFTSzMd->appendRow(new QStandardItem("1024"));
-	m_pFFTSzMd->appendRow(new QStandardItem("2048"));
-	m_pFFTSzMd->appendRow(new QStandardItem("4096"));
-	m_pFFTSzMd->appendRow(new QStandardItem("8192"));
-	m_pFFTSzMd->appendRow(new QStandardItem("16384"));
-	m_pFFTSzMd->appendRow(new QStandardItem("32768"));
-	ui->comboBox_fft->setModel(m_pFFTSzMd);
-	ui->comboBox_fft->setCurrentIndex(2);
+
 }
 
 DialogPlots::~DialogPlots()
@@ -74,8 +59,8 @@ void DialogPlots::deal_package(QByteArray package)
 	if (m_nSpecFunc==pheader->subject_id)
 	{
 		const short * nData =  (const short *)(package.constData()+sizeof(subject_package_header));
-		const int pts = pheader->data_length/sizeof(short);
-		ui->spectrogram->append(nData,pts);
+		//const int pts = pheader->data_length/sizeof(short);
+		//ui->spectrogram->append(nData,pts);
 	}
 	else
 	{
@@ -294,41 +279,3 @@ void DialogPlots::timerEvent(QTimerEvent *event)
 	}
 }
 
-void DialogPlots::on_comboBox_fft_currentIndexChanged(int index)
-{
-	if (index>=0 && index<=10)
-	{
-		ui->spectrogram->setTransSize((1<<(index+6)));
-	}
-}
-
-void DialogPlots::on_doubleSpinBox_timeSocpe_valueChanged(double arg1)
-{
-	ui->spectrogram->setLineSeconds (arg1/1000.0/500.0);
-}
-
-void DialogPlots::on_doubleSpinBox_spr_valueChanged(double arg1)
-{
-	ui->spectrogram->setSampleRate(arg1);
-}
-
-void DialogPlots::on_horizontalSlider_pos_valueChanged(int value)
-{
-	const long long bfs = ui->spectrogram->m_spfft.bufStart();
-	const long long bfe = ui->spectrogram->m_spfft.bufEnd();
-	const long long timeAll = bfe-bfs;
-	const double vr = value*1.0/1000* (bfe - bfs);
-	const long long currMinuse = vr / ui->spectrogram->sampleRate();
-	ui->spectrogram->setLineOffset(currMinuse);
-
-}
-
-void DialogPlots::on_spinBox_rangeBtm_valueChanged(int arg1)
-{
-	ui->spectrogram->m_spfft.setDBBottom(arg1);
-}
-
-void DialogPlots::on_spinBox_range_Top_valueChanged(int arg1)
-{
-	ui->spectrogram->m_spfft.setDBTop(arg1);
-}

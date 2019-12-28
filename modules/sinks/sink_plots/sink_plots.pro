@@ -28,20 +28,14 @@ CONFIG += c++11
 SOURCES += \
     dialogplots.cpp \
     listen_thread.cpp \
-    main.cpp \
-    spectrogramctrl.cpp \
-    spectrogramfft.cpp
+    main.cpp
 
 HEADERS += \
     dialogplots.h \
-    listen_thread.h \
-    spectrogramcore.h \
-    spectrogramctrl.h \
-    spectrogramfft.h
+    listen_thread.h
 
 FORMS += \
-	dialogplots.ui \
-	spectrogramctrl.ui
+	dialogplots.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -54,14 +48,3 @@ DISTFILES += \
 
 RESOURCES += \
     dialogplots.qrc
-win32{
-    mkoptions = $$find(QMAKESPEC, "vc")
-    count(mkoptions, 1){
-    INCLUDEPATH +="$$PWD/../../3rdlibs/win32/fftw"
-    contains(QT_ARCH, i386) {
-	LIBS+=-L"$$PWD/../../3rdlibs/win32/fftw/x86" -llibfftw3-3
-    } else {
-	LIBS+=-L"$$PWD/../../3rdlibs/win32/fftw/x64" -llibfftw3-3
-    }
-    } else: LIBS+=-lfftw3
-}else: LIBS+=-lfftw3

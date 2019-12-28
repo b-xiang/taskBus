@@ -43,12 +43,6 @@ private:
 private slots:
 	void deal_package(QByteArray);
 	void on_pushButton_reset_clicked();
-	void on_comboBox_fft_currentIndexChanged(int index);
-	void on_doubleSpinBox_timeSocpe_valueChanged(double arg1);
-	void on_doubleSpinBox_spr_valueChanged(double arg1);
-	void on_horizontalSlider_pos_valueChanged(int value);
-	void on_spinBox_rangeBtm_valueChanged(int arg1);
-	void on_spinBox_range_Top_valueChanged(int arg1);
 };
 
 #endif // DIALOGPLOTS_H

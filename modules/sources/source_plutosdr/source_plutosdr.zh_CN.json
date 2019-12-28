@@ -10,7 +10,7 @@
 	     "rf":{
 		"type":"double",
 		"tooltip":"中心频率(MHz)",
-		"default":"1800.000000"
+		"default":"409.75000000"
 	    },
 	    "bw":{
 		"type":"double",

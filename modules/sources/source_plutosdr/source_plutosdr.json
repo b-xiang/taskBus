@@ -10,7 +10,7 @@
 	     "rf":{
 		"type":"double",
 		"tooltip":"center freq in MHz",
-		"default":"1800.000000"
+		"default":"409.750000"
 	    },
 	    "bw":{
 		"type":"double",
