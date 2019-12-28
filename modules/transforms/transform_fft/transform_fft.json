@@ -1,55 +1,60 @@
 ﻿{
     "transform_fft":{
-        "name":"libfftw",
-        "parameters":{
-		     "sptype":{
-                "type":"enum",
-                "tooltip":"sample point format",
-                "default":0,
-				"range":{
-                    "0":"16 bit Intel",
-                    "1":"16 bit Moto",
-                    "2":"int8",
-                    "3":"uint8"
+	"name":"libfftw",
+	"parameters":{
+	     "sptype":{
+		"type":"enum",
+		"tooltip":"sample point format",
+		"default":0,
+		    "range":{
+		    "0":"16 bit Intel",
+		    "1":"16 bit Moto",
+		    "2":"int8",
+		    "3":"uint8"
 				}
-            },
-             "channels":{
-                "type":"int",
-                "tooltip":"Channels",
-                "default":1
-            },		    
-			"fftsize":{
-                "type":"int",
-                "tooltip":"fft size",
-                "default":1024
-            }
+	    },
+	     "channels":{
+		"type":"int",
+		"tooltip":"Channels",
+		"default":1
+	    },
+	    "input_type":{
+	       "type":"int",
+	       "tooltip":"0=real,1=complex",
+	       "default":0
+	   },
+	    "fftsize":{
+		"type":"int",
+		"tooltip":"fft size",
+		"default":1024
+	    }
 
-        },
-        "input_subjects":
-        {
-            "signal":{
-                "type":"byte",
-                "tooltip":"signal"
-            },
-			"tmstamp_in":{
-                "type":"unsigned long long",
-                "tooltip":"tmstamp_in"
-            }
-        },
-        "output_subjects":{           
-            "FFT":{
-                "type":"vector",
-                "tooltip":"FFT in dB"
-            },
-            "Spec":{
-                "type":"vector",
-                "tooltip":"Spec in Complex"
-            },
-            "tmstamp_out":{
-                "type":"unsigned long long",
-                "tooltip":"tmstamp_out"
-            }
+	},
+	"input_subjects":
+	{
+	    "signal":{
+		"type":"byte",
+		"tooltip":"signal"
+	    },
+	    "tmstamp_in":{
+		"type":"unsigned long long",
+		"tooltip":"tmstamp_in"
+	    }
+	},
+	"output_subjects":{
+	    "FFT":{
+		"type":"vector",
+		"tooltip":"FFT in dB"
+	    },
+	    "Spec":{
+		"type":"vector",
+		"tooltip":"Spec in Complex"
+	    },
+	    "tmstamp_out":{
+		"type":"unsigned long long",
+		"tooltip":"tmstamp_out"
+	    }
 
-        }
+	}
     }
 }
