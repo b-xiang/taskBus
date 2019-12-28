@@ -146,6 +146,8 @@ int do_fftw(const cmdlineParser & args)
 				}
 
 				const unsigned char * pdta = packagedta.data();
+				//Normalizer
+				double nmr = fftsize;
 				if (itypes==0)
 				{
 					//数据类型转换
@@ -163,6 +165,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;
 					}
 						break;
 					case 1:
@@ -180,6 +183,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;
 					}
 						break;
 					case 2:
@@ -194,6 +198,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 128*128;
 					}
 						break;
 					case 3:
@@ -208,6 +213,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 256*256;
 					}
 						break;
 					default:
@@ -234,6 +240,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;;
 					}
 						break;
 					case 1:
@@ -255,6 +262,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;;
 					}
 						break;
 					case 2:
@@ -273,6 +281,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 128*128;;
 					}
 						break;
 					case 3:
@@ -291,6 +300,7 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 256*256;;
 					}
 						break;
 					default:
@@ -300,7 +310,8 @@ int do_fftw(const cmdlineParser & args)
 				fftw_execute(p); /* repeat as needed */
 				for (int j=0;j<fftsize;++j)
 				{
-					const double a =  10 * log(sqrt(out[j][0] * out[j][0] + out[j][1] * out[j][1]))/log(10.0);
+					const double ab = sqrt(out[j][0] * out[j][0] + out[j][1] * out[j][1]);
+					const double a =  10 * log(ab/nmr)/log(10.0);
 					if (itypes==0)
 						vec_fft_abs[j] = a;
 					else

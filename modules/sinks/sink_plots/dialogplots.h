@@ -36,10 +36,8 @@ private:
 	QVector<QChart *> m_chars;
 	QMap<int,int> m_plot_idxes;
 	QVector<int> m_plot_chans;
+	QVector<int> m_plot_types;
 	int tid = -1;
-	//FFT spec
-	int m_nSpecFunc = 0;
-	QStandardItemModel * m_pFFTSzMd;
 private slots:
 	void deal_package(QByteArray);
 	void on_pushButton_reset_clicked();
