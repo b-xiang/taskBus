@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <QThread>
+#include <cmath>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 using namespace TASKBUS;
@@ -34,20 +35,20 @@ char tmpstr[64];
 
 /* IIO structs required for streaming */
 struct iio_context *ctx   = NULL;
-struct iio_channel *rx0_i = NULL;
-struct iio_channel *rx0_q = NULL;
-struct iio_buffer  *rxbuf = NULL;
+struct iio_channel *tx0_i = NULL;
+struct iio_channel *tx0_q = NULL;
+struct iio_buffer  *txbuf = NULL;
 extern bool bfinished;
 
 /* cleanup and exit */
 void shutdown()
 {
 	fprintf(stderr,"* Destroying buffers\n");
-	if (rxbuf) { iio_buffer_destroy(rxbuf); }
+	if (txbuf) { iio_buffer_destroy(txbuf); }
 
 	fprintf(stderr,"* Disabling streaming channels\n");
-	if (rx0_i) { iio_channel_disable(rx0_i); }
-	if (rx0_q) { iio_channel_disable(rx0_q); }
+	if (tx0_i) { iio_channel_disable(tx0_i); }
+	if (tx0_q) { iio_channel_disable(tx0_q); }
 
 	fprintf(stderr,"* Destroying context\n");
 	if (ctx) { iio_context_destroy(ctx); }
@@ -168,102 +169,75 @@ int do_iio(const cmdlineParser & args)
 	const double sample_rate =  args.toDouble("sprate",2.5);
 	const double bw =  args.toDouble("bw",2.5);
 	const double rf =  args.toDouble("rf",1800);
-	TASKBUS::push_subject(0xffffffff,0,
-						  QString("source=%1.source_plutosdr.taskbus;"
-								  "destin=all;"
-								  "function=samplerate;"
-								  "sample_rate=%2;"
-								  )
-						  .arg(instance)
-						  .arg(sample_rate*1000000).toStdString().c_str());
-
 	fprintf(stderr,"* Init SDR Pluto...\n");
 	fflush(stderr);
 	// Streaming devices
-	struct iio_device *rx;
+	struct iio_device *tx;
 
 	// RX and TX sample counters
-	size_t nrx = 0;
+	size_t ntx = 0;
 
 	// Stream configurations
-	struct stream_cfg rxcfg;
+	struct stream_cfg txcfg;
 	// Listen to ctrl+c and ASSERT
 	signal(SIGINT, handle_sig);
 
 	// RX stream config
-	rxcfg.bw_hz = MHZ(bw);   //2 MHz rf bandwidth
-	rxcfg.fs_hz = MHZ(sample_rate);   // 2.5 MS/s rx sample rate
-	rxcfg.lo_hz = MHZ(rf); // 2.5 GHz rf frequency
-	fprintf(stderr,"* RF=%lldHz, BW=%lldHz, SPR=%lldsps...\n",rxcfg.lo_hz,rxcfg.bw_hz,rxcfg.fs_hz);
+	txcfg.bw_hz = MHZ(bw);   //2 MHz rf bandwidth
+	txcfg.fs_hz = MHZ(sample_rate);   // 2.5 MS/s rx sample rate
+	txcfg.lo_hz = MHZ(rf); // 2.5 GHz rf frequency
+	txcfg.rfport = "A"; // port A (select for rf freq.)
+
+	fprintf(stderr,"* RF=%lldHz, BW=%lldHz, SPR=%lldsps...\n",txcfg.lo_hz,txcfg.bw_hz,txcfg.fs_hz);
 	fflush(stderr);
-
-	rxcfg.rfport = "A_BALANCED"; // port A (select for rf freq.)
-
 	fprintf(stderr,"* Acquiring IIO context\n");
 	ASSERT((ctx = iio_create_context_from_uri(args.toString("uri","ip:192.168.2.1").c_str())) && "No context");
 	ASSERT(iio_context_get_devices_count(ctx) > 0 && "No devices");
 
 	fprintf(stderr,"* Acquiring AD9361 streaming devices\n");
-	ASSERT(get_ad9361_stream_dev(ctx, RX, &rx) && "No rx dev found");
+	ASSERT(get_ad9361_stream_dev(ctx, TX, &tx) && "No tx dev found");
 
-	fprintf(stderr,"* Configuring AD9361 for streaming\n");
-	ASSERT(cfg_ad9361_streaming_ch(ctx, &rxcfg, RX, 0) && "RX port 0 not found");
+	ASSERT(cfg_ad9361_streaming_ch(ctx, &txcfg, TX, 0) && "TX port 0 not found");
 
 	fprintf(stderr,"* Initializing AD9361 IIO streaming channels\n");
-	ASSERT(get_ad9361_stream_ch(ctx, RX, rx, 0, &rx0_i) && "RX chan i not found");
-	ASSERT(get_ad9361_stream_ch(ctx, RX, rx, 1, &rx0_q) && "RX chan q not found");
+	ASSERT(get_ad9361_stream_ch(ctx, TX, tx, 0, &tx0_i) && "TX chan i not found");
+	ASSERT(get_ad9361_stream_ch(ctx, TX, tx, 1, &tx0_q) && "TX chan q not found");
 
 	fprintf(stderr,"* Enabling IIO streaming channels\n");
-	iio_channel_enable(rx0_i);
-	iio_channel_enable(rx0_q);
+	iio_channel_enable(tx0_i);
+	iio_channel_enable(tx0_q);
 
 	fprintf(stderr,"* Creating non-cyclic IIO buffers with 1 MiS\n");
-	rxbuf = iio_device_create_buffer(rx, 1024*100, false);
-	if (!rxbuf) {
-		perror("Could not create RX buffer");
+	txbuf = iio_device_create_buffer(tx, 1024*1024, false);
+	if (!txbuf) {
+		perror("Could not create TX buffer");
 		shutdown();
 	}
 	fprintf(stderr,"* Starting IO streaming \n");
+	int clockc = 0;
 	while (!bfinished)
 	{
-		ssize_t nbytes_rx;
+		ssize_t nbytes_tx;
 		char *p_dat, *p_end;
 		ptrdiff_t p_inc;
 
-		// Refill RX buffer
-		nbytes_rx = iio_buffer_refill(rxbuf);
-		if (nbytes_rx < 0) {
+		nbytes_tx = iio_buffer_push(txbuf);
+		if (nbytes_tx < 0) {
 			QThread::msleep(20);
 			continue;
 		}
 
-		// READ: Get pointers to RX buf and read IQ from RX buf port 0
-		p_inc = iio_buffer_step(rxbuf);
-		p_end = (char *)iio_buffer_end(rxbuf);
-		p_dat = (char *)iio_buffer_first(rxbuf, rx0_i);
-		int frame_len = p_end - p_dat;
-		if (timestamp)
-		{
-			push_subject(
-			timestamp,				//专题
-			instance,				//一路数据，用自己的进程ID确保唯一性。
-			sizeof(unsigned long long),
-			(unsigned char *)&nrx
-			);
-		}
-		if (isource)
-		{
-			push_subject(
-			isource,				//专题
-			instance,				//一路数据，用自己的进程ID确保唯一性。
-			frame_len,
-			(unsigned char *)p_dat
-			);
+		p_inc = iio_buffer_step(txbuf);
+		p_end = (char *) iio_buffer_end(txbuf);
+		for (p_dat = (char *)iio_buffer_first(txbuf, tx0_i); p_dat < p_end; p_dat += p_inc) {
+			// Example: fill with zeros
+			// 12-bit sample needs to be MSB alligned so shift by 4
+			// https://wiki.analog.com/resources/eval/user-guides/ad-fmcomms2-ebz/software/basic_iq_datafiles#binary_format
+			((int16_t*)p_dat)[0] = short(cos(2*3.14*clockc/64)*512) << 4; // Real (I)
+			((int16_t*)p_dat)[1] = short(sin(2*3.14*clockc/64)*512) << 4; // Imag (Q)
+			++clockc;
 		}
 
-		// Sample counter increment and status output
-		nrx += nbytes_rx / iio_device_get_sample_size(rx);
-		//fprintf(stderr,"\tRX %8.2f MSmp, TX %8.2f MSmp\n", nrx/1e6, ntx/1e6);
 	}
 
 	shutdown();

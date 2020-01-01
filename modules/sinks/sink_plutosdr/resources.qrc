@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sink_plutosdr.json</file>
+        <file>sink_plutosdr.zh_CN.json</file>
+    </qresource>
+</RCC>

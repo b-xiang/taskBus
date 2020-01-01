@@ -296,7 +296,7 @@ int do_source(const cmdlineParser & args)
 								{
 									push_subject(
 									timestamp,				//专题
-									instance,				//咱就一路数据，干干净净,用自己的进程ID确保唯一性。
+									instance,				//一路数据，用自己的进程ID确保唯一性。
 									sizeof(unsigned long long),
 									(unsigned char *)&fileoffset_current
 									);
@@ -305,7 +305,7 @@ int do_source(const cmdlineParser & args)
 								{
 									push_subject(
 									isource,				//专题
-									instance,				//咱就一路数据，干干净净,用自己的进程ID确保唯一性。
+									instance,				//一路数据，用自己的进程ID确保唯一性。
 									frame_len,
 									(unsigned char *)data.data()
 									);
