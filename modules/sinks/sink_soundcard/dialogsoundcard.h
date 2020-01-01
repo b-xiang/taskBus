@@ -29,6 +29,8 @@ private:
 	QStandardItemModel * m_devOutputModule = nullptr;
 
 private:
+	void timerEvent(QTimerEvent * e);
+	int m_nTimerID = -1;
 	int AddWavHeader(char *);
 	int ApplyVolumeToSample(short iSample);
 	void InitMonitor();
@@ -38,18 +40,16 @@ private slots:
 	void OnPlayStop();
 	void OnStateChange(QAudio::State s);
 	void OnSliderValueChanged(int);
-	void OnTimeOut();
 	void sltPlay(QByteArray v);
-
 private:
 	int m_n_instance = 0;
-	int m_batch_size = 0;
+	bool m_bFirstPlay = true;
 	int miVolume;
 	int miMaxValue;
 	QByteArray m_buffer;
-	quint64 m_nTotalSps = 0;
 	const TASKBUS::cmdlineParser * m_cmdline = nullptr;
 	listen_thread * m_pListenThread = nullptr;
+	QByteArray m_arrBuffer;
 private:
 	QAudioFormat mFormatSound;
 	QAudioOutput *mpAudioOutputSound;		// 负责监听声音

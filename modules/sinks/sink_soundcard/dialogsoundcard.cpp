@@ -29,6 +29,7 @@ DialogSoundCard::DialogSoundCard(QWidget *parent) :
 	connect(ui->btn_start, SIGNAL(clicked()), this,SLOT(OnPlayStart()));
 	connect(ui->btn_stop, SIGNAL(clicked()), this,SLOT(OnPlayStop()));
 
+	m_nTimerID = startTimer(20);
 }
 
 DialogSoundCard::DialogSoundCard(const TASKBUS::cmdlineParser * pline,QWidget *parent ):
@@ -61,7 +62,6 @@ DialogSoundCard::DialogSoundCard(const TASKBUS::cmdlineParser * pline,QWidget *p
 
 		int hiden = m_cmdline->toInt("hide",0);
 		int autostart = m_cmdline->toInt("autostart",0);
-		m_batch_size = m_cmdline->toInt("batch_size",0);
 
 		if (hiden || autostart)
 			OnPlayStart();
@@ -78,9 +78,9 @@ DialogSoundCard::~DialogSoundCard()
 
 void DialogSoundCard::OnPlayStart()
 {
+	m_bFirstPlay = true;
 	ui->btn_start->setDisabled(true);
 	ui->btn_stop->setDisabled(false);
-	m_nTotalSps = 0;
 	InitMonitor();
 
 }
@@ -105,7 +105,7 @@ void DialogSoundCard::OnStateChange(QAudio::State state)
 void DialogSoundCard::InitMonitor()
 {
 	mFormatSound.setSampleSize(16); //set sample sze to 16 bit
-	mFormatSound.setSampleType(QAudioFormat::UnSignedInt ); //Sample type as usigned integer sample
+	mFormatSound.setSampleType(QAudioFormat::SignedInt ); //Sample type as usigned integer sample
 	mFormatSound.setByteOrder(QAudioFormat::LittleEndian); //Byte order
 	mFormatSound.setCodec("audio/pcm"); //set codec as simple audio/pcm
 	mFormatSound.setSampleRate(ui->spinbox_sprate->value());
@@ -130,7 +130,6 @@ void DialogSoundCard::InitMonitor()
 	}
 
 	CreateAudioOutput();
-
 	mpOutDevSound = mpAudioOutputSound->start();
 	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)),
 			this, SLOT(OnSliderValueChanged(int)));
@@ -145,6 +144,7 @@ void DialogSoundCard::CreateAudioOutput()
 
 	QAudioDeviceInfo outputDevice(QAudioDeviceInfo::defaultOutputDevice());
 	mpAudioOutputSound = new QAudioOutput(outputDevice, mFormatSound, this);
+
 }
 void DialogSoundCard::sltPlay(QByteArray v)
 {
@@ -161,7 +161,8 @@ void DialogSoundCard::sltPlay(QByteArray v)
 
 			miMaxValue = miMaxValue>=value ? miMaxValue : value;
 		}
-		mpOutDevSound->write(v);
+		//mpOutDevSound->write(v);
+		m_buffer.append(v);
 	}
 	ui->progress->setValue(miMaxValue);
 }
@@ -177,7 +178,17 @@ void DialogSoundCard::OnSliderValueChanged(int value)
 	miVolume = value;
 }
 
-void DialogSoundCard::OnTimeOut()
+
+void DialogSoundCard::timerEvent(QTimerEvent * e)
 {
-	ui->progress->setValue(miMaxValue);
+	if (e->timerId()==m_nTimerID)
+	{
+		const int bBuffer20ms = 0.04*ui->spinbox_sprate->value()*2*ui->spinbox_channels->value();
+		if (m_buffer.size()>=bBuffer20ms)
+		{
+			int w = mpOutDevSound->write(m_buffer.data(),bBuffer20ms);
+			if (w)
+				m_buffer.remove(0,w);
+		}
+	}
 }

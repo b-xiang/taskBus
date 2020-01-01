@@ -104,7 +104,7 @@ void DialogSoundCard::OnStateChange(QAudio::State state)
 void DialogSoundCard::InitMonitor()
 {
 	mFormatSound.setSampleSize(16); //set sample sze to 16 bit
-	mFormatSound.setSampleType(QAudioFormat::UnSignedInt ); //Sample type as usigned integer sample
+	mFormatSound.setSampleType(QAudioFormat::SignedInt ); //Sample type as usigned integer sample
 	mFormatSound.setByteOrder(QAudioFormat::LittleEndian); //Byte order
 	mFormatSound.setCodec("audio/pcm"); //set codec as simple audio/pcm
 	mFormatSound.setSampleRate(ui->spinbox_sprate->value());

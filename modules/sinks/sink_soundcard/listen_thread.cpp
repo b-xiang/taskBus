@@ -60,17 +60,9 @@ void listen_thread::run()
 			}
 			else if (header.subject_id==iref_wav && iref_chn>0)
 			{
-				if (header.data_length>=sizeof(qint16))
-				{
-					qint16 * tsp = (qint16 *) packagedta.data();
-					int sps = packagedta.size()/sizeof(qint16)/iref_chn*iref_chn;
-
-					if (sps)
-					{
-						QByteArray arr((char * )tsp,sps*iref_chn);
+						QByteArray arr((char * ) packagedta.data(),packagedta.size());
 						emit sig_play(arr);
-					}
-				}
+
 			}
 		}
 	}
