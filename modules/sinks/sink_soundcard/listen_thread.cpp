@@ -60,8 +60,8 @@ void listen_thread::run()
 			}
 			else if (header.subject_id==iref_wav && iref_chn>0)
 			{
-						QByteArray arr((char * ) packagedta.data(),packagedta.size());
-						emit sig_play(arr);
+				QByteArray arr((char * ) packagedta.data(),packagedta.size());
+				emit sig_play(arr);
 
 			}
 		}

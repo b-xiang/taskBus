@@ -1,13 +1,21 @@
-#include "listen_thread.h"
+﻿#include "listen_thread.h"
 #include "tb_interface.h"
-listen_thread::listen_thread(QObject * parent)
+#include <QMutex>
+extern QVector<short> vec_global_buf;
+extern QMutex mutex_buf;
+
+listen_thread::listen_thread(const TASKBUS::cmdlineParser & a,QObject * parent)
 	:QThread(parent)
+	, args(a)
 {
 
 }
 void listen_thread::run()
 {
 	using namespace TASKBUS;
+	const int instance	  = args.toInt("instance",0);
+	const int idestin	  = args.toInt("destin",0);
+	const int timestamp	  = args.toInt("timestamp",0);
 	bool bfinished = false;
 	while (false==bfinished)
 	{
@@ -31,6 +39,14 @@ void listen_thread::run()
 					fflush(stderr);
 					bfinished = true;
 				}
+			}
+			else if (header.subject_id==idestin)
+			{
+				int iqpaires = packagedta.size()/4*2;
+				short * iq = (short *)(packagedta.data());
+				mutex_buf.lock();
+				std::copy(iq,iq+iqpaires,std::back_inserter(vec_global_buf));
+				mutex_buf.unlock();
 			}
 		}
 	}

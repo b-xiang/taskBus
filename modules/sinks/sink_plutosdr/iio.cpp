@@ -5,8 +5,13 @@
 #include <stdio.h>
 #include <QThread>
 #include <cmath>
+#include <QVector>
+#include <QMutex>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
+QMutex mutex_buf;
+QVector<short> vec_global_buf;
+
 using namespace TASKBUS;
 /* helper macros */
 #define MHZ(x) ((long long)((x)*1000000.0 + .5))
@@ -214,7 +219,7 @@ int do_iio(const cmdlineParser & args)
 		shutdown();
 	}
 	fprintf(stderr,"* Starting IO streaming \n");
-	int clockc = 0;
+	int ck = 0;
 	while (!bfinished)
 	{
 		ssize_t nbytes_tx;
@@ -227,16 +232,34 @@ int do_iio(const cmdlineParser & args)
 			continue;
 		}
 
+		mutex_buf.lock();
+		const short (* ptr_buf)[2] =(const short (* )[2]) vec_global_buf.constData();
+		int max_paires = vec_global_buf.size()/2;
 		p_inc = iio_buffer_step(txbuf);
 		p_end = (char *) iio_buffer_end(txbuf);
+		int emitted = 0;
+
 		for (p_dat = (char *)iio_buffer_first(txbuf, tx0_i); p_dat < p_end; p_dat += p_inc) {
 			// Example: fill with zeros
 			// 12-bit sample needs to be MSB alligned so shift by 4
 			// https://wiki.analog.com/resources/eval/user-guides/ad-fmcomms2-ebz/software/basic_iq_datafiles#binary_format
-			((int16_t*)p_dat)[0] = short(cos(2*3.14*clockc/64)*512) << 4; // Real (I)
-			((int16_t*)p_dat)[1] = short(sin(2*3.14*clockc/64)*512) << 4; // Imag (Q)
-			++clockc;
+			if (emitted < max_paires)
+			{
+				((int16_t*)p_dat)[0] = ptr_buf[emitted][0]; // Real (I)
+				((int16_t*)p_dat)[1] = ptr_buf[emitted][1]; // Imag (Q)
+				++emitted;
+			}
+			else
+			{
+				((int16_t*)p_dat)[0] = 0 << 4; // Real (I)
+				((int16_t*)p_dat)[1] = 0 << 4; // Imag (Q)
+
+			}
+			++ck;
 		}
+		if (emitted)
+			vec_global_buf.remove(0,emitted*2);
+		mutex_buf.unlock();
 
 	}
 

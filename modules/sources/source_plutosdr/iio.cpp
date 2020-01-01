@@ -218,7 +218,7 @@ int do_iio(const cmdlineParser & args)
 	iio_channel_enable(rx0_q);
 
 	fprintf(stderr,"* Creating non-cyclic IIO buffers with 1 MiS\n");
-	rxbuf = iio_device_create_buffer(rx, 1024*100, false);
+	rxbuf = iio_device_create_buffer(rx, 1024*1024, false);
 	if (!rxbuf) {
 		perror("Could not create RX buffer");
 		shutdown();

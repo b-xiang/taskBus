@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	else if (args.contains("function"))//正常运行模式
 	{
 		//用于接收消息的线程
-		listen_thread * th = new listen_thread(&a);
+		listen_thread * th = new listen_thread(args,&a);
 		QObject::connect(th,&listen_thread::quit_app,&a,&QCoreApplication::quit);
 		th->start();
 		ret = do_iio(args);
