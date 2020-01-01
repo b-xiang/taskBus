@@ -1,0 +1,47 @@
+﻿{
+    "sink_soundcard":{
+	"name":"soundcard",
+	"parameters":{
+	    "sample_rate":{
+		"type":"int",
+		"tooltip":"sample rate",
+		"default":44100,
+		"range":{"desc":"8000~192000"}
+	    },
+	    "device":{
+		"type":"string",
+		"tooltip":"device name",
+		"default":"default"
+	    },
+	    "channel":{
+		"type":"int",
+		"tooltip":"channels",
+		"default":2
+	    },
+	    "hide":{
+		"type":"int",
+		"tooltip":"hide window when start",
+		"default":0
+	    },
+	    "autostart":{
+		"type":"int",
+		"tooltip":"auto start",
+		"default":0
+	    }
+	},
+	"input_subjects":
+	{
+	    "timestamp_in":{
+		"type":"uint64",
+		"tooltip":"timestamp ref"
+	    },
+	    "wav":{
+		"type":"bytes",
+		"tooltip":"Sample Points"
+	    }
+	},
+	"output_subjects":{
+
+	}
+    }
+}

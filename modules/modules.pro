@@ -6,6 +6,7 @@ SUBDIRS  += sources/source_plutosdr \
     transforms/transform_fft \
     sources/source_files \
     sinks/sink_file \
+    sinks/sink_soundcard \
     network/network_p2p \
     sinks/sink_SQL \
     wrappers/wrapper_scripts
