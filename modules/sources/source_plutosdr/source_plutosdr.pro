@@ -37,7 +37,7 @@ win32{
     }
 
     }
-}else: LIBS+=-lfftw3
+}else: LIBS+=-liio
 
 DISTFILES += \
 	source_plutosdr.json \

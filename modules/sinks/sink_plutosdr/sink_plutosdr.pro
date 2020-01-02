@@ -37,7 +37,7 @@ win32{
     }
 
     }
-}else: LIBS+=-lfftw3
+}else: LIBS+=-liio
 
 DISTFILES += \
 	sink_plutosdr.json \
