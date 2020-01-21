@@ -1,0 +1,408 @@
+{
+    "mod0": {
+        "mod_fm": {
+            "input_subjects": {
+                "sound": {
+                    "instance_value": 1,
+                    "tooltip": "Sound Input",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/mod_fm",
+                "instance_value": 1
+            },
+            "name": {
+                "name": "mod_fm"
+            },
+            "output_subjects": {
+                "signal": {
+                    "instance_value": 2,
+                    "tooltip": "FM Signal",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 1,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "in_spr": {
+                    "default": 8000,
+                    "instance_value": "16000",
+                    "tooltip": "Input Sample Rate",
+                    "type": "int"
+                },
+                "out_spr": {
+                    "default": 2500000,
+                    "instance_value": 2500000,
+                    "tooltip": "Output Sample Rate",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
+    "mod1": {
+        "source_soundcard": {
+            "input_subjects": {
+                "timestamp_in": {
+                    "instance_value": "",
+                    "tooltip": "timestamp ref",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/source_soundcard",
+                "instance_value": 2
+            },
+            "name": {
+                "name": "soundcard"
+            },
+            "output_subjects": {
+                "timestamp": {
+                    "instance_value": "",
+                    "tooltip": "timestamp in total bytes",
+                    "type": "uint64"
+                },
+                "wav": {
+                    "instance_value": 1,
+                    "tooltip": "Output Sample Points",
+                    "type": "bytes"
+                }
+            },
+            "parameters": {
+                "autostart": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "auto start",
+                    "type": "int"
+                },
+                "batch_size": {
+                    "default": 0,
+                    "instance_value": "0",
+                    "range": {
+                        "0": "Immediate",
+                        "Others": "frame points for each channel"
+                    },
+                    "tooltip": "channel batch size",
+                    "type": "int"
+                },
+                "channel": {
+                    "default": 2,
+                    "instance_value": "1",
+                    "tooltip": "channels",
+                    "type": "int"
+                },
+                "device": {
+                    "default": "default",
+                    "instance_value": "default",
+                    "tooltip": "device name",
+                    "type": "string"
+                },
+                "hide": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "hide window when start",
+                    "type": "int"
+                },
+                "sample_rate": {
+                    "default": 44100,
+                    "instance_value": "16000",
+                    "range": {
+                        "desc": "8000~192000"
+                    },
+                    "tooltip": "sample rate of soundcard",
+                    "type": "int"
+                }
+            }
+        }
+    },
+    "mod2": {
+        "sink_plutosdr": {
+            "input_subjects": {
+                "destin": {
+                    "instance_value": 2,
+                    "tooltip": "样点",
+                    "type": "byte"
+                },
+                "timestamp": {
+                    "instance_value": "",
+                    "tooltip": "时戳",
+                    "type": "unsigned long long"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/sink_plutosdr",
+                "instance_value": 3
+            },
+            "name": {
+                "name": "sink_plutosdr"
+            },
+            "parameters": {
+                "bw": {
+                    "default": 2,
+                    "instance_value": ".1",
+                    "range": "1-60MHz",
+                    "tooltip": "滤波带宽(MHz)",
+                    "type": "double"
+                },
+                "rf": {
+                    "default": "409.75000000",
+                    "instance_value": "108.0",
+                    "tooltip": "中心频率(MHz)",
+                    "type": "double"
+                },
+                "sprate": {
+                    "default": 2.5,
+                    "instance_value": 2.5,
+                    "tooltip": "采样率(MHz)",
+                    "type": "int"
+                },
+                "uri": {
+                    "default": "ip:192.168.2.1",
+                    "instance_value": "ip:192.168.2.1",
+                    "tooltip": "uri returned by iio_info -s",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "mod3": {
+        "source_plutosdr": {
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/source_plutosdr",
+                "instance_value": 4
+            },
+            "name": {
+                "name": "source_plutosdr"
+            },
+            "output_subjects": {
+                "source": {
+                    "instance_value": 3,
+                    "tooltip": "样点",
+                    "type": "byte"
+                },
+                "timestamp": {
+                    "instance_value": "",
+                    "tooltip": "时戳",
+                    "type": "unsigned long long"
+                }
+            },
+            "parameters": {
+                "bw": {
+                    "default": 2,
+                    "instance_value": "1",
+                    "range": "1-60MHz",
+                    "tooltip": "滤波带宽(MHz)",
+                    "type": "double"
+                },
+                "rf": {
+                    "default": "409.75000000",
+                    "instance_value": "108.0",
+                    "tooltip": "中心频率(MHz)",
+                    "type": "double"
+                },
+                "sprate": {
+                    "default": 2.5,
+                    "instance_value": 2.5,
+                    "tooltip": "采样率(MHz)",
+                    "type": "int"
+                },
+                "uri": {
+                    "default": "ip:192.168.2.1",
+                    "instance_value": "ip:192.168.2.1",
+                    "tooltip": "uri returned by iio_info -s",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "mod4": {
+        "transform_fft": {
+            "input_subjects": {
+                "signal": {
+                    "instance_value": 3,
+                    "tooltip": "signal",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/transform_fft",
+                "instance_value": 5
+            },
+            "name": {
+                "name": "libfftw"
+            },
+            "output_subjects": {
+                "FFT": {
+                    "instance_value": 4,
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "Spec": {
+                    "instance_value": "",
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": "",
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 1,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "fftsize": {
+                    "default": 1024,
+                    "instance_value": "4096",
+                    "tooltip": "fft size",
+                    "type": "int"
+                },
+                "input_type": {
+                    "default": 0,
+                    "instance_value": "1",
+                    "tooltip": "0=Real,1=Complex",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
+    "mod5": {
+        "sink_plots": {
+            "input_subjects": {
+                "plot0": {
+                    "instance_value": 4,
+                    "tooltip": "input0",
+                    "type": "byte"
+                },
+                "plot1": {
+                    "instance_value": 0,
+                    "tooltip": "input1",
+                    "type": "byte"
+                },
+                "plot2": {
+                    "instance_value": "",
+                    "tooltip": "input2",
+                    "type": "byte"
+                },
+                "plot3": {
+                    "instance_value": "",
+                    "tooltip": "input3",
+                    "type": "byte"
+                },
+                "plot4": {
+                    "instance_value": "",
+                    "tooltip": "input4",
+                    "type": "byte"
+                }
+            },
+            "instance": {
+                "additional_args": "nice=0;",
+                "exec": "modules/sink_plots",
+                "instance_value": 6
+            },
+            "name": {
+                "name": "plots"
+            },
+            "parameters": {
+                "channels": {
+                    "default": "1,1,1,1,1,1",
+                    "instance_value": "1,1,1,1,1,1",
+                    "range": {
+                        "tip": "1 or 2"
+                    },
+                    "tooltip": "各路通道数",
+                    "type": "string"
+                },
+                "datatypes": {
+                    "default": "9,9,9,9,9",
+                    "instance_value": "9,3,9,9,9",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"
+                    },
+                    "tooltip": "各路数据类型",
+                    "type": "string"
+                }
+            },
+            "version": {
+                "version": "1,1,0"
+            }
+        }
+    },
+    "pos0": {
+        "x": 1981,
+        "y": 1319
+    },
+    "pos1": {
+        "x": 1535,
+        "y": 1409
+    },
+    "pos2": {
+        "x": 2430,
+        "y": 1308
+    },
+    "pos3": {
+        "x": 1605,
+        "y": 1705
+    },
+    "pos4": {
+        "x": 1954,
+        "y": 1697
+    },
+    "pos5": {
+        "x": 2441,
+        "y": 1556
+    },
+    "total_mods": 6
+}

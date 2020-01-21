@@ -4,6 +4,7 @@ TEMPLATE = subdirs
 SUBDIRS  += sources/source_plutosdr \
     sources/source_soundcard \
     transforms/transform_fft \
+    transforms/mod_fm \
     sources/source_files \
     sinks/sink_file \
     sinks/sink_soundcard \
