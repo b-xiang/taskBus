@@ -180,8 +180,8 @@ int do_mod_fm(const cmdlineParser & args)
 				QVector<qint16> vec_output;
 				const int totalSamples = vec_buffer.size();
 				const double tm_stepOut = 1.0 / out_spr;
-				const double K = 25.0/32767;
-				for (double t = 0; t<= time_estab; t+=tm_stepOut,tmstmp+=tm_stepOut)
+				const double K = 50.0/32767;
+				for (double t = 0; t< time_estab; t+=tm_stepOut,tmstmp+=tm_stepOut)
 				{
 					const double x_v = (t/time_estab) * totalSamples;
 					const int x_left = x_v;
@@ -191,14 +191,16 @@ int do_mod_fm(const cmdlineParser & args)
 						const double v1 = vec_buffer[x_left];
 						const double v2 = vec_buffer[x_right];
 						const double v = v1 + (v2-v1) * (x_v-x_left)/(x_right-x_left);
-						vec_output.push_back(cos(2*Pi*v*K)*1024);
-						vec_output.push_back(-sin(2*Pi*v*K)*1024);
+						//Pluto SDR is 12 bit DA/AD, in MSB first,
+						//So, we just cross cos by 32000, 2000<<4.
+						vec_output.push_back(cos(2*Pi*v*K)*2000*16);
+						vec_output.push_back(-sin(2*Pi*v*K)*2000*16);
 					}
 					else
 					{
 						const double v = vec_buffer[x_left];
-						vec_output.push_back(cos(2*Pi*v*K)*1024);
-						vec_output.push_back(-sin(2*Pi*v*K)*1024);
+						vec_output.push_back(cos(2*Pi*v*K)*2000*16);
+						vec_output.push_back(-sin(2*Pi*v*K)*2000*16);
 					}
 
 				}

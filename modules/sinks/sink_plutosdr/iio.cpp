@@ -32,6 +32,7 @@ struct stream_cfg {
 	long long bw_hz; // Analog banwidth in Hz
 	long long fs_hz; // Baseband sample rate in Hz
 	long long lo_hz; // Local oscillator frequency in Hz
+	double gain;
 	const char* rfport; // Port name
 };
 
@@ -148,6 +149,7 @@ bool cfg_ad9361_streaming_ch(struct iio_context *ctx, struct stream_cfg *cfg, en
 	if (!get_phy_chan(ctx, type, chid, &chn)) {	return false; }
 	wr_ch_str(chn, "rf_port_select",     cfg->rfport);
 	wr_ch_lli(chn, "rf_bandwidth",       cfg->bw_hz);
+	wr_ch_lli(chn, "hardwaregain",       cfg->gain);
 	wr_ch_lli(chn, "sampling_frequency", cfg->fs_hz);
 
 	// Configure LO channel
@@ -191,6 +193,7 @@ int do_iio(const cmdlineParser & args)
 	txcfg.bw_hz = MHZ(bw);   //2 MHz rf bandwidth
 	txcfg.fs_hz = MHZ(sample_rate);   // 2.5 MS/s rx sample rate
 	txcfg.lo_hz = MHZ(rf); // 2.5 GHz rf frequency
+	txcfg.gain = 0;
 	txcfg.rfport = "A"; // port A (select for rf freq.)
 
 	fprintf(stderr,"* RF=%lldHz, BW=%lldHz, SPR=%lldsps...\n",txcfg.lo_hz,txcfg.bw_hz,txcfg.fs_hz);
