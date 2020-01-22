@@ -19,6 +19,11 @@ const char * g_info = "{\n\
 				\"tooltip\":\"Channels\",\n\
 				\"default\":1\n\
 			},\n\
+			\"fmfactor\":{\n\
+			   \"type\":\"double\",\n\
+			   \"tooltip\":\"FMFactor\",\n\
+			   \"default\":25\n\
+			},\n\
 			\"in_spr\":{\n\
 			   \"type\":\"int\",\n\
 			   \"tooltip\":\"Input Sample Rate\",\n\

@@ -63,6 +63,7 @@ int do_mod_fm(const cmdlineParser & args)
 	const unsigned int isound	  = args.toInt("sound",0);
 	const double in_spr			  = args.toDouble("in_spr",8000);
 	const double out_spr		  = args.toDouble("out_spr",2500000);
+	const double fmfactor		  = args.toDouble("fmfactor",25);
 	const unsigned int itmstamp_in  = args.toUInt("tmstamp_in",0);
 	const unsigned int itmstamp_out = args.toUInt("tmstamp_out",0);
 	const unsigned int osig  = args.toInt("signal",0);
@@ -180,7 +181,7 @@ int do_mod_fm(const cmdlineParser & args)
 				QVector<qint16> vec_output;
 				const int totalSamples = vec_buffer.size();
 				const double tm_stepOut = 1.0 / out_spr;
-				const double K = 50.0/32767;
+				const double K = fmfactor/32767;
 				for (double t = 0; t< time_estab; t+=tm_stepOut,tmstmp+=tm_stepOut)
 				{
 					const double x_v = (t/time_estab) * totalSamples;
