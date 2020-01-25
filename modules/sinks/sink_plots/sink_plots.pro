@@ -28,11 +28,13 @@ CONFIG += c++11
 SOURCES += \
     dialogplots.cpp \
     listen_thread.cpp \
-    main.cpp
+    main.cpp \
+    spectrowidget.cpp
 
 HEADERS += \
     dialogplots.h \
-    listen_thread.h
+    listen_thread.h \
+    spectrowidget.h
 
 FORMS += \
 	dialogplots.ui

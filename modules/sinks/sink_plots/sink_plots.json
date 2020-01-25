@@ -7,13 +7,13 @@
 		"type":"string",
 		"default":"1,1,1,1,1",
 		"tooltip":"channels",
-		"range":{"tip":"1 or 2"}
+		"range":{"tip":"0:1d spectrogram 1: 1d wav or 2:2d xy"}
 	    },
 	    "datatypes":{
 		"type":"string",
 		"default":"9,9,9,9,9",
 		"tooltip":"data types",
-		"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double 10:char"}
+		"range":{"value":"0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double"}
 	    }
 	 },
 	"input_subjects":{
