@@ -11,7 +11,12 @@ public:
 protected:
 	void paintEvent(QPaintEvent * evt);
 public:
-	void append_data(QVector<double> vec_data);
+	void append_data(QVector<double> vec_data,
+					 double left,
+					 double right,
+					 double left_x,
+					 double right_x
+					 );
 protected:
 	QImage m_image;
 	double m_minBound;

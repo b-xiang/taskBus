@@ -27,7 +27,11 @@ void SpectroWidget::paintEvent(QPaintEvent * evt)
 	painter.drawImage(0,0,m_image);
 }
 
-void SpectroWidget::append_data(QVector<double> vec_data)
+void SpectroWidget::append_data(QVector<double> vec_data,
+								double left,
+								double right,
+								double left_x,
+								double right_x)
 {
 	if (m_image.isNull())
 		return;
@@ -41,10 +45,10 @@ void SpectroWidget::append_data(QVector<double> vec_data)
 
 	for (int r = 0;r<width;++r)
 	{
-		int from = r*1.0/width*datasz+.5;
-		if (from<0) from = 0;
-		if (from>=datasz) from = datasz -1;
-		const double v = vec_data[from];
+		if (r<left || r>right)
+			continue;
+		int from = (r-left)/(right-left)*(right_x-left_x) + left_x+.5;
+		const double v = (from>=0 && from <datasz)?vec_data[from]:m_minBound;
 		const double vii = (v-m_minBound)/(m_maxBound-m_minBound);
 		int red = 0,green = 0,blue = 0;
 		if (vii>=0 && vii<0.25)

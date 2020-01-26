@@ -370,7 +370,19 @@ void DialogPlots::timerEvent(QTimerEvent *event)
 				serials->replace(vec_points);
 				if (ws)
 				{
-					ws->append_data(m_plot_buffer[hash_subidx]);
+					QChart * ca = m_chars[subid];
+					QValueAxis * axx = m_char_axis_x[subid];
+					double dmin = axx->min();
+					double dmax = axx->max();
+					QRectF r = ca->plotArea();
+
+
+					ws->append_data(m_plot_buffer[hash_subidx],
+									r.left(),
+									r.right(),
+									dmin,
+									dmax
+									);
 				}
 
 			}
