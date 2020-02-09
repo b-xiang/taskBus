@@ -21,7 +21,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 	m_rthread->start();
 
 	//命令行参数解释
-	QString schannels = QString::fromStdString(m_cmd->toString("channels","1"));
+	QString schannels = QString::fromStdString(m_cmd->toString("channels","1,1,1,1,1"));
 	QStringList lst = schannels.split(",");
 	foreach(QString c, lst)
 	{
@@ -30,7 +30,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 			vc = 1;
 		m_plot_chans.push_back(vc);
 	}
-	QString stypes = QString::fromStdString(m_cmd->toString("datatypes","9"));
+	QString stypes = QString::fromStdString(m_cmd->toString("datatypes","9,9,9,9,9"));
 	QStringList lsttps = stypes.split(",");
 	foreach(QString c, lsttps)
 	{
@@ -40,6 +40,7 @@ DialogPlots::DialogPlots(const TASKBUS::cmdlineParser * cmd,QWidget *parent) :
 		m_plot_types.push_back(vc);
 	}
 	QMap<int,int> plot_idxes;
+	//Key is subject id, value is the id of plots
 	for (int i=0;i<16;++i)
 	{
 		QString key = QString("plot%1").arg(i);
@@ -69,8 +70,8 @@ void DialogPlots::deal_package(QByteArray package)
 
 	if (m_plot_idxes.contains(pheader->subject_id)==false)
 		return;
-	const int nSub = m_plot_idxes[pheader->subject_id];
-	const int channels = nSub<m_plot_chans.size()?m_plot_chans[nSub]:1;
+	const int nIDofPlot = m_plot_idxes[pheader->subject_id];
+	const int channels = nIDofPlot<m_plot_chans.size()?m_plot_chans[nIDofPlot]:1;
 
 	const quint64 hash_subidx = ((quint64(pheader->subject_id))<<32)+quint64(pheader->path_id);
 	m_plot_refresh[hash_subidx] = true;
@@ -328,11 +329,15 @@ void DialogPlots::timerEvent(QTimerEvent *event)
 		QList<quint64> hash_subidxes = m_subidxs.keys();
 		foreach (quint64 hash_subidx, hash_subidxes)
 		{
+			const int subject_id = hash_subidx>>32;
+			if (!m_plot_idxes.contains(subject_id))
+				continue;
 			if (!m_plot_refresh[hash_subidx])
 				continue;
 			m_plot_refresh[hash_subidx] = false;
+			const int nIDofPlot = m_plot_idxes[subject_id];
+			const int rawchannels = nIDofPlot<m_plot_chans.size()?m_plot_chans[nIDofPlot]:1;
 			const int subid = m_subidxs[hash_subidx];
-			const int rawchannels = subid<m_plot_chans.size()?m_plot_chans[subid]:1;
 			const int channels = rawchannels<2?1:2;
 			QChartView * pv = m_chat_views[subid];
 			QXYSeries * serials = m_chat_serials[subid];
@@ -343,7 +348,7 @@ void DialogPlots::timerEvent(QTimerEvent *event)
 			double max_x = 0, max_y =  fdata[0];
 			double min_x = 0, min_y =  fdata[0];
 
-			int step = channels>1?pts / 4096:pts/65536;
+			int step = channels>1?(pts / 4096):(pts/65536);
 			if (step<1)
 				step = 1;
 

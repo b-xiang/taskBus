@@ -1,2 +1,2 @@
-modules/source_soundcard.exe
-modules/transform_fft.exe
+modules/transform_fft
+modules/source_soundcard

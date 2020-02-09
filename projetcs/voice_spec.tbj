@@ -1,84 +1,17 @@
 {
     "mod0": {
-        "transform_fft": {
-            "input_subjects": {
-                "signal": {
-                    "instance_value": 1,
-                    "tooltip": "signal",
-                    "type": "byte"
-                },
-                "tmstamp_in": {
-                    "instance_value": 2,
-                    "tooltip": "tmstamp_in",
-                    "type": "uint64"
-                }
-            },
-            "instance": {
-                "additional_args": "IND=-3,-2;OUTD=1,2,-1;nice=2;",
-                "exec": "modules/transform_fft.exe",
-                "instance_value": 34
-            },
-            "name": {
-                "name": "libfftw"
-            },
-            "output_subjects": {
-                "FFT": {
-                    "instance_value": 0,
-                    "tooltip": "FFT in dB",
-                    "type": "vector"
-                },
-                "Spec": {
-                    "instance_value": 0,
-                    "tooltip": "Spec in Complex",
-                    "type": "vector"
-                },
-                "tmstamp_out": {
-                    "instance_value": 6,
-                    "tooltip": "tmstamp_out",
-                    "type": "uint64"
-                }
-            },
-            "parameters": {
-                "channels": {
-                    "default": 1,
-                    "instance_value": 2,
-                    "tooltip": "Channels",
-                    "type": "int"
-                },
-                "fftsize": {
-                    "default": 1024,
-                    "instance_value": 4096,
-                    "tooltip": "fft size",
-                    "type": "int"
-                },
-                "sptype": {
-                    "default": 0,
-                    "instance_value": 0,
-                    "range": {
-                        "0": "16 bit Intel",
-                        "1": "16 bit Moto",
-                        "2": "int8",
-                        "3": "uint8"
-                    },
-                    "tooltip": "sample point format",
-                    "type": "enum"
-                }
-            }
-        }
-    },
-    "mod1": {
         "source_soundcard": {
             "input_subjects": {
                 "timestamp_in": {
-                    "instance_value": 6,
+                    "instance_value": 3,
                     "tooltip": "timestamp ref",
                     "type": "uint64"
                 }
             },
             "instance": {
                 "additional_args": "IND=1;nice=2;",
-                "exec": "modules/source_soundcard.exe",
-                "instance_value": 35
+                "exec": "modules/source_soundcard",
+                "instance_value": 4
             },
             "name": {
                 "name": "soundcard"
@@ -142,13 +75,86 @@
             }
         }
     },
+    "mod1": {
+        "transform_fft": {
+            "input_subjects": {
+                "signal": {
+                    "instance_value": 1,
+                    "tooltip": "signal",
+                    "type": "byte"
+                },
+                "tmstamp_in": {
+                    "instance_value": 2,
+                    "tooltip": "tmstamp_in",
+                    "type": "uint64"
+                }
+            },
+            "instance": {
+                "additional_args": "IND=-3;OUTD=1,2,0;nice=0;",
+                "exec": "modules/transform_fft",
+                "instance_value": 5
+            },
+            "name": {
+                "name": "libfftw"
+            },
+            "output_subjects": {
+                "FFT": {
+                    "instance_value": "",
+                    "tooltip": "FFT in dB",
+                    "type": "vector"
+                },
+                "Spec": {
+                    "instance_value": "",
+                    "tooltip": "Spec in Complex",
+                    "type": "vector"
+                },
+                "tmstamp_out": {
+                    "instance_value": 3,
+                    "tooltip": "tmstamp_out",
+                    "type": "uint64"
+                }
+            },
+            "parameters": {
+                "channels": {
+                    "default": 1,
+                    "instance_value": 1,
+                    "tooltip": "Channels",
+                    "type": "int"
+                },
+                "fftsize": {
+                    "default": 1024,
+                    "instance_value": 1024,
+                    "tooltip": "fft size",
+                    "type": "int"
+                },
+                "input_type": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "tooltip": "0=Real,1=Complex",
+                    "type": "int"
+                },
+                "sptype": {
+                    "default": 0,
+                    "instance_value": 0,
+                    "range": {
+                        "0": "16 bit Intel",
+                        "1": "16 bit Moto",
+                        "2": "int8",
+                        "3": "uint8"
+                    },
+                    "tooltip": "sample point format",
+                    "type": "enum"
+                }
+            }
+        }
+    },
     "pos0": {
-        "x": 1894,
-        "y": 1636
+        "x": 1531,
+        "y": 1467
     },
     "pos1": {
-        "x": 1444,
-        "y": 1600
+        "x": 1968,
+        "y": 1526
     },
     "total_mods": 2
 }
