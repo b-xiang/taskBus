@@ -24,7 +24,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    sink_file.exe.json
+    sink_file.exe.json \
+    sink_file.zh_CN.json
 
 RESOURCES += \
     sink_file.qrc

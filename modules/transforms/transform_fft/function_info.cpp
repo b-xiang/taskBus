@@ -1,4 +1,4 @@
-
+﻿
 const char * g_info = "{\n\
 	\"transform_fft\":{\n\
 		\"name\":\"libfftw\",\n\
@@ -18,6 +18,11 @@ const char * g_info = "{\n\
 				\"type\":\"int\",\n\
 				\"tooltip\":\"Channels\",\n\
 				\"default\":1\n\
+			},\n\
+			\"input_type\":{\n\
+			   \"type\":\"int\",\n\
+			   \"tooltip\":\"0=Real,1=Complex\",\n\
+			   \"default\":0\n\
 			},\n\
 			\"fftsize\":{\n\
 				\"type\":\"int\",\n\

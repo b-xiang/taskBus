@@ -9,6 +9,23 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+#Judge whether qtcharts is supported.
+qtHaveModule(charts){
+    QT += charts
+    HEADERS += watchdog/status_charts/formstatus.h
+    SOURCES += watchdog/status_charts/formstatus.cpp
+    FORMS += watchdog/status_charts/formstatus.ui
+    message("Qt with charts!");
+    INCLUDEPATH += watchdog/status_charts
+} else {
+    HEADERS += watchdog/status_nocharts/formstatus.h
+    SOURCES += watchdog/status_nocharts/formstatus.cpp
+    FORMS += watchdog/status_nocharts/formstatus.ui
+    message("Qt without charts!");
+    INCLUDEPATH += watchdog/status_nocharts
+}
+
+
 DESTDIR = $$OUT_PWD/../bin
 
 TARGET = taskBusPlatform
@@ -33,12 +50,16 @@ SOURCES += \
     core/taskproject.cpp \
     gui/taskbusplatformfrm.cpp \
     gui/taskbusplatformfrm_modules.cpp \
-    gui/taskbusplatformfrm_project.cpp \
+    gui/taskbusplatformfrm_project.cpp  \
+    gui/dlgabout.cpp \
     gui/main.cpp \
     gui/pdesignerview.cpp \
     gui/taskmodule.cpp \
     gui/tgraphicstaskitem.cpp \
-    core/process_prctl.cpp
+    core/process_prctl.cpp \
+    watchdog/tbwatchdog.cpp \
+    watchdog/watchmemmodule.cpp \
+    gui/custom_item_editor.cpp
 
 HEADERS += \
     core/tasknode.h \
@@ -48,16 +69,22 @@ HEADERS += \
     gui/pdesignerview.h \
     gui/taskmodule.h \
     gui/tgraphicstaskitem.h \
+    gui/dlgabout.h \
     cmdlineparser.h \
     tb_interface.h \
     tb_datastruct.h \
     core/process_prctl.h \
     ../tb_interface/cmdlineparser.h \
-    ../tb_interface/tb_interface.h
+    ../tb_interface/tb_interface.h \
+    watchdog/profile_log.h \
+    watchdog/tbwatchdog.h \
+    watchdog/watchmemmodule.h
+
 
 FORMS += \
     gui/taskbusplatformfrm.ui \
-    gui/pdesignerview.ui
+    gui/pdesignerview.ui \
+    gui/dlgabout.ui
 
 TRANSLATIONS +=\
 	taskBusPlatform_zh_CN.ts
@@ -66,13 +93,13 @@ OTHER_FILES += \
 	taskBusPlatform_zh_CN.ts
 
 win32{
-VERSION = 1.0.0.0 # major.minor.patch.build
-VERSION_PE_HEADER = 1.0
-RC_ICONS += taskbusplatform.ico
+    VERSION = 1.0.0.0 # major.minor.patch.build
+    VERSION_PE_HEADER = 1.0
+    RC_ICONS += taskbusplatform.ico
 }
 else
 {
-VERSION = 1.0.0    # major.minor.patch
+    VERSION = 1.0.0    # major.minor.patch
 }
 
 RESOURCES += \
@@ -80,6 +107,6 @@ RESOURCES += \
 
 DISTFILES += \
     test.json
+message($$QT_ARCH)
+contains(QT_ARCH,x86):CONFIG(release, debug|release): QMAKE_CXXFLAGS +=  -march=core2  -O3 -fexpensive-optimizations
 
-#deep opt
-CONFIG(release, debug|release): QMAKE_CXXFLAGS +=  -march=core2  -O3 -fexpensive-optimizations

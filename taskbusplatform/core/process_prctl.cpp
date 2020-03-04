@@ -1,13 +1,19 @@
-#include <QProcess>
+/*!
+  @author goldenhawking@163.com
+  @date 2017-02-11
+  */
+#include "process_prctl.h"
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
 #ifdef WIN32
 #include <windows.h>
+#include <psapi.h>
 #endif
-
 #ifdef linux
 #include <sys/resource.h>
 #include <unistd.h>
 #endif
-#include "process_prctl.h"
 
 namespace TASKBUS {
 
@@ -75,4 +81,121 @@ namespace TASKBUS {
 #endif
 	}
 
+	bool get_memory (qint64 p ,tagMemoryInfo * info)
+	{
+#ifdef linux
+		info->pid = p;
+		info->phandle = p;
+		QString strFm;
+		strFm.sprintf("/proc/%lld/status",p);
+		QFile fin(strFm);
+		if (fin.open(QIODevice::ReadOnly)==false)
+			return false;
+		QTextStream s(&fin);
+		int hit = 0;
+		QString l = s.readLine();
+		while (l.size() && hit<2)
+		{
+			QStringList lst = l.split(":",QString::SkipEmptyParts);
+			if (lst.size()>=2)
+			{
+				QString keystr = lst.first().trimmed();
+				lst.pop_front();
+				QString v = lst.first().trimmed();
+				if (keystr=="Name")
+				{
+					info->m_name = v;
+					++hit;
+				}
+				if (keystr=="VmRSS")
+				{
+					v = v.toUpper();
+					++hit;
+					if (v.indexOf("K"))
+					{
+						QString digiga = v.left(v.indexOf("K"));
+						info->m_memsize = digiga.toDouble()*1024;
+					}
+					else if (v.indexOf("M"))
+					{
+						QString digiga = v.left(v.indexOf("M"));
+						info->m_memsize = digiga.toDouble()*1024*1024;
+					}
+					else if (v.indexOf("G"))
+					{
+						QString digiga = v.left(v.indexOf("G"));
+						info->m_memsize = digiga.toDouble()*1024*1024*1024;
+					}
+					else if (v.indexOf("B"))
+					{
+						QString digiga = v.left(v.indexOf("B"));
+						info->m_memsize = digiga.toDouble();
+					}
+					else if (v.toDouble()>0)
+						info->m_memsize = v.toDouble();
+					else
+						--hit;
+				}
+
+			}
+			l = s.readLine();
+		}
+		fin.close();
+		if (hit>=2)
+			return true;
+#endif
+
+#ifdef WIN32
+		char ch_module[MAX_PATH] = {0,0,0,0};
+		if (p==-1)
+		{
+			GetModuleFileNameA(0,ch_module,MAX_PATH);
+			PROCESS_MEMORY_COUNTERS pmc;
+			GetProcessMemoryInfo(GetCurrentProcess(),&pmc,sizeof(pmc));
+			info->m_memsize  = pmc.WorkingSetSize;
+			info->pid = GetProcessId(GetCurrentProcess());
+			info->phandle = (qint64)GetCurrentProcess();
+		}
+		else if (p)
+		{
+			GetModuleFileNameExA((HMODULE)p,0,ch_module,MAX_PATH);
+			info->pid = GetProcessId((HMODULE)p);
+			if (info->pid==0)
+				return false;
+			info->phandle = (qint64)p;
+			PROCESS_MEMORY_COUNTERS pmc;
+			GetProcessMemoryInfo((HMODULE)p,&pmc,sizeof(pmc));
+			info->m_memsize  = pmc.WorkingSetSize;
+		}
+		char * pt =ch_module + strlen(ch_module)-1;
+		while (pt > ch_module)
+		{
+			if (*pt == '\\' || *pt=='/'  || *pt==':')
+				break;
+			--pt;
+		}
+		++pt;
+		info->m_name = QString::fromLocal8Bit(pt);
+
+		return true;
+#endif
+		return false;
+	}
+
+	qint64 get_procid(QProcess * p)
+	{
+#ifdef linux
+		if (p)
+			return p->pid();
+		else
+			return getpid();
+#endif
+#ifdef WIN32
+		if (p)
+			return (qint64)p->pid()->hProcess;
+		else
+			return (qint64)GetCurrentProcess();
+#endif
+		return 0;
+	}
 }

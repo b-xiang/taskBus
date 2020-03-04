@@ -1,4 +1,4 @@
-#ifndef TaskMODULE_H
+﻿#ifndef TaskMODULE_H
 #define TaskMODULE_H
 
 #include <QAbstractItemModel>
@@ -47,18 +47,18 @@ public:
 	  * modified.
 	*/
 public:
-	bool initFromJson(const QByteArray json, const QString path = "") override;
+	bool initFromJson(const QByteArray & json, const QString & path = "") override;
 	void clear() override;
-	unsigned int set_function_instance(const QString func, unsigned  int instance) override;//设置模块实例标识
-	unsigned int set_in_subject_instance(const QString func,const QString name, unsigned int instance) override;//设置输入接口实例标识
-	unsigned int set_out_subject_instance(const QString func,const QString name, unsigned int instance) override;//设置输出接口实例标识
-	unsigned int in_subject_instance(const QString func, const QString name) const override;
-	unsigned int out_subject_instance(const QString func, const QString name) const override;
-	QVariant set_parameters_instance(const QString func,const QString name, const QVariant instance) override;//设置参数实例标识	
-	void set_additional_paras(const QString func,const QMap<QString,QVariant> & p) override;
+	unsigned int set_function_instance(const QString & func, unsigned  int instance) override;//设置模块实例标识
+	unsigned int set_in_subject_instance(const QString & func,const QString & name, unsigned int instance) override;//设置输入接口实例标识
+	unsigned int set_out_subject_instance(const QString & func,const QString & name, unsigned int instance) override;//设置输出接口实例标识
+	unsigned int in_subject_instance(const QString & func, const QString & name) const override;
+	unsigned int out_subject_instance(const QString & func, const QString & name) const override;
+	QVariant set_parameters_instance(const QString & func,const QString & name, const QVariant & instance) override;//设置参数实例标识
+	void set_additional_paras(const QString & func,const QMap<QString,QVariant> & p) override;
 	//绘制朝向设置
-	virtual int draw_direction(const QString func, bool bInput, int n)  const ;
-	virtual void set_draw_direction(const QString func, bool bInput, int n, int direction) ;
+	virtual int draw_direction(const QString & func, bool bInput, int n)  const ;
+	virtual void set_draw_direction(const QString & func, bool bInput, int n, int direction) ;
 public:
 	/*!
 	 * \brief m_pinInsValues 用于记录使用过的局部连线整数

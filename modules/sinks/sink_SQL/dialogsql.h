@@ -1,4 +1,4 @@
-#ifndef DIALOGPLOTS_H
+﻿#ifndef DIALOGPLOTS_H
 #define DIALOGPLOTS_H
 
 #include <QDialog>
@@ -20,8 +20,8 @@ public:
 	explicit DialogSQL(const TASKBUS::cmdlineParser * ps, QWidget *parent = 0);
 	~DialogSQL();
 private:
-	const TASKBUS::cmdlineParser * m_pCmd = nullptr;
 	Ui::DialogSQL *ui;
+	const TASKBUS::cmdlineParser * m_pCmd = nullptr;
 	reciv_thread * m_rthread = nullptr;
 	QStandardItemModel * m_pMod = nullptr;
 private slots:

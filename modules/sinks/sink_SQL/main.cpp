@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 #ifdef OFFLINEDEBUG
 	FILE * old_stdin, *old_stdout;
-	auto ars = debug("D:\\Dynamic\\GrayEagle\\debug\\pid2548",&old_stdin,&old_stdout);
+	auto ars = debug("D:\\GoldEagleStudio\\pid2769",&old_stdin,&old_stdout);
 	const  cmdlineParser args (ars);
 #else
 	const cmdlineParser args (argc,argv);
@@ -27,8 +27,13 @@ int main(int argc, char *argv[])
 	//每个模块要响应 --information参数,打印自己的功能定义字符串。或者提供一个json文件。
 	if (args.contains("information"))
 	{
-		QFile fp(":/json/sink_SQL.exe.json");
-		if (fp.open(QIODevice::ReadOnly))
+		QFile fp(":/json/sink_SQL."+QLocale::system().name()+".json");
+		if (fp.open(QIODevice::ReadOnly)==false)
+		{
+			fp.setFileName(":/json/sink_SQL.exe.json");
+			fp.open(QIODevice::ReadOnly);
+		}
+		if (fp.isOpen())
 		{
 			QByteArray arr = fp.readAll();
 			arr.push_back('\0');
@@ -36,7 +41,6 @@ int main(int argc, char *argv[])
 			fflush(stdout);
 		}
 		ret = -1;
-		return ret;
 	}
 	else
 	{

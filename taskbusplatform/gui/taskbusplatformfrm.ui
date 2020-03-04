@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>640</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,22 +28,40 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="leftMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>2</number>
-    </property>
-    <property name="rightMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <item>
      <widget class="QMdiArea" name="mdiArea">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>64</red>
+         <green>66</green>
+         <blue>68</blue>
+        </color>
+       </brush>
+      </property>
       <property name="activationOrder">
        <enum>QMdiArea::StackingOrder</enum>
       </property>
@@ -59,6 +77,9 @@
       <property name="tabsMovable">
        <bool>true</bool>
       </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Triangular</enum>
+      </property>
      </widget>
     </item>
    </layout>
@@ -68,18 +89,19 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
-     <height>21</height>
+     <width>800</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Application">
     <property name="title">
-     <string>&amp;Project</string>
+     <string>Pro&amp;ject</string>
     </property>
     <addaction name="separator"/>
     <addaction name="action_New_Project"/>
     <addaction name="action_Open_Project"/>
     <addaction name="action_Save_Project"/>
+    <addaction name="action_Save_Project_As"/>
     <addaction name="separator"/>
     <addaction name="action_Start_project"/>
     <addaction name="action_stop_project"/>
@@ -95,10 +117,8 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="action_Modules_Window"/>
-    <addaction name="actionMessages"/>
-    <addaction name="action_Properties_View"/>
     <addaction name="separator"/>
+    <addaction name="actionhideWindow"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -141,6 +161,8 @@
    <addaction name="separator"/>
    <addaction name="action_Start_project"/>
    <addaction name="action_stop_project"/>
+   <addaction name="separator"/>
+   <addaction name="actionhideWindow"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_modules">
@@ -151,7 +173,7 @@
     </size>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Mod&amp;ules</string>
@@ -217,8 +239,20 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_props">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>72</width>
+     <height>91</height>
+    </size>
+   </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>P&amp;roperties</string>
@@ -245,6 +279,12 @@
      </property>
      <item>
       <widget class="QTreeView" name="treeView_props">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
@@ -268,11 +308,17 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_message">
+   <property name="minimumSize">
+    <size>
+     <width>72</width>
+     <height>91</height>
+    </size>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Messa&amp;ges</string>
@@ -298,7 +344,50 @@
       <number>1</number>
      </property>
      <item>
-      <widget class="QListView" name="listView_messages"/>
+      <widget class="QListView" name="listView_messages">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_watch">
+   <property name="minimumSize">
+    <size>
+     <width>66</width>
+     <height>73</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Status</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="FormStatus" name="form_stat" native="true"/>
      </item>
     </layout>
    </widget>
@@ -354,34 +443,6 @@
     <string>Create New Project</string>
    </property>
   </action>
-  <action name="action_Modules_Window">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Modules Window</string>
-   </property>
-   <property name="toolTip">
-    <string>Show/Hide Modules</string>
-   </property>
-  </action>
-  <action name="action_Properties_View">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Properties View</string>
-   </property>
-   <property name="toolTip">
-    <string>Show/Hide Prop window</string>
-   </property>
-  </action>
   <action name="action_Open_Project">
    <property name="icon">
     <iconset resource="../taskbusplatform.qrc">
@@ -420,56 +481,42 @@
     <string>stop current project</string>
    </property>
   </action>
-  <action name="actionMessages">
+  <action name="actionhideWindow">
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked">
-    <bool>true</bool>
+   <property name="icon">
+    <iconset resource="../taskbusplatform.qrc">
+     <normaloff>:/taskBus/images/ticon2.png</normaloff>:/taskBus/images/ticon2.png</iconset>
    </property>
    <property name="text">
-    <string>M&amp;essages</string>
+    <string>&amp;Hide</string>
+   </property>
+   <property name="toolTip">
+    <string>hide window and show tray icon</string>
+   </property>
+  </action>
+  <action name="action_Save_Project_As">
+   <property name="text">
+    <string>Save Project &amp;As...</string>
    </property>
   </action>
   <zorder>dockWidget_message</zorder>
+  <zorder>dockWidget_watch</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>FormStatus</class>
+   <extends>QWidget</extends>
+   <header>formstatus.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../taskbusplatform.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>dockWidget_modules</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>action_Modules_Window</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>336</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_Modules_Window</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_modules</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>136</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>action_Exit</sender>
    <signal>triggered()</signal>
@@ -483,70 +530,6 @@
     <hint type="destinationlabel">
      <x>511</x>
      <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_Properties_View</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_props</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>886</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dockWidget_props</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>action_Properties_View</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>886</x>
-     <y>336</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionMessages</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>dockWidget_message</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>894</x>
-     <y>240</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dockWidget_message</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>actionMessages</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>894</x>
-     <y>240</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
    </hints>
   </connection>

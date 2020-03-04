@@ -1,6 +1,8 @@
-# Taskbus - 一个跨平台的多进程合作框架
+# Taskbus(兔巴士) - 一个跨平台的多进程合作框架
 
 **Taskbus - A cross platform multi-process cooperation framework**
+
+![TaskBusLogo](taskbusplatform/images/taskBus.png)
 
 # 什么是Taskbus/What is TaskBus
 
@@ -17,6 +19,8 @@ Taskbus 从感官上提供一种类似Simulink或GNU-Radio的模块化拖拽界�
 
 Taskbus provides a modular drag-and-drop interface like Simulink or gnu-radio that can be used to implement (quasi-)real-time processing logic on a general-purpose computer. However, structurally, it is completely different from the two. It provides a process management platform by defining a feature release and data exchange standard to combine processes developed in different languages.
 
+![Project Demo](documents/images/main_ui_en.png)
+
 [更多信息参看说明（简体中文）](./documents/taskbus_zh_CN.md)
 
 [For detailed information, please follow this link.(Eng)](./documents/taskbus_en.md)
@@ -28,10 +32,9 @@ Taskbus provides a modular drag-and-drop interface like Simulink or gnu-radio th
 [英语     en_US](http://www.goldenhawking.org:8088/publish/taskbus_en.mp4)
 
 # 发布包 Releases
+[http://www.goldenhawking.org:8088/publish](http://www.goldenhawking.org:8088/publish)
 
-| version | address |
-|--------|--------|
-| v0.1.0 |http://www.goldenhawking.org:8088/publish/taskbus_win32_0.1.0.exe|
+
 
 
 

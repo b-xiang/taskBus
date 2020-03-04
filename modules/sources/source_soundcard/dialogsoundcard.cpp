@@ -1,4 +1,4 @@
-#include "dialogsoundcard.h"
+﻿#include "dialogsoundcard.h"
 #include "ui_dialogsoundcard.h"
 #include <QLayout>
 #include <QDebug>
@@ -38,6 +38,7 @@ DialogSoundCard::DialogSoundCard(const TASKBUS::cmdlineParser * pline,QWidget *p
 	if (m_cmdline)
 	{
 		int sample_rate = m_cmdline->toInt("sample_rate",48000);
+		setInstance(m_cmdline->toInt("instance",0));
 		QString device = QString::fromStdString( m_cmdline->toString("device","default"));
 		int channel = m_cmdline->toInt("channel",2);
 
@@ -103,7 +104,7 @@ void DialogSoundCard::OnStateChange(QAudio::State state)
 void DialogSoundCard::InitMonitor()
 {
 	mFormatSound.setSampleSize(16); //set sample sze to 16 bit
-	mFormatSound.setSampleType(QAudioFormat::UnSignedInt ); //Sample type as usigned integer sample
+	mFormatSound.setSampleType(QAudioFormat::SignedInt ); //Sample type as usigned integer sample
 	mFormatSound.setByteOrder(QAudioFormat::LittleEndian); //Byte order
 	mFormatSound.setCodec("audio/pcm"); //set codec as simple audio/pcm
 	mFormatSound.setSampleRate(ui->spinbox_sprate->value());
@@ -133,7 +134,7 @@ void DialogSoundCard::InitMonitor()
 	connect(mpInputDevSound, SIGNAL(readyRead()), SLOT(OnReadMore()));
 
 	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)),
-		this, SLOT(OnSliderValueChanged(int)));
+			this, SLOT(OnSliderValueChanged(int)));
 }
 
 void DialogSoundCard::CreateAudioInput()
@@ -145,6 +146,15 @@ void DialogSoundCard::CreateAudioInput()
 
 	QAudioDeviceInfo inputDevice(QAudioDeviceInfo::defaultInputDevice());
 	mpAudioInputSound = new QAudioInput(inputDevice, mFormatSound, this);
+	//Broadcast sample rates
+	TASKBUS::push_subject(0xffffffff,0,
+						  QString("source=%1.soundcard.taskbus;"
+								  "destin=all;"
+								  "function=samplerate;"
+								  "sample_rate=%2;"
+								  )
+						  .arg(m_n_instance)
+						  .arg(mFormatSound.sampleRate()).toStdString().c_str());
 }
 
 

@@ -1,5 +1,6 @@
-#include "taskbusplatformfrm.h"
+﻿#include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
+#include <QCloseEvent>
 #include <QDir>
 #include <QDebug>
 #include <QFile>
@@ -7,20 +8,24 @@
 #include <QMessageBox>
 #include <QMdiSubWindow>
 #include <QSettings>
+#include <QDateTime>
 #include "pdesignerview.h"
+#include "watchdog/tbwatchdog.h"
+#include "dlgabout.h"
 
 int taskBusPlatformFrm::m_doc_ins = 0;
 
 taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::taskBus),
+	m_pTrayIcon(new QSystemTrayIcon(this)),
 	m_pMsgModel(new QStandardItemModel(this)),
 	m_pClassModel(new QStandardItemModel(this))
 {
 	ui->setupUi(this);
 	setCentralWidget(ui->mdiArea);
 	//全部模块 Create Module for All taskModules
-	m_toolModules[tr("All")] = new taskModule(true,this);
+	m_pRefModule = m_toolModules[tr("All")] = new taskModule(true,this);
 	ui->listView_modules->setModel(m_toolModules[tr("All")]);
 
 	//类别 ComboBox for classes
@@ -33,11 +38,24 @@ taskBusPlatformFrm::taskBusPlatformFrm(QWidget *parent) :
 	statusBar()->addWidget(m_pStatus);
 
 	m_nTmid = startTimer(1000);
+	tabifyDockWidget(ui->dockWidget_message,ui->dockWidget_watch);
 	tabifyDockWidget(ui->dockWidget_message,ui->dockWidget_props);
 
+	m_iconTray[0].addFile(":/taskBus/images/ticon1.png");
+	m_iconTray[1].addFile(":/taskBus/images/ticon2.png");
+	m_pTrayIcon->setIcon(m_iconTray[0]);
+	m_pTrayIcon->show();
 
-	//加载模块 load default modules
-	load_default_modules();
+	QMenu * me = new QMenu(this);
+	me->addAction(ui->actionhideWindow);
+	me->addAction(ui->action_About);
+	m_pTrayIcon->setContextMenu(me);
+	connect(m_pTrayIcon,&QSystemTrayIcon::activated,this,&taskBusPlatformFrm::slot_traymessage);
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_message->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_modules->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_props->toggleViewAction());
+	ui->menu_View->insertAction(ui->actionhideWindow,ui->dockWidget_watch->toggleViewAction());
+
 }
 
 taskBusPlatformFrm::~taskBusPlatformFrm()
@@ -51,8 +69,22 @@ taskBusPlatformFrm::~taskBusPlatformFrm()
 	}
 	delete ui;
 }
+
+void taskBusPlatformFrm::slot_traymessage(QSystemTrayIcon::ActivationReason r)
+{
+	switch (r)
+	{
+	case QSystemTrayIcon::DoubleClick:
+		ui->actionhideWindow->setChecked(false);
+		break;
+	default:
+		break;
+	}
+}
+
 void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 {
+	static int pp = 0;
 	if (m_nTmid==event->timerId())
 	{
 		extern QAtomicInt  g_totalrev, g_totalsent;
@@ -61,9 +93,18 @@ void taskBusPlatformFrm::timerEvent(QTimerEvent *event)
 									  g_totalsent * 8.0 / 1024 / 1024
 									  );
 		m_pStatus->setText(s);
+		if (g_totalrev>0 || g_totalrev>0)
+		{
+			++pp;
+			m_pTrayIcon->setIcon(m_iconTray[pp%2]);
+		}
+		else if (pp)
+		{
+			pp = 0;
+			m_pTrayIcon->setIcon(m_iconTray[0]);
+		}
 		g_totalsent = 0;
 		g_totalrev = 0;
-
 	}
 }
 
@@ -84,12 +125,16 @@ void taskBusPlatformFrm::slot_showPropModel(QObject * objModel)
 		ui->treeView_props->scrollToBottom();
 		//ui->treeView_props->expandAll();
 	}
+	else
+		ui->treeView_props->setModel(0);
 }
 
 void taskBusPlatformFrm::on_action_About_triggered()
 {
-	QMessageBox::about(this,tr("taskBus"),tr("Used to orgnize process-based modules. by goldenhawking, 2018 for opensource usage."));
-	QApplication::aboutQt();
+	show();
+	DlgAbout about(this);
+	if (about.exec()==QDialog::Accepted)
+		QApplication::aboutQt();
 }
 
 void taskBusPlatformFrm::on_action_Start_project_triggered()
@@ -135,12 +180,14 @@ void taskBusPlatformFrm::load_default_modules()
 		lstNames<< st.readLine();
 	}
 	fin.close();
+	m_pTrayIcon->showMessage(tr("Init Modules..."),tr("Init modules from default_mods.text"),QSystemTrayIcon::Information, 1000);
 	load_modules(lstNames);
-
+	m_pTrayIcon->showMessage(tr("Succeed."),tr("Init modules from default_mods.text succeed!"),QSystemTrayIcon::Information, 2000);
+	emit hideSplash();
 }
 void taskBusPlatformFrm::save_default_modules()
 {
-	const QSet<QString> & s = m_toolModules[tr("All")]->full_paths();
+	const QSet<QString> & s = refModule()->full_paths();
 
 	QString DefaultFile = QCoreApplication::applicationDirPath() + "/default_mods.text";
 	QFile fin(DefaultFile);
@@ -218,3 +265,70 @@ void taskBusPlatformFrm::on_comboBox_class_currentIndexChanged(int index)
 	}
 }
 
+void taskBusPlatformFrm::closeEvent(QCloseEvent * event)
+{
+	bool bModified = false;
+	bool bRunning = false;
+	QStringList lsN = m_activePagesFileName.keys();
+	foreach (QString k, lsN)
+	{
+		QWidget * w = m_activePagesFileName[k]->widget();
+		if (w)
+		{
+			PDesignerView * v = qobject_cast<PDesignerView*>(w);
+			if(v)
+			{
+				bModified = bModified || v->modified();
+				bRunning = bRunning || v->project()->isRunning();
+			}
+		}
+	}
+	if (bRunning)
+	{
+		QMessageBox::information(this,tr("Still running"),tr("Project is still running, please stop all projects first."),QMessageBox::Ok);
+		event->ignore();
+		return;
+	}
+	if (bModified)
+	{
+		if (QMessageBox::information(this,tr("Close without saving?"),tr("Project has been modified, Close it anyway?"),
+									 QMessageBox::Ok,
+									 QMessageBox::Cancel)!=QMessageBox::Ok)
+		{
+			event->ignore();
+			return;
+		}
+	}
+	event->accept();
+}
+
+void taskBusPlatformFrm::on_actionhideWindow_toggled(bool arg1)
+{
+	if (arg1)
+		hide();
+	else
+		show();
+}
+
+
+
+void taskBusPlatformFrm::on_listView_modules_doubleClicked(const QModelIndex &index)
+{
+	QMdiSubWindow * sub = ui->mdiArea->activeSubWindow();
+	if (sub)
+	{
+		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		if (dv)
+		{
+			if (ui->listView_modules->model())
+			{
+				QModelIndexList lst;
+				lst<<index;
+				QMimeData * d = ui->listView_modules->model()->mimeData(lst);
+				if (d)
+					dv->addCell(d);
+			}
+
+		}
+	}
+}

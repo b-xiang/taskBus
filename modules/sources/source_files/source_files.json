@@ -2,68 +2,77 @@
     "source_files":{
         "name":"sourcefiles",
         "parameters":{
-		     "folder":{
+             "folder":{
                 "type":"string",
-                "tooltip":"监视文件夹",
-                "default":"."                
+                "tooltip":"watching folder",
+                "default":"."
             },
-		     "type":{
+             "type":{
                 "type":"string",
-                "tooltip":"监视文件类型扩展名",
-                "default":"*.pcm"                
+                "tooltip":"watching file filter",
+                "default":"*.dat"
             },
             "encode":{
                 "type":"enum",
-                "tooltip":"字符编码",
+                "tooltip":"filename encoding",
                 "default":0,
                  "range":{
                     "0":"Local 8 bits",
                     "1":"UTF-8"
                 }
             },
-		     "mode":{
+             "mode":{
                 "type":"enum",
-                "tooltip":"工作模式",
+                "tooltip":"working mod",
                 "default":0,
-				 "range":{
-                    "0":"顺序处理文件",
-                    "1":"循环处理文件"                    
-                }                
+                 "range":{
+                    "0":"normal",
+                    "1":"repeat"
+                }
             },
-		     "auto_del":{
+             "auto_del":{
                 "type":"bool",
-                "tooltip":"自动删除处理后的文件",
+                "tooltip":"auto delete files",
                 "default":0
             },
-		     "frame_contines":{
+             "frame_contines":{
                 "type":"bool",
-                "tooltip":"前后两个文件接续帧",
+                "tooltip":"treate files as continues frames",
                 "default":1
             },
             "initial_offset":{
                 "type":"int",
-                "tooltip":"初始偏移",
+                "tooltip":"initial offset",
                 "default":0
             },
             "frame_len":{
                 "type":"int",
-                "tooltip":"帧长(字节)",
+                "tooltip":"frame length in bytes",
                 "default":1
             },
-			"read_jump":{
+            "read_jump":{
                 "type":"int",
-                "tooltip":"每两次读取之间的间隔字节",
+                "tooltip":"reading step in bytes",
                 "default":1
             },
-
+            "recursive":{
+                "type":"int",
+                "tooltip":"recursive sub folders",
+                "default":0
+            },
             "frame_rate":{
                 "type":"float",
-                "tooltip":"帧速率(帧/秒)",
+                "tooltip":"frame rate(frames/seconds)",
                 "default":100
             },
-			"keep_last":{
+            "sample_rate":{
+                "type":"float",
+                "tooltip":"sample rate(Hz)",
+                "default":8000.000
+            },
+            "keep_last":{
                 "type":"bool",
-                "tooltip":"保留最新的一个文件不处理(避免冲突)",
+                "tooltip":"leave last file undealed",
                 "default":1
             }
         },
@@ -73,11 +82,11 @@
         "output_subjects":{
             "source":{
                 "type":"byte",
-                "tooltip":"输出信息"
+                "tooltip":"data output"
             },
             "timestamp":{
                 "type":"unsigned long long",
-                "tooltip":"时戳"
+                "tooltip":"timestamp in bytes"
             }
         }
     }

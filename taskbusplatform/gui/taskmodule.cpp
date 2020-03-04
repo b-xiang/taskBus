@@ -86,7 +86,7 @@ int taskModule::rowCount(const QModelIndex &parent) const
 	return 0;
 }
 
-int taskModule::columnCount(const QModelIndex &parent) const
+int taskModule::columnCount(const QModelIndex &/*parent*/) const
 {
 	return m_btoolMod==true?2:7;
 }
@@ -329,7 +329,7 @@ Qt::ItemFlags taskModule::flags(const QModelIndex &index) const
 	return f;
 }
 //从JSON创建对象
-bool taskModule::initFromJson(const QByteArray json, const QString path)
+bool taskModule::initFromJson(const QByteArray & json, const QString & path)
 {
 	bool bres = false;
 	beginResetModel();
@@ -345,7 +345,7 @@ void taskModule::clear()
 	taskCell::clear();
 	endResetModel();
 }
-unsigned int taskModule::set_function_instance(const QString func, unsigned  int instance) //设置模块实例标识
+unsigned int taskModule::set_function_instance(const QString & func, unsigned  int instance) //设置模块实例标识
 {
 	unsigned int res = 0;
 	beginResetModel();
@@ -353,7 +353,7 @@ unsigned int taskModule::set_function_instance(const QString func, unsigned  int
 	endResetModel();
 	return res;
 }
-unsigned int taskModule::set_in_subject_instance(const QString func,const QString name, unsigned int instance) //设置输入接口实例标识
+unsigned int taskModule::set_in_subject_instance(const QString & func,const QString & name, unsigned int instance) //设置输入接口实例标识
 {
 	unsigned int res = 0;
 	beginResetModel();
@@ -362,7 +362,7 @@ unsigned int taskModule::set_in_subject_instance(const QString func,const QStrin
 	return res;
 
 }
-unsigned int taskModule::set_out_subject_instance(const QString func,const QString name, unsigned int instance) //设置输出接口实例标识
+unsigned int taskModule::set_out_subject_instance(const QString & func,const QString & name, unsigned int instance) //设置输出接口实例标识
 {
 	unsigned int res = 0;
 	beginResetModel();
@@ -371,13 +371,13 @@ unsigned int taskModule::set_out_subject_instance(const QString func,const QStri
 	return res;
 }
 
-unsigned int taskModule::in_subject_instance(const QString func, const QString name) const
+unsigned int taskModule::in_subject_instance(const QString & func, const QString & name) const
 {
 	int u = taskCell::in_subject_instance(func,name);
 	m_pinInsValues.insert(u);
 	return u;
 }
-unsigned int taskModule::out_subject_instance(const QString func, const QString name) const
+unsigned int taskModule::out_subject_instance(const QString & func, const QString & name) const
 {
 	int u = taskCell::out_subject_instance(func,name);
 	m_pinInsValues.insert(u);
@@ -399,7 +399,7 @@ QModelIndex taskModule::paraIndex()
 	}
 	return QModelIndex();
 }
-QVariant taskModule::set_parameters_instance(const QString func,const QString name, const QVariant instance) //设置参数实例标识
+QVariant taskModule::set_parameters_instance(const QString & func,const QString & name, const QVariant & instance) //设置参数实例标识
 {
 	QVariant res ;
 	beginResetModel();
@@ -408,7 +408,7 @@ QVariant taskModule::set_parameters_instance(const QString func,const QString na
 	return res;
 }
 
-void taskModule::set_additional_paras(const QString func,const QMap<QString,QVariant> & p)
+void taskModule::set_additional_paras(const QString & func,const QMap<QString,QVariant> & p)
 {
 	beginResetModel();
 	taskCell::set_additional_paras(func,p);
@@ -433,7 +433,7 @@ void taskModule::set_additional_paras(const QString func,const QMap<QString,QVar
  * \return 顺序值   Order Value
  * \see TGraphicsTaskItem::paint
  */
-int taskModule::draw_direction(const QString func, bool bInput, int n)  const
+int taskModule::draw_direction(const QString & func, bool bInput, int n)  const
 {
 	if (m_mainBlock.contains(func) == false)
 		return bInput==true?-1:1;
@@ -474,7 +474,7 @@ int taskModule::draw_direction(const QString func, bool bInput, int n)  const
  * \param direction 新的顺序值  Order Value
  * \see TGraphicsTaskItem::paint
  */
-void taskModule::set_draw_direction(const QString func, bool bInput, int n, int direction)
+void taskModule::set_draw_direction(const QString & func, bool bInput, int n, int direction)
 {
 	if (m_mainBlock.contains(func) == false)
 		return ;

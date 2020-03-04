@@ -1,11 +1,11 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
 #include <QFileInfo>
 #include "listen_thread.h"
 #include <QTextStream>
-#include <time.h>
+#include <ctime>
 #include <QList>
 #include <algorithm>
 #include <iterator>
@@ -27,7 +27,7 @@ int main(int argc , char * argv[])
 	init_client();
 #ifdef OFFLINEDEBUG
 	FILE * old_stdin, *old_stdout;
-	auto ars = debug("D:\\Dynamic\\BigCompetition\\bin\\R6\\debug\\pid344",&old_stdin,&old_stdout);
+	auto ars = debug("D:\\pid1008",&old_stdin,&old_stdout);
 	const  cmdlineParser args (ars);
 #else
 	const cmdlineParser args (argc,argv);
@@ -38,8 +38,13 @@ int main(int argc , char * argv[])
 	//每个模块要响应 --information参数,打印自己的功能定义字符串。或者提供一个json文件。
 	if (args.contains("information"))
 	{
-		QFile fp(":/json/source_files.json");
-		if (fp.open(QIODevice::ReadOnly))
+		QFile fp(":/json/source_files."+QLocale::system().name()+".json");
+		if (!fp.open(QIODevice::ReadOnly))
+		{
+			fp.setFileName(":/json/source_files.json");
+			fp.open(QIODevice::ReadOnly);
+		}
+		if (fp.isOpen())
 		{
 			QByteArray arr = fp.readAll();
 			arr.push_back('\0');
@@ -67,7 +72,7 @@ int main(int argc , char * argv[])
 
 
 //枚举文件夹中的所有文件的函数，按照创建时间排序
-QList<QString> enum_files(QString folder, QString typestr)
+QList<QString> enum_files(const QString & folder, const QString & typestr)
 {
 	QList<QString> vec_str_files;
 	map<QDateTime,QList<QString> > map_files;
@@ -80,10 +85,57 @@ QList<QString> enum_files(QString folder, QString typestr)
 		map_files[info.lastModified()].push_back(info.absoluteFilePath());
 
 	for(auto p = map_files.begin();p!=map_files.end();++p)
+	{
+		sort(p->second.begin(),p->second.end());
 		copy(p->second.begin(),p->second.end(),back_inserter(vec_str_files));
-
+	}
 	return vec_str_files;
 }
+
+QList<QString> enum_files(const QString & folder, const QString & typestr,map<QDateTime,QList<QString> > * topMap)
+{
+	map<QDateTime,QList<QString> > map_files_curr;
+	map<QDateTime,QList<QString> > * map_files  = &map_files_curr;
+	if (topMap)
+		map_files = topMap;
+	//寻找最新的文件夹
+	QDir dir(folder);
+	QStringList fts;
+	fts<<typestr;
+	QFileInfoList lst = dir.entryInfoList(fts);
+	foreach (QFileInfo info, lst)
+	{
+		if (info.isDir())
+			continue;
+		(*map_files)[info.lastModified()].push_back(info.absoluteFilePath());
+	}
+
+	//subdirs
+	fts.clear();
+	fts<<"*.*";
+	fts<<"*";
+	lst = dir.entryInfoList(fts);
+	foreach (QFileInfo info, lst)
+	{
+		if (info.isDir()==false)
+			continue;
+		if (info.fileName()=="."||info.fileName()=="..")
+			continue;
+		enum_files(info.absoluteFilePath(),typestr,map_files);
+	}
+
+	QList<QString> vec_str_files;
+	if (topMap==nullptr)
+	{
+		for(auto p = map_files->begin();p!=map_files->end();++p)
+		{
+			sort(p->second.begin(),p->second.end());
+			copy(p->second.begin(),p->second.end(),back_inserter(vec_str_files));
+		}
+	}
+	return vec_str_files;
+}
+
 
 /*!  这个函数实现了一个用于测试的信号源。
  *   仅用于演示，对输入输出数据的适应性不好。
@@ -118,6 +170,11 @@ int do_source(const cmdlineParser & args)
 	const int frame_contines	=  args.toInt("frame_contines",1);
 	//跳跃
 	const int read_jump	=  args.toInt("read_jump",1);
+	//递归
+	const int recursive =  args.toInt("recursive",0);
+	//递归
+	const double sample_rate =  args.toDouble("sample_rate",8000.000);
+
 
 	long long initial_offset = args.toInt64("initial_offset",0);
 
@@ -142,10 +199,19 @@ int do_source(const cmdlineParser & args)
 	}
 	//保留最新的文件
 	const int keep_last =  args.toInt("keep_last",1);
+	//Broadcast sample rates
+	TASKBUS::push_subject(0xffffffff,0,
+						  QString("source=%1.source_files.taskbus;"
+								  "destin=all;"
+								  "function=samplerate;"
+								  "sample_rate=%2;"
+								  )
+						  .arg(instance)
+						  .arg(sample_rate).toStdString().c_str());
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		set<QString> history;
 		vector<unsigned char> data;
 		for (int i=0;i<frame_len;++i)
@@ -163,8 +229,13 @@ int do_source(const cmdlineParser & args)
 		while (bfinished==false)
 		{
 			//枚举文件
-			QList<QString> files = enum_files(str_folder,str_type);
+			QList<QString> files;
+			if (recursive)
+				files = enum_files(str_folder,str_type,nullptr);
+			else
+				files = enum_files(str_folder,str_type);
 			//开始处理
+			bool dealed = false;
 			for (auto p = files.begin();p!=files.end();++p)
 			{
 				//如果需要保留最后一个不处理，则继续
@@ -183,7 +254,10 @@ int do_source(const cmdlineParser & args)
 					history.insert(fname);
 
 				QString full_path = fname;
-				stmerr<<"Dealing file "<< full_path<<"\n";
+				if (encode==0)
+					stmerr<<"Dealing file "<<QString::fromLocal8Bit(full_path.toStdString().c_str())<<"\n";
+				else
+					stmerr<<"Dealing file "<<full_path<<"\n";
 				stmerr.flush();
 				//打开文件
 				QFile fp(full_path);
@@ -216,12 +290,13 @@ int do_source(const cmdlineParser & args)
 							//emit
 							if (curr_size>=frame_len)
 							{
+								dealed = true;
 								const unsigned long long fileoffset_current = file_offset_global + curr_pos;
 								if (timestamp)
 								{
 									push_subject(
 									timestamp,				//专题
-									instance,				//咱就一路数据，干干净净,用自己的进程ID确保唯一性。
+									instance,				//一路数据，用自己的进程ID确保唯一性。
 									sizeof(unsigned long long),
 									(unsigned char *)&fileoffset_current
 									);
@@ -230,7 +305,7 @@ int do_source(const cmdlineParser & args)
 								{
 									push_subject(
 									isource,				//专题
-									instance,				//咱就一路数据，干干净净,用自己的进程ID确保唯一性。
+									instance,				//一路数据，用自己的进程ID确保唯一性。
 									frame_len,
 									(unsigned char *)data.data()
 									);
@@ -250,6 +325,13 @@ int do_source(const cmdlineParser & args)
 									start = clock();
 									finish = clock();
 									total_frames = 0;
+									TASKBUS::push_subject(0xffffffff,0,
+														  QString("source=%1.source_files.taskus;"
+																  "destin=all;"
+																  "function=aloha;"
+																  )
+														  .arg(instance).toStdString().c_str());
+
 								}
 
 								curr_size = 0;
@@ -308,7 +390,8 @@ int do_source(const cmdlineParser & args)
 				initial_offset = 0;
 
 			}
-
+			if (!dealed)
+				QThread::msleep(200);
 		}
 
 	}

@@ -1,0 +1,5 @@
+﻿<RCC>
+    <qresource prefix="/json">
+        <file>sink_soundcard.json</file>
+    </qresource>
+</RCC>

@@ -1,4 +1,6 @@
-# Taskbus - 一个跨平台的多进程合作框架
+# Taskbus(兔巴士) - 一个跨平台的多进程合作框架
+
+![TaskBusLogo](../taskbusplatform/images/taskBus.png)
 
 [TOC]
 

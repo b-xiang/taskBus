@@ -1,4 +1,4 @@
-#include "dlgwrpscript.h"
+﻿#include "dlgwrpscript.h"
 #include <QApplication>
 #include "tb_interface.h"
 #include "cmdlineparser.h"
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		FILE * old_stdin, *old_stdout;
 		auto ars = debug("D:/log/pid1290",&old_stdin,&old_stdout);
 		args.parser(ars);
-		for (int i=1;i<ars.size();++i)
+		for (size_t i=1;i<ars.size();++i)
 			w.m_lstArgs << ars[i].c_str();
 	}
 

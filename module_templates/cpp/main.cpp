@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
 
 			if (n_sub<=0)
 			{
-				if (strstr(data, "quit")!=nullptr)
+				if (strstr(data, "function=quit;")!=nullptr)
 				{
 					finished = true;
 					continue;

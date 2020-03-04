@@ -29,3 +29,7 @@ RESOURCES += \
 
 HEADERS += \
     listen_thread.h
+
+DISTFILES += \
+    source_files.json \
+    source_files.zh_CN.json

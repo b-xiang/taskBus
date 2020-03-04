@@ -1,5 +1,7 @@
 # Taskbus - A cross platform multi-process cooperation framework
 
+![TaskBusLogo](../taskbusplatform/images/taskBus.png)
+
 [TOC]
 
 ## 1. What is TaskBus

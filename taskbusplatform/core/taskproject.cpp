@@ -1,4 +1,4 @@
-/*!
+﻿/*!
   * taskProject 类的实现。
   * @author goldenhawking@163.com, 2016-09
   */
@@ -11,10 +11,11 @@
 #include <QPointF>
 #include <QDebug>
 #include <QSettings>
+#include <QTimerEvent>
+#include <algorithm>
 #include "process_prctl.h"
-
-int taskProject::instance_count = 0;
-
+#include "../watchdog/profile_log.h"
+QSet<quint32> taskProject::m_instance_set;
 taskProject::taskProject(QObject * parent ):
 	QObject(parent),
 	m_fNewCell(std::bind(&taskProject::default_NewCell,this)),
@@ -30,6 +31,7 @@ taskProject::taskProject(QObject * parent ):
 		m_map_threadpool[pt].size();
 	}
 
+	m_nTimerID = startTimer(200);
 
 }
 taskProject::~taskProject()
@@ -57,6 +59,22 @@ taskProject::~taskProject()
 			obj->deleteLater();
 	}
 }
+
+quint32	taskProject::new_instance()
+{
+	quint32 nextIns = 1;
+
+	while (m_instance_set.contains(nextIns))
+		++nextIns;
+	m_instance_set.insert(nextIns);
+
+	return nextIns;
+}
+void	taskProject::unreg_instance(const quint32 ins)
+{
+	m_instance_set.remove(ins);
+}
+
 /*!
  * \brief taskProject::append_instance 向本工程添加一个功能
  * Add a component to the project.
@@ -75,7 +93,7 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 	{
 		node->bindCell(mod);
 		QString vname = mod->function_names().first();
-		mod->set_function_instance(vname,++instance_count);
+		mod->set_function_instance(vname,new_instance());
 		QMap<QString, QVariant> mp_nice = mod->additional_paras(vname);
 		//进程优先级默认值为“TASKBUS::pnice_norm”，一般优先级
 		//Process priority default value is "Taskbus::p nice_norm",
@@ -106,12 +124,15 @@ void taskProject::add_node(const QString json,QPointF pt,bool rebuildidx)
 
 		//关联各个事件 Associating individual events
 		connect (node, &taskNode::sig_new_package, this, &taskProject::slot_new_package,Qt::QueuedConnection);
-		connect (node, &taskNode::sig_new_errmsg, this, &taskProject::slot_new_errmsg,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_new_command, this, &taskProject::slot_new_command,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_new_errmsg, this, &taskProject::slot_new_msg,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_started, this, &taskProject::slot_pro_started,Qt::QueuedConnection);
 		connect (node, &taskNode::sig_pro_stopped, this, &taskProject::slot_pro_stopped,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_start, node, &taskNode::cmd_start,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_stop, node, &taskNode::cmd_stop,Qt::QueuedConnection);
 		connect (this, &taskProject::sig_cmd_write, node, &taskNode::cmd_write,Qt::QueuedConnection);
+		connect (this, &taskProject::sig_cmd_sendcmd, node, &taskNode::cmd_sendcmd,Qt::QueuedConnection);
+		connect (node, &taskNode::sig_iostat, this, &taskProject::sig_iostat);
 
 		//回调额外的索引创建事件 Callback for additional index creation events
 		m_fInsAppended(mod,node,pt);
@@ -127,6 +148,9 @@ void taskProject::del_node(int node)
 	{
 		foreach (QThread * t, m_map_threadpool.keys())
 			m_map_threadpool[t].remove(m_vec_nodes[node]);
+		const QString func = m_vec_cells[node]->function_firstname();
+		unsigned int instanceid =  m_vec_cells[node]->function_instance(func);
+		unreg_instance(instanceid);
 		//清理节点
 		m_vec_nodes[node]->deleteLater();
 		if (node>=0)
@@ -139,6 +163,29 @@ void taskProject::del_node(int node)
 		}
 		m_vec_nodes.remove(node);
 		m_vec_cells.remove(node);
+	}
+	else
+	{
+		for (int i=0;i<sz;++i)
+		{
+			foreach (QThread * t, m_map_threadpool.keys())
+				m_map_threadpool[t].remove(m_vec_nodes[i]);
+			const QString func = m_vec_cells[i]->function_firstname();
+			unsigned int instanceid =  m_vec_cells[i]->function_instance(func);
+			unreg_instance(instanceid);
+			//清理节点
+			m_vec_nodes[i]->deleteLater();
+			if (node>=0)
+			{
+				QObject * obj = dynamic_cast<QObject *> (m_vec_cells[i]);
+				if (!obj)
+					delete m_vec_cells[i];
+				else
+					obj->deleteLater();
+			}
+		}
+		m_vec_nodes.clear();
+		m_vec_cells.clear();
 	}
 	this->refresh_idxes();
 }
@@ -183,6 +230,7 @@ void taskProject::set_outside_id_out (QString name, unsigned int ins)
  */
 void taskProject::refresh_idxes()
 {
+	LOG_PROFILE("CORE","rebuild indexes.");
 	m_idx_instance2vec.clear();
 	m_idx_in2instances.clear();
 	m_idx_in2names.clear();
@@ -328,6 +376,7 @@ void taskProject::refresh_idxes()
 	//回调函数，用来通知图形界面刷新。
 	//callback function to notify the graphical interface to refresh.
 	m_fIndexRefreshed();
+	LOG_PROFILE("CORE","rebuild indexes finished.");
 }
 /*!
  * \brief taskProject::toJson conver to JSON
@@ -439,7 +488,20 @@ QStringList taskProject::cmdlineParas(taskCell * model)
 	{
 		const QVariant v = model->parameters_instance(func,paraname);
 		if (v.isValid())
-			lst<<QString("--%1=%2").arg(paraname).arg(model->internal_to_view(v).toString());
+		{
+			switch(v.type())
+			{
+			case QVariant::Double:
+			{
+				lst<<QString("--%1=%2").arg(paraname).arg(model->internal_to_view(v).toDouble(),0,'g',15);
+				break;
+			}
+			default:
+				lst<<QString("--%1=%2").arg(paraname).arg(model->internal_to_view(v).toString());
+				break;
+			}
+
+		}
 	}
 	//传入各个输入输出管脚（专题）的instance
 	//Incoming instance for each input/output pin (special subject)
@@ -473,129 +535,185 @@ QStringList taskProject::cmdlineParas(taskCell * model)
  * \param pkg 一个完整的数据包 A complete packet
  * \see taskNode::slot_readyReadStandardOutput
  */
-void taskProject::slot_new_package(QByteArray pkg)
+void taskProject::slot_new_package(QByteArrayList pkgs)
 {
-	if (pkg.size()<sizeof(TASKBUS::subject_package_header))
-		return;
-	const TASKBUS::subject_package_header * header =
-			reinterpret_cast<const TASKBUS::subject_package_header *>(pkg.constData());
-	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
-		return;
-	bool blocked = false;
-	try {
-		taskNode * pNodeSrc = qobject_cast<taskNode*>(sender());
-		if (!pNodeSrc)
-			throw "pNodeSrc is not sender() type";
-		if (m_idx_node2vec.contains(pNodeSrc)==false)
-			throw "node idx does not contain sender";
-		int nvecidx = m_idx_node2vec[pNodeSrc];
-		taskCell * mod = m_vec_cells[nvecidx];
-		QStringList srcfuns = mod->function_names();
-		if (srcfuns.size()==0)
-			throw "srcfuns.size() is 0";
-		//看看是否合法 See if it's legal.
-		if (header->subject_id>0)
-		{
-			quint32 src_inst = mod->function_instance(srcfuns.first());
-			//专题是否被登记为内部专题
-			//Whether the subject was registered as an internal topic
-			if (m_idx_out2instances.contains(header->subject_id)==true)
+	LOG_PROFILE("IO","Start Dealing packs.");
+	foreach (QByteArray pkg, pkgs)
+	{
+		if (static_cast<size_t>(pkg.size())<sizeof(TASKBUS::subject_package_header))
+			continue;
+		const TASKBUS::subject_package_header * header =
+				reinterpret_cast<const TASKBUS::subject_package_header *>(pkg.constData());
+		if (header->data_length+sizeof( TASKBUS::subject_package_header)!=static_cast<size_t>(pkg.size()))
+			continue;
+		bool blocked = false;
+		try {
+			taskNode * pNodeSrc = qobject_cast<taskNode*>(sender());
+			if (!pNodeSrc)
+				throw "pNodeSrc is not sender() type";
+			if (m_idx_node2vec.contains(pNodeSrc)==false)
+				throw "node idx does not contain sender";
+			int nvecidx = m_idx_node2vec[pNodeSrc];
+			taskCell * mod = m_vec_cells[nvecidx];
+			QStringList srcfuns = mod->function_names();
+			if (srcfuns.size()==0)
+				throw "srcfuns.size() is 0";
+			//看看是否合法 See if it's legal.
+			if (header->subject_id!=0xffffffff)
 			{
-				//是否为本专题合法生产者
-				//Whether it is a legitimate producer of this topic
-				if (m_idx_out2instances[header->subject_id].contains(src_inst)==false)
-					throw tr("source instance %1 is not a valid producer for subject %2.")
-						.arg(src_inst)
-						.arg(header->subject_id);
-
-				//专题是否被登记
-				//Whether the subject has registered consumers
-				if (m_idx_in2instances.contains(header->subject_id)==false)
-					throw tr("input subject %1 has no valid recievers.")
-						.arg(header->subject_id);
-				//是否为合法头部 legal head
-				if (!(header->prefix[0]!=0x3C || header->prefix[1]!=0x5A || header->prefix[2]!=0x7E || header->prefix[3]!=0x69))
+				quint32 src_inst = mod->function_instance(srcfuns.first());
+				//专题是否被登记为内部专题
+				//Whether the subject was registered as an internal topic
+				if (m_idx_out2instances.contains(header->subject_id)==true)
 				{
-					//传输给所有消费者 Transfer to all consumers
-					foreach (quint32 uins, m_idx_in2instances[header->subject_id] )
-					{
-						if (m_idx_instance2vec.contains(uins)==false)
-							continue;
-						int bidx = m_idx_instance2vec[uins];
-						emit sig_cmd_write(m_vec_nodes[bidx],pkg);
-						//有接收者阻塞了 There's a receiver blocking it.
-						if (m_vec_nodes[bidx]->outputQueueSize()>16)
-							blocked = true;
-					}
-					//防止过度缓存耗尽内存。
-					//Prevents excessive cache depletion of memory.
-					pNodeSrc->setBlockFlag(blocked);
+					//是否为本专题合法生产者
+					//Whether it is a legitimate producer of this topic
+					if (m_idx_out2instances[header->subject_id].contains(src_inst)==false)
+						throw tr("source instance %1 is not a valid producer for subject %2.")
+							.arg(src_inst)
+							.arg(header->subject_id);
 
+					//专题是否被登记
+					//Whether the subject has registered consumers
+					if (m_idx_in2instances.contains(header->subject_id)==false)
+						throw tr("input subject %1 has no valid recievers.")
+							.arg(header->subject_id);
+					//是否为合法头部 legal head
+					if (!(header->prefix[0]!=0x3C || header->prefix[1]!=0x5A || header->prefix[2]!=0x7E || header->prefix[3]!=0x69))
+					{
+						//传输给所有消费者 Transfer to all consumers
+						foreach (quint32 uins, m_idx_in2instances[header->subject_id] )
+						{
+							if (m_idx_instance2vec.contains(uins)==false)
+								continue;
+							int bidx = m_idx_instance2vec[uins];
+							emit sig_cmd_write(m_vec_nodes[bidx],pkg);
+							//有接收者阻塞了 There's a receiver blocking it.
+							if (m_vec_nodes[bidx]->outputQueueSize()>16)
+								blocked = true;
+						}
+						//防止过度缓存耗尽内存。
+						//Prevents excessive cache depletion of memory.
+						pNodeSrc->setBlockFlag(blocked);
+
+					}
 				}
-			}
-			//专题是否被登记为外部专题
-			//Whether the topic was registered as an external topic
-			else if (m_hang_out2instance.contains(header->subject_id)==true && m_bWarpper==true)
-			{
-				//是否为本专题合法生产者
-				//Whether it is a legitimate producer of this topic
-				if (m_hang_out2instance[header->subject_id]==src_inst)
+				//专题是否被登记为外部专题
+				//Whether the topic was registered as an external topic
+				else if (m_hang_out2instance.contains(header->subject_id)==true && m_bWarpper==true)
 				{
-					//专题名字获取 Topic name Acquisition
-					QString strFullName = m_hang_out2fullname[header->subject_id];
-
-					//专题是否需要向外发射 Whether the topic needs to be launched outward
-					if (m_outside_name2id_out.contains(strFullName)==true&&
-							!(header->prefix[0]!=0x3C || header->prefix[1]!=0x5A || header->prefix[2]!=0x7E || header->prefix[3]!=0x69))
+					//是否为本专题合法生产者
+					//Whether it is a legitimate producer of this topic
+					if (m_hang_out2instance[header->subject_id]==src_inst)
 					{
-						TASKBUS::subject_package_header * wrheader =
-								reinterpret_cast<TASKBUS::subject_package_header *>(pkg.data());
-						wrheader->subject_id = m_outside_name2id_out[strFullName];
-						//发送 Transmit
-						emit sig_outside_new_package(pkg);
-					}
+						//专题名字获取 Topic name Acquisition
+						QString strFullName = m_hang_out2fullname[header->subject_id];
 
+						//专题是否需要向外发射 Whether the topic needs to be launched outward
+						if (m_outside_name2id_out.contains(strFullName)==true&&
+								!(header->prefix[0]!=0x3C || header->prefix[1]!=0x5A || header->prefix[2]!=0x7E || header->prefix[3]!=0x69))
+						{
+							TASKBUS::subject_package_header * wrheader =
+									reinterpret_cast<TASKBUS::subject_package_header *>(pkg.data());
+							wrheader->subject_id = m_outside_name2id_out[strFullName];
+							//发送 Transmit
+							emit sig_outside_new_package(pkg);
+						}
+
+					}
 				}
+				else
+					throw tr("output subject \"%1\" does not exits.").arg(header->subject_id);
+
 			}
 			else
-				throw tr("output subject \"%1\" does not exits.").arg(header->subject_id);
+			{
+				//指令处理 Instruction processing
+				//! It will be dealed in each nodes' thread.
+				Q_ASSERT(false);
+			}
+		}
+		catch(QString msg)
+		{
+			push_msg(msg);
+		}
+		catch(const char * msg)
+		{
+			push_msg(msg);
+		}
 
+		if (blocked)
+			push_msg(QString("Blocked by later process."));
+	}
+	LOG_PROFILE("IO","End Dealing packs.");
+}
+/*!
+ * \brief taskProject::slot_new_command commands is another way to handover messages.
+ * \param cmd message.
+ * \details
+ * taskbus支持跨模块的消息。消息由分号分割的键-值序列组成。以下三个保留的键名包括：
+ * 1.source 来源模块的标识。标识的值由模块自身定义并在手册中声明。建议采用UUID或者全域名。
+ * 2.destin 目的模块的标识。可以有多组。ALL表示向所有模块发送。
+ * 3.function 功能名。
+ * 其他参数任意指定。
+ * taskBus support messages over modules. messages is a set of key-value pairs,
+ * which is splitted by ";". Key-value are connected with "=".
+ * There are 3 reserved keywords:
+ * 1.source: ID of source module. ID is given by each module designer, UUID or
+ * full domain name is strongly recommanded.
+ * 2.destin: ID of destin modules. "all" means all modules. module names are seperated by ","
+ * 3.function: function name.
+ *
+ * eg:
+ * soucre=fft.ghstudio.org;destin=detector.clip.wav,plots.3dshow;function=spec_append;size=1024;
+ * means:
+ * source is from  fft.ghstudio.org
+ * destin is to detector.clip.wav and plots.3dshow
+ * function is spec_append
+ * other parameters: size=1024
+ */
+void taskProject::slot_new_command(QMap<QString,QVariant> cmd)
+{
+	if (cmd.size())
+	{
+		QString source;
+		if (cmd.contains("source"))
+			source = cmd["source"].toString().trimmed();
+		else
+			return;
+		if (cmd.contains("destin"))
+		{
+			const QStringList destins = cmd["destin"].toString().split(",");
+			QSet<QString> notified;
+			foreach (QString destinstr, destins)
+			{
+				const QString des = destinstr.trimmed();
+				if (des!=source)
+					notified.insert(des);
+			}
+			emit sig_cmd_sendcmd(cmd,notified);
 		}
 		else
-		{
-			//指令处理 Instruction processing
-
-		}
+			return;
 	}
-	catch(QString msg)
-	{
-		slot_new_errmsg(QByteArray(msg.toStdString().c_str()));
-	}
-	catch(const char * msg)
-	{
-		slot_new_errmsg(QByteArray(msg));
-	}
-
-	if (blocked)
-		slot_new_errmsg(QByteArray(QString("Blocked by later process.").toStdString().c_str()));
-
 }
 
 /*!
  * \brief PDesignerView::slot_new_errmsg 新的输出日志 New output Log
  * \param msg 日志体 Log body
  */
-void taskProject::slot_new_errmsg(QByteArray msg)
+void taskProject::slot_new_msg(QByteArrayList msgs)
 {
 	taskNode * pNodeSrc = qobject_cast<taskNode*>(sender());
+
 	if (!pNodeSrc)
 	{
-		emit sig_message(QString::fromStdString(msg.toStdString()));
+		send_msg(QString("Project:"),msgs);
 		return;
 	}
 	if (m_idx_node2vec.contains(pNodeSrc)==false)
 	{
-		emit sig_message(QString::fromStdString(msg.toStdString()));
+		send_msg(QString("Node%1:").arg((quint64)pNodeSrc),msgs);
 		return;
 	}
 	int nvecidx = m_idx_node2vec[pNodeSrc];
@@ -603,13 +721,12 @@ void taskProject::slot_new_errmsg(QByteArray msg)
 	QStringList srcfuns = mod->function_names();
 	if (srcfuns.size()==0)
 	{
-		emit sig_message(QString::fromStdString(msg.toStdString()));
+		send_msg(QString("Node%1:").arg((quint64)pNodeSrc),msgs);
 		return;
 	}
 	quint32 srcins = mod->function_instance(srcfuns.first());
 	QString smsg = srcfuns.first() + QString("(%1):").arg(srcins);
-	smsg += QString::fromStdString(msg.toStdString());
-	emit sig_message(smsg);
+	send_msg(smsg,msgs);
 }
 
 /*!
@@ -633,7 +750,7 @@ void taskProject::slot_pro_started()
 	quint32 srcins = mod->function_instance(srcfuns.first());
 	QString smsg = srcfuns.first() + QString("(%1):").arg(srcins);
 	smsg += "Started.";
-	emit sig_message(smsg);
+	push_msg(smsg);
 }
 void taskProject:: slot_pro_stopped()
 {
@@ -652,7 +769,7 @@ void taskProject:: slot_pro_stopped()
 	quint32 srcins = mod->function_instance(srcfuns.first());
 	QString smsg = srcfuns.first() + QString("(%1):").arg(srcins);
 	smsg += "Stopped.";
-	emit sig_message(smsg);
+	push_msg(smsg);
 }
 
 void taskProject::start_project()
@@ -756,7 +873,7 @@ taskCell * taskProject::default_NewCell()
  * \param pnod 模块对应的运行时 The runtime of the corresponding module
  * \param pt 模块位置 Module graphics location
  */
-void taskProject::default_InsAppended(taskCell * pmod, taskNode * pnod,QPointF pt)
+void taskProject::default_InsAppended(taskCell * /*pmod*/, taskNode * /*pnod*/,QPointF /*pt*/)
 {
 
 }
@@ -779,14 +896,14 @@ QPointF	taskProject::default_GetCellPos(int n)
  */
 void taskProject::slot_outside_recieved(QByteArray pkg)
 {
-	if (pkg.size()<sizeof(TASKBUS::subject_package_header))
+	if (static_cast<size_t>(pkg.size())<sizeof(TASKBUS::subject_package_header))
 		return;
 	const TASKBUS::subject_package_header * header =
 			reinterpret_cast<const TASKBUS::subject_package_header *>(pkg.constData());
-	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=pkg.size())
+	if (header->data_length+sizeof( TASKBUS::subject_package_header)!=static_cast<size_t>(pkg.size()))
 		return;
 	try {
-		if (header->subject_id>0)
+		if (header->subject_id!=0xffffffff)
 		{
 			//进行解析、转发 To parse, forward
 			if (m_iface_outside2inside_in.contains(header->subject_id)==false)
@@ -813,15 +930,19 @@ void taskProject::slot_outside_recieved(QByteArray pkg)
 		else
 		{
 			//信令
+			const char * cmd = pkg.constData() + sizeof( TASKBUS::subject_package_header);
+			QString dac = QString::fromUtf8(cmd,header->data_length);
+			QMap<QString,QVariant> vt_map = taskCell::string_to_map(dac);
+			slot_new_command(vt_map);
 		}
 	}
 	catch(QString msg)
 	{
-		slot_new_errmsg(QByteArray(msg.toStdString().c_str()));
+		push_msg(msg);
 	}
 	catch(const char * msg)
 	{
-		slot_new_errmsg(QByteArray(msg));
+		push_msg(QString(msg));
 	}
 }
 
@@ -859,3 +980,43 @@ int  taskProject::set_nice(int  nidx,int nice)
 	return nice;
 }
 
+void taskProject::timerEvent(QTimerEvent * evt)
+{
+	if (evt->timerId()==m_nTimerID)
+			flush_msg();
+	QObject::timerEvent(evt);
+}
+
+void taskProject::push_msg(QString smsg)
+{
+	m_bufferMsgs.push_back(QByteArray::fromStdString(smsg.toStdString()));
+	m_bufferMsgSources.push_back(QString("Project:"));
+}
+void taskProject::send_msg(QString smsgSource, QByteArrayList lst)
+{
+	static clock_t last_ck = clock();
+	//Prevent of too short freq.
+	clock_t curr_ck = clock();
+	bool keep = false;
+	if (curr_ck-last_ck <=CLOCKS_PER_SEC/10 && curr_ck-last_ck>=0)
+		keep = true;
+	last_ck = curr_ck;
+
+	const int szMsgs = lst.size();
+	for(int i=0;i<szMsgs;++i)
+		m_bufferMsgSources.push_back(smsgSource);
+	m_bufferMsgs.append(lst);
+
+	if (keep==false)
+		flush_msg();
+
+}
+void taskProject::flush_msg()
+{
+	if (m_bufferMsgs.size())
+	{
+		emit sig_message(m_bufferMsgSources,m_bufferMsgs);
+		m_bufferMsgSources.clear();
+		m_bufferMsgs.clear();
+	}
+}

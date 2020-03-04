@@ -25,5 +25,11 @@
         <file>images/up.png</file>
         <file>images/Process busy.png</file>
         <file>images/Process idle.png</file>
+        <file>images/ticon1.png</file>
+        <file>images/ticon2.png</file>
+        <file>images/taskBus.svg</file>
+        <file>images/taskBus.png</file>
+        <file>images/undo-1.png</file>
+        <file>images/Redo.png</file>
     </qresource>
 </RCC>

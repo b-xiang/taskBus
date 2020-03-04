@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QVector>
 #include <QMap>
+#include <QLocale>
 #include <QFile>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
@@ -26,8 +27,13 @@ int main(int argc, char *argv[])
 	//每个模块要响应 --information参数,打印自己的功能定义字符串。或者提供一个json文件。
 	if (args.contains("information"))
 	{
-		QFile fp(":/json/network_p2p.exe.json");
-		if (fp.open(QIODevice::ReadOnly))
+		QFile fp(":/json/network_p2p."+QLocale::system().name()+".json");
+		if (fp.open(QIODevice::ReadOnly)==false)
+		{
+			fp.setFileName(":/json/network_p2p.exe.json");
+			fp.open(QIODevice::ReadOnly);
+		}
+		if (fp.isOpen())
 		{
 			QByteArray arr = fp.readAll();
 			arr.push_back('\0');
@@ -43,6 +49,7 @@ int main(int argc, char *argv[])
 		const int para_port = args.toInt("port",9527);
 		const int para_mod = args.toInt("mod",0);
 		const int para_hide = args.toInt("hide",0);
+		const int instance = args.toInt("instance",0);
 		QVector<int> paravec_outpts;
 		QMap<int,int> paramap_inputs;
 		for (int i = 0; i < 256;++i)
@@ -59,7 +66,7 @@ int main(int argc, char *argv[])
 				paravec_outpts.push_back(-1);
 		}
 
-		DialogNetP2P w;
+		DialogNetP2P w(instance);
 		if (!para_hide)
 			w.show();
 

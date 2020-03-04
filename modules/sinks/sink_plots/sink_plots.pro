@@ -28,15 +28,16 @@ CONFIG += c++11
 SOURCES += \
     dialogplots.cpp \
     listen_thread.cpp \
-    main.cpp
+    main.cpp \
+    spectrowidget.cpp
 
 HEADERS += \
     dialogplots.h \
-    listen_thread.h
+    listen_thread.h \
+    spectrowidget.h
 
 FORMS += \
-        dialogplots.ui \
-    dialogplots.ui
+	dialogplots.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -44,7 +45,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    sink_plots.json
+    sink_plots.json \
+    sink_plots.zh_CN.json
 
 RESOURCES += \
     dialogplots.qrc

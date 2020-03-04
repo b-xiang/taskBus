@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+﻿#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <map>
@@ -64,12 +64,13 @@ int do_fftw(const cmdlineParser & args)
 	using namespace TASKBUS;
 	int res = 0;
 	//获得平台告诉自己的实例名
-	int instance	  = args.toInt("instance",0);
-	int isource		  = args.toInt("signal",0);
-	int FFT		  = args.toInt("FFT",0);
-	int Spec = args.toInt("Spec",0);
-	int itmstamp_in  = args.toInt("tmstamp_in",0);
-	int itmstamp_out = args.toInt("tmstamp_out",0);
+	unsigned int instance	  = args.toInt("instance",0);
+	unsigned int isource	  = args.toInt("signal",0);
+	unsigned int FFT		  = args.toInt("FFT",0);
+	unsigned int Spec = args.toInt("Spec",0);
+	unsigned int itmstamp_in  = args.toUInt("tmstamp_in",0);
+	unsigned int itmstamp_out = args.toUInt("tmstamp_out",0);
+	unsigned int itypes = args.toUInt("input_type",0);//0=real,1=complex
 	//工作模式
 	const int sptype	=	args.toInt("sptype",0);					fprintf(stderr,"sptype is %d.",sptype);
 
@@ -89,7 +90,7 @@ int do_fftw(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 
 
 		//double * in;
@@ -120,7 +121,7 @@ int do_fftw(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")!=nullptr)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 			}
 			else if (header.subject_id==itmstamp_in)
@@ -145,11 +146,14 @@ int do_fftw(const cmdlineParser & args)
 				}
 
 				const unsigned char * pdta = packagedta.data();
-
-				//数据类型转换
-				switch (sptype)
+				//Normalizer
+				double nmr = fftsize;
+				if (itypes==0)
 				{
-				case 0:
+					//数据类型转换
+					switch (sptype)
+					{
+					case 0:
 					{
 						const int nPts = header.data_length / sizeof(short)/channels;
 						const short * pdata = (const short *)pdta;
@@ -161,9 +165,10 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;
 					}
-					break;
-				case 1:
+						break;
+					case 1:
 					{
 						const int nPts = header.data_length / sizeof(short)/channels;
 						for (int j=0;j<fftsize;++j)
@@ -178,9 +183,10 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 16384*16384;
 					}
-					break;
-				case 2:
+						break;
+					case 2:
 					{
 						const int nPts = header.data_length / sizeof(char)/channels;
 						const char * pdata = (const char *)pdta;
@@ -192,9 +198,10 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 128*128;
 					}
-					break;
-				case 3:
+						break;
+					case 3:
 					{
 						const int nPts = header.data_length / sizeof(char)/channels;
 						const unsigned char * pdata = (const unsigned char *)pdta;
@@ -206,18 +213,113 @@ int do_fftw(const cmdlineParser & args)
 							in[j][1] = 0;
 							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
 						}
+						nmr *= 256*256;
 					}
-					break;
+						break;
+					default:
+						break;
+					}
+				}
+				else
+				{
+					//数据类型转换
+					switch (sptype)
+					{
+					case 0:
+					{
+						const int nPts = header.data_length / sizeof(short)/channels/2;
+						const short * pdata = (const short *)pdta;
+						for (int j=0;j<fftsize;++j)
+						{
+							in[j][0] = 0;
+							for (int k = 0;k<channels;++k)
+							{
+								in[j][0] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2]:0;
+								in[j][1] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2+1]:0;
+							}
+							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+						}
+						nmr *= 16384*16384;;
+					}
+						break;
+					case 1:
+					{
+						const int nPts = header.data_length / sizeof(short)/channels/2;
+						for (int j=0;j<fftsize;++j)
+						{
+							double pd[2] = {0,0};
+							if (j>=0 && j <nPts)
+							{
+								for (int k = 0;k<channels;++k)
+								{
+									pd[0] += pdta[(j*channels+k)*2*2]*256+pdta[(j*channels+k)*2*2+1];
+									pd[1] += pdta[(j*channels+k)*2*2+2]*256+pdta[(j*channels+k)*2*2+3];
+								}
+							}
+							in[j][0] = pd[0];
+							in[j][1] = pd[1];
+							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+						}
+						nmr *= 16384*16384;;
+					}
+						break;
+					case 2:
+					{
+						const int nPts = header.data_length / sizeof(char)/channels/2;
+						const char * pdata = (const char *)pdta;
+						for (int j=0;j<fftsize;++j)
+						{
+							in[j][0] = 0;
+							in[j][1] = 0;
+							for (int k = 0;k<channels;++k)
+							{
+								in[j][0] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2]:0;
+								in[j][1] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2+1]:0;
+							}
+							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+						}
+						nmr *= 128*128;;
+					}
+						break;
+					case 3:
+					{
+						const int nPts = header.data_length / sizeof(char)/channels/2;
+						const unsigned char * pdata = (const unsigned char *)pdta;
+						for (int j=0;j<fftsize;++j)
+						{
+							in[j][0] = 0;
+							in[j][1] = 0;
+							for (int k = 0;k<channels;++k)
+							{
+								in[j][0] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2]:0;
+								in[j][1] += (j>=0 && j <nPts)?pdata[(j*channels+k)*2+1]:0;
+							}
+							in[j][1] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+							in[j][0] *= 0.54 - 0.46 * cos(2*3.1415927 * j / (min(nPts,fftsize)-1));
+						}
+						nmr *= 256*256;;
+					}
+						break;
+					default:
+						break;
+					}
 				}
 				fftw_execute(p); /* repeat as needed */
 				for (int j=0;j<fftsize;++j)
 				{
-					const double a =  10 * log(sqrt(out[j][0] * out[j][0] + out[j][1] * out[j][1]))/log(10.0);
-					vec_fft_abs[j] = a;
+					const double ab = sqrt(out[j][0] * out[j][0] + out[j][1] * out[j][1]);
+					const double a =  10 * log(ab/nmr)/log(10.0);
+					if (itypes==0)
+						vec_fft_abs[j] = a;
+					else
+						vec_fft_abs[(j+fftsize/2)%fftsize] = a;
 				}
 				//output
 				if (FFT>0)
-					push_subject(FFT,header.path_id,fftsize*sizeof(double)/2,(const unsigned char *)vec_fft_abs.data());
+					push_subject(FFT,header.path_id,fftsize*sizeof(double)/(itypes==0?2:1),(const unsigned char *)vec_fft_abs.data());
 				if (Spec>0)
 					push_subject(Spec,header.path_id,fftsize*sizeof(double),(const unsigned char *)out);
 				++map_tmst_inside[header.path_id];

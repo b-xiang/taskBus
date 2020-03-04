@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
 #include <string>
@@ -7,6 +7,7 @@
 #include <list>
 #include <algorithm>
 #include <iterator>
+#include <QLocale>
 #include <set>
 #include <QDir>
 #include <QDateTime>
@@ -39,9 +40,14 @@ int main(int argc , char * argv[])
 
 	//每个模块要响应 --information参数,打印自己的功能定义字符串。或者提供一个json文件。
 	if (args.contains("information"))
-	{
-		QFile fp(":/json/sink_file.exe.json");
-		if (fp.open(QIODevice::ReadOnly))
+	{		
+		QFile fp(":/json/sink_file."+QLocale::system().name()+".json");
+		if (fp.open(QIODevice::ReadOnly)==false)
+		{
+			fp.setFileName(":/json/sink_file.exe.json");
+			fp.open(QIODevice::ReadOnly);
+		}
+		if (fp.isOpen())
 		{
 			QByteArray arr = fp.readAll();
 			arr.push_back('\0');
@@ -113,7 +119,7 @@ int do_sink_txt(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		int failed_header = 0;
 		while (false==bfinished)
 		{
@@ -134,7 +140,7 @@ int do_sink_txt(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 				continue;
 			}
@@ -261,7 +267,7 @@ int do_sink_bin(const cmdlineParser & args)
 
 	try{
 		//判断参数合法性
-		if (instance==0)	throw "\"quit\":{\"error\":\"instance is 0, quit.\"}";
+		if (instance==0)	throw "function=quit;{\"error\":\"instance is 0, quit.\"}";
 		int failed_header = 0;
 		while (false==bfinished)
 		{
@@ -282,7 +288,7 @@ int do_sink_bin(const cmdlineParser & args)
 			if ( is_control_subject(header))
 			{
 				//收到命令进程退出的广播消息,退出
-				if (strstr(control_subject(header,packagedta).c_str(),"\"quit\":")>=0)
+				if (strstr(control_subject(header,packagedta).c_str(),"function=quit;")!=nullptr)
 					bfinished = true;
 				continue;
 			}

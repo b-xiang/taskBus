@@ -1,6 +1,7 @@
-#include "dialogsoundcard.h"
+﻿#include "dialogsoundcard.h"
 #include <QApplication>
 #include <QFile>
+#include <QByteArray>
 #include "cmdlineparser.h"
 #include "tb_interface.h"
 

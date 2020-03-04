@@ -20,6 +20,7 @@ void taskBusPlatformFrm::load_modules(QStringList newfms)
 	QMap<QString, mod_info> minfo;
 	foreach (QString newfm, newfms)
 	{
+		emit showSplash(tr("Loading ")+newfm,Qt::AlignBottom,QColor(0,0,0));
 		//首先试图找JSON文件.
 		//We can provide a JSON file along with exe file.This approach
 		//will significantly boost loading approach.
@@ -80,6 +81,7 @@ void taskBusPlatformFrm::load_modules(QStringList newfms)
 				minfo[className+"|" + taskCell::pureName(mod.function_firstname())] = info;
 			}
 		}
+		QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
 
 	QStringList keys = minfo.keys();
@@ -88,7 +90,7 @@ void taskBusPlatformFrm::load_modules(QStringList newfms)
 		QByteArray bt = minfo[k].bt;
 		QString newfm = minfo[k].newfm;
 		QString className = minfo[k].className;
-		m_toolModules[tr("All")]->initFromJson(bt,newfm);
+		refModule()->initFromJson(bt,newfm);
 		if (m_toolModules.contains(className)==false)
 		{
 			m_toolModules[className] = new taskModule(true,this);
@@ -126,11 +128,23 @@ void taskBusPlatformFrm::on_action_Load_Module_triggered()
 	save_default_modules();
 }
 
-void taskBusPlatformFrm::slot_showMsg(QString str)
+void taskBusPlatformFrm::slot_showMsg(QStringList namestr,QByteArrayList strMessages)
 {
+	const int keepRows = 128;
 	QString prefix = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-	m_pMsgModel->appendRow(new QStandardItem(prefix+str));
-	if (m_pMsgModel->rowCount()>128)
-		m_pMsgModel->removeRows(0,m_pMsgModel->rowCount()-128);
+	int ct = 0;
+	const int ctmsgs = namestr.size();
+	auto ap = namestr.begin();
+	auto av = strMessages.begin();
+	for (; ap!=namestr.end() && av!=strMessages.end()
+		 ;++ap,++av)
+	{
+		if (ctmsgs-ct<=keepRows)
+			m_pMsgModel->appendRow(new QStandardItem(prefix+">"+*ap+QString::fromUtf8(*av)));
+		++ct;
+	}
+	if (m_pMsgModel->rowCount()>keepRows)
+		m_pMsgModel->removeRows(0,m_pMsgModel->rowCount()-keepRows);
 	ui->listView_messages->scrollToBottom();
+
 }

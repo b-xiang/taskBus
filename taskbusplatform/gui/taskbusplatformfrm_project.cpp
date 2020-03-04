@@ -1,7 +1,8 @@
-#include "taskbusplatformfrm.h"
+﻿#include "taskbusplatformfrm.h"
 #include "ui_taskbusplatformfrm.h"
 #include <QDebug>
 #include <QMdiSubWindow>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QSettings>
@@ -12,15 +13,20 @@
 
 void taskBusPlatformFrm::on_action_New_Project_triggered()
 {
-	PDesignerView * v = new PDesignerView();
-	v->setWindowTitle(QString("Untitled %1").arg(++m_doc_ins));
-	ui->mdiArea->addSubWindow(v);
+	PDesignerView * v = new PDesignerView(this);
+	QString fm = QString("Untitled %1").arg(++m_doc_ins);
+	v->setWindowTitle(fm);
+	v->setFullFileName(fm);
+	QMdiSubWindow * wnd = ui->mdiArea->addSubWindow(v);
+	m_activePagesFileName[fm] = wnd;
 	v->show();
+	v->initialUndoList();
 	connect (v,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
-	connect (v,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg,Qt::QueuedConnection);
+	connect (v,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg);
 	connect (v,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 	connect (v,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
+	connect (v->project(), &taskProject::sig_iostat,ui->form_stat->wmod(),&WatchMemModule::slot_packio);
 
 }
 void taskBusPlatformFrm::on_action_Save_Project_triggered()
@@ -29,31 +35,99 @@ void taskBusPlatformFrm::on_action_Save_Project_triggered()
 	if (sub)
 	{
 		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		QString oldfm = dv->fullFileName();
 		if (dv)
 		{
 			QSettings settings(inifile(),QSettings::IniFormat);
 			QString strLastModuleDir = settings.value("history/strLastSaveDir","./").toString();
-			QString newfm = QFileDialog::getSaveFileName(this,tr("Save project"),strLastModuleDir,
-														 "tbj files (*.tbj);;All files(*.*)"
-														 );
+			QString dirstr = strLastModuleDir;
+			QFileInfo infofm(dv->fullFileName());
+			QString newfm;
+			if (infofm.exists())
+			{
+				dirstr = infofm.absoluteFilePath();
+				newfm = infofm.absoluteFilePath();
+			}
+			else
+			{
+				newfm = QFileDialog::getSaveFileName(this,
+													 tr("Save project"),
+													 dirstr,
+													 "tbj files (*.tbj);;All files(*.*)"
+													 );
+			}
+
 			if (newfm.size()>2)
 			{
 				QFileInfo info(newfm);
 				settings.setValue("history/strLastSaveDir",info.absolutePath());
-			}
-			QByteArray json = dv->project()->toJson();
-			QFile fo(newfm);
-			if (fo.open(QIODevice::WriteOnly))
-			{
-				QFileInfo info(newfm);
-				dv->setWindowTitle(info.completeBaseName());
-				fo.write(json);
-				fo.close();
+				QByteArray json = dv->project()->toJson();
+				QFile fo(newfm);
+				if (fo.open(QIODevice::WriteOnly))
+				{
+					QFileInfo info(newfm);
+					dv->setWindowTitle(info.completeBaseName());
+					fo.write(json);
+					fo.close();
+					dv->setFullFileName(newfm);
+					dv->savedUndoState();
+					m_activePagesFileName.remove(oldfm);
+					m_activePagesFileName[newfm] = sub;
+				}
+				else
+					QMessageBox::warning(this,tr("Save Failed"),fo.errorString());
 			}
 		}
 	}
 
 }
+
+void taskBusPlatformFrm::on_action_Save_Project_As_triggered()
+{
+	QMdiSubWindow * sub = ui->mdiArea->activeSubWindow();
+	if (sub)
+	{
+		PDesignerView * dv = qobject_cast<PDesignerView *>(sub->widget());
+		QString oldfm = dv->fullFileName();
+		if (dv)
+		{
+			QSettings settings(inifile(),QSettings::IniFormat);
+			QString strLastModuleDir = settings.value("history/strLastSaveDir","./").toString();
+			QString dirstr = strLastModuleDir;
+			QFileInfo infofm(dv->fullFileName());
+			if (infofm.exists())
+				dirstr = infofm.absoluteFilePath();
+			QString newfm = QFileDialog::getSaveFileName(this,
+														 tr("Save project"),
+														 dirstr,
+														 "tbj files (*.tbj);;All files(*.*)"
+														 );
+
+			if (newfm.size()>2)
+			{
+				QFileInfo info(newfm);
+				settings.setValue("history/strLastSaveDir",info.absolutePath());
+				QByteArray json = dv->project()->toJson();
+				QFile fo(newfm);
+				if (fo.open(QIODevice::WriteOnly))
+				{
+					QFileInfo info(newfm);
+					dv->setWindowTitle(info.completeBaseName());
+					fo.write(json);
+					fo.close();
+					dv->setFullFileName(newfm);
+					dv->savedUndoState();
+					m_activePagesFileName.remove(oldfm);
+					m_activePagesFileName[newfm] = sub;
+				}
+				else
+					QMessageBox::warning(this,tr("Save Failed"),fo.errorString());
+			}
+		}
+	}
+}
+
+
 void taskBusPlatformFrm::slot_openprj(QString newfm)
 {
 	QFile fo(newfm);
@@ -63,19 +137,20 @@ void taskBusPlatformFrm::slot_openprj(QString newfm)
 	{
 		QByteArray ar = fo.readAll();
 		QFileInfo info(newfm);
-		PDesignerView * dv = new PDesignerView();
+		PDesignerView * dv = new PDesignerView(this);
 		if (dv)
 		{
 			QMdiSubWindow * wnd =  ui->mdiArea->addSubWindow(dv);
-			dv->project()->fromJson(ar,this->m_toolModules[tr("All")]);
+			dv->project()->fromJson(ar,this->refModule());
 			dv->setWindowTitle(info.completeBaseName());
 			dv->show();
+			dv->initialUndoList();
 			connect (dv,&PDesignerView::sig_showProp,this,&taskBusPlatformFrm::slot_showPropModel,Qt::QueuedConnection);
-			connect (dv,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg,Qt::QueuedConnection);
+			connect (dv,&PDesignerView::sig_message,this,&taskBusPlatformFrm::slot_showMsg);
 			connect (dv,&PDesignerView::sig_openprj,this,&taskBusPlatformFrm::slot_openprj,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstarted,this,&taskBusPlatformFrm::slot_projstarted,Qt::QueuedConnection);
 			connect (dv,&PDesignerView::sig_projstopped,this,&taskBusPlatformFrm::slot_projstopped,Qt::QueuedConnection);
-			connect (dv,&PDesignerView::sig_closed,this,&taskBusPlatformFrm::slot_projclosed,Qt::QueuedConnection);
+			connect (dv->project(), &taskProject::sig_iostat,ui->form_stat->wmod(),&WatchMemModule::slot_packio);
 			QCoreApplication::processEvents();
 			dv->project()->refresh_idxes();
 			QCoreApplication::processEvents();
@@ -161,7 +236,7 @@ void taskBusPlatformFrm::slot_projstopped()
 	}
 }
 
-void taskBusPlatformFrm::slot_projclosed(QString fm)
+void taskBusPlatformFrm::unregProject(QString fm)
 {
 	qDebug()<<fm<<" closed.";
 	m_activePagesFileName.remove(fm);

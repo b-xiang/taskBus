@@ -4,34 +4,34 @@
             "input_subjects": {
                 "plot0": {
                     "instance_value": 1,
-                    "tooltip": "double input",
+                    "tooltip": "input0",
                     "type": "byte"
                 },
                 "plot1": {
                     "instance_value": 2,
-                    "tooltip": "double input",
+                    "tooltip": "input1",
                     "type": "byte"
                 },
                 "plot2": {
                     "instance_value": "",
-                    "tooltip": "double input",
+                    "tooltip": "input2",
                     "type": "byte"
                 },
                 "plot3": {
                     "instance_value": "",
-                    "tooltip": "double input",
+                    "tooltip": "input3",
                     "type": "byte"
                 },
                 "plot4": {
                     "instance_value": "",
-                    "tooltip": "double input",
+                    "tooltip": "input4",
                     "type": "byte"
                 }
             },
             "instance": {
-                "additional_args": "nice=2;",
-                "exec": "modules/sink_plots.exe",
-                "instance_value": 32
+                "additional_args": "nice=0;",
+                "exec": "modules/sink_plots",
+                "instance_value": 2
             },
             "name": {
                 "name": "plots"
@@ -39,11 +39,20 @@
             "parameters": {
                 "channels": {
                     "default": "1,1,1,1,1,1",
-                    "instance_value": "1,2,1,1,1,1",
+                    "instance_value": "0,1,1,1,1,1",
                     "range": {
-                        "tip": "1 or 2"
+                        "tip": "0:1d spectrogram 1: 1d wav or 2:2d xy"
                     },
-                    "tooltip": "channels",
+                    "tooltip": "各路通道数",
+                    "type": "string"
+                },
+                "datatypes": {
+                    "default": "9,9,9,9,9",
+                    "instance_value": "9,9,9,9,9",
+                    "range": {
+                        "value": "0:uint8 1:int8 2:uint16 3:int16 4:uint32 5:int32 6:uint64 7:int64 8:float 9:double"
+                    },
+                    "tooltip": "各路数据类型",
                     "type": "string"
                 }
             },
@@ -55,20 +64,20 @@
     "mod1": {
         "voice_spec": {
             "instance": {
-                "additional_args": "nice=2;",
-                "exec": "../../taskBus/projetcs/voice_spec.exe",
-                "instance_value": 33
+                "additional_args": "nice=0;",
+                "exec": "../projetcs/voice_spec",
+                "instance_value": 3
             },
             "name": {
                 "name": "voice_spec"
             },
             "output_subjects": {
-                "transform_fft_FFTo1": {
+                "transform_fft_FFTo2": {
                     "instance_value": 1,
                     "tooltip": "FFT in dB",
                     "type": "vector"
                 },
-                "transform_fft_Speco1": {
+                "transform_fft_Speco2": {
                     "instance_value": 2,
                     "tooltip": "Spec in Complex",
                     "type": "vector"
@@ -77,12 +86,12 @@
         }
     },
     "pos0": {
-        "x": 2012,
-        "y": 1492
+        "x": 2123,
+        "y": 1488
     },
     "pos1": {
-        "x": 1673,
-        "y": 1498
+        "x": 1749,
+        "y": 1533
     },
     "total_mods": 2
 }

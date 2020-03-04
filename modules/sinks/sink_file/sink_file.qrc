@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/json">
         <file>sink_file.exe.json</file>
+        <file>sink_file.zh_CN.json</file>
     </qresource>
 </RCC>
